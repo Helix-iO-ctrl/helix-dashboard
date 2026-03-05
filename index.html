@@ -184,6 +184,11 @@
           detail: "All-in-one: funnels, session replay, A/B testing." },
       ],
 
+      // ── WEEKLY UPDATES ──
+      // Added automatically each Friday by the weekly snapshot scheduled task.
+      // Each entry: { week, dateRange, pct, done, blockers, wins, nextUp, snapshotUrl }
+      weeklyUpdates: [],
+
       // ── OPEN QUESTIONS ──
       // urgency options: "critical" | "high" | "medium"
       openQuestions: [
@@ -764,7 +769,7 @@
               </div>
               <span style={{ color:"#E2E8F0" }}>|</span>
               <div style={{ display:"flex", gap:2 }}>
-                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"]].map(([id,label])=>(
+                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"],["updates","Weekly Updates"]].map(([id,label])=>(
                   <button key={id} onClick={()=>setTab(id)} style={{
                     background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
                     padding:"6px 12px", borderRadius:6, fontSize:13,
@@ -957,6 +962,105 @@
                 <div style={{ padding:"12px 18px", background:"#F8FAFC",
                   borderTop:"1px solid #E2E8F0", fontSize:12, color:"#94A3B8" }}>
                   💡 After each client call, Cowork will automatically log new decisions here from the transcript.
+                </div>
+              </div>
+            )}
+
+            {/* ── WEEKLY UPDATES ── */}
+            {tab==="updates" && (
+              <div>
+                {/* Header */}
+                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
+                  overflow:"hidden", marginBottom:16 }}>
+                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                    display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div>
+                      <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Weekly Snapshots</span>
+                      <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
+                        {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
+                      </span>
+                    </div>
+                    <span style={{ fontSize:11, color:"#94A3B8" }}>Updated every Friday at 6:45am</span>
+                  </div>
+
+                  {d.weeklyUpdates.length === 0 ? (
+                    <div style={{ padding:"40px 24px", textAlign:"center", color:"#94A3B8" }}>
+                      <div style={{ fontSize:32, marginBottom:10 }}>📊</div>
+                      <div style={{ fontSize:13, fontWeight:500, color:"#64748B", marginBottom:6 }}>
+                        First snapshot posts this Friday
+                      </div>
+                      <div style={{ fontSize:12 }}>
+                        Weekly progress summaries will appear here automatically — week over week.
+                      </div>
+                    </div>
+                  ) : (
+                    d.weeklyUpdates.slice().reverse().map((w, i) => (
+                      <div key={i} style={{ display:"grid", gridTemplateColumns:"140px 1fr",
+                        padding:"18px 18px", borderBottom:"1px solid #F8FAFC", gap:16, alignItems:"start" }}>
+                        {/* Left — week label + date */}
+                        <div>
+                          <div style={{ fontSize:12, fontWeight:700, color:"#0F172A" }}>Week {w.week}</div>
+                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{w.dateRange}</div>
+                          {/* Progress pill */}
+                          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
+                            <div style={{ width:48, height:4, background:"#E2E8F0", borderRadius:2, overflow:"hidden" }}>
+                              <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB", borderRadius:2 }} />
+                            </div>
+                            <span style={{ fontSize:11, color:"#2563EB", fontWeight:600 }}>{w.pct}%</span>
+                          </div>
+                          {/* Stats */}
+                          <div style={{ marginTop:8, display:"flex", gap:8, flexWrap:"wrap" }}>
+                            <span style={{ fontSize:11, color:"#059669", fontWeight:600 }}>✓ {w.done} done</span>
+                            {w.blockers > 0 && (
+                              <span style={{ fontSize:11, color:"#DC2626", fontWeight:600 }}>⚠ {w.blockers} blocked</span>
+                            )}
+                          </div>
+                          {/* Snapshot link */}
+                          {w.snapshotUrl && (
+                            <a href={w.snapshotUrl} target="_blank" rel="noreferrer" style={{
+                              display:"inline-block", marginTop:10, fontSize:11,
+                              color:"#2563EB", textDecoration:"none", fontWeight:500 }}>
+                              View full report →
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Right — wins + next up */}
+                        <div>
+                          {w.wins && w.wins.length > 0 && (
+                            <div style={{ marginBottom:10 }}>
+                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
+                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
+                                This Week
+                              </div>
+                              {w.wins.map((win, wi) => (
+                                <div key={wi} style={{ fontSize:12, color:"#1E293B",
+                                  marginBottom:4, display:"flex", gap:6 }}>
+                                  <span style={{ color:"#059669", flexShrink:0 }}>✓</span>
+                                  <span>{win}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {w.nextUp && w.nextUp.length > 0 && (
+                            <div>
+                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
+                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
+                                Next Week
+                              </div>
+                              {w.nextUp.map((next, ni) => (
+                                <div key={ni} style={{ fontSize:12, color:"#64748B",
+                                  marginBottom:4, display:"flex", gap:6 }}>
+                                  <span style={{ color:"#94A3B8", flexShrink:0 }}>→</span>
+                                  <span>{next}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
