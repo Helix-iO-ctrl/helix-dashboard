@@ -14,6 +14,13 @@
     body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; }
     table { border-collapse: collapse; width: 100%; }
     button { font-family: inherit; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tab-scroll {
+      display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; padding: 0 16px;
+    }
+    .tab-scroll::-webkit-scrollbar { display: none; }
+    .disc-cards { display: flex; flex-direction: column; gap: 0; }
   </style>
 </head>
 <body>
@@ -216,13 +223,24 @@
     🔧 APP CODE
     ============================================================ -->
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect } = React;
     const d = window.PROJECT_DATA;
+
+    // ── Responsive breakpoints ──
+    function useWindowWidth() {
+      const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
+      useEffect(() => {
+        const handler = () => setW(window.innerWidth);
+        window.addEventListener("resize", handler);
+        return () => window.removeEventListener("resize", handler);
+      }, []);
+      return w;
+    }
 
     const STATUS = {
       done:          { label: "Done",        dot: "#059669", badge: "#DCFCE7", badgeText: "#166534" },
       "in-progress": { label: "In Progress", dot: "#2563EB", badge: "#DBEAFE", badgeText: "#1E40AF" },
-      blocked:       { label: "Needs Input",     dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
+      blocked:       { label: "Needs Input", dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
       todo:          { label: "To Do",       dot: "#9CA3AF", badge: "#F3F4F6", badgeText: "#6B7280" },
     };
     const PRIORITY = {
@@ -235,6 +253,8 @@
       high:     { color: "#D97706", bg: "#FFFBEB", label: "High" },
       medium:   { color: "#2563EB", bg: "#EFF6FF", label: "Medium" },
     };
+
+    const TABS = [["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Questions"]];
 
     function Badge({ color, bg, children }) {
       return (
@@ -257,7 +277,38 @@
       );
     }
 
-    function TaskTable({ tasks }) {
+    // On mobile: each task is a card. On desktop: a table row.
+    function TaskList({ tasks, isMobile }) {
+      if (isMobile) {
+        return (
+          <div>
+            {tasks.map(t => {
+              const s = STATUS[t.status]; const p = PRIORITY[t.priority];
+              return (
+                <div key={t.id} style={{ padding:"14px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                  <div style={{ display:"flex", alignItems:"flex-start", gap:9, marginBottom: t.blocker ? 6 : 0 }}>
+                    <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
+                      background:s.dot, marginTop:5, flexShrink:0 }} />
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
+                        textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5, marginBottom:6 }}>
+                        {t.text}
+                      </div>
+                      {t.blocker && (
+                        <div style={{ fontSize:11, color:"#DC2626", marginBottom:6, lineHeight:1.4 }}>⚠ {t.blocker}</div>
+                      )}
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                        <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
+                        <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
       return (
         <table>
           <thead>
@@ -303,78 +354,127 @@
       );
     }
 
+    // Helix logo mark
+    function Logo() {
+      return (
+        <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB", flexShrink:0,
+          display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+            <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+            <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+            <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+          </svg>
+        </div>
+      );
+    }
+
+    function PhaseBadge() {
+      return (
+        <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
+          border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6, flexShrink:0 }}>
+          <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
+          <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
+            Phase {d.currentPhase+1}: {d.phases[d.currentPhase]}
+          </span>
+        </div>
+      );
+    }
+
     function App() {
-      const [sel, setSel]   = useState("product");
-      const [tab, setTab]   = useState("overview");
-      const selected        = d.disciplines.find(x => x.id === sel);
-      const total           = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
-      const done            = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
-      const inProg          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
-      const blocked         = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
-      const pct             = Math.round((done/total)*100);
+      const [sel, setSel] = useState("product");
+      const [tab, setTab] = useState("overview");
+      const width         = useWindowWidth();
+      const isMobile      = width < 640;
+      const isTablet      = width < 900;
+      const selected      = d.disciplines.find(x => x.id === sel);
+      const total         = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
+      const done          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
+      const inProg        = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
+      const blocked       = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
+      const pct           = Math.round((done/total)*100);
+      const pad           = isMobile ? "16px" : "28px";
 
       return (
         <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter',system-ui,sans-serif" }}>
 
           {/* ── TOP BAR ── */}
-          <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
-            display:"flex", alignItems:"center", justifyContent:"space-between",
-            height:56, position:"sticky", top:0, zIndex:10 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:9 }}>
-                <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB",
-                  display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-                    <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-                    <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-                    <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-                  </svg>
+          {isMobile ? (
+            // Mobile: 2-row header
+            <div style={{ background:"white", borderBottom:"1px solid #E2E8F0",
+              position:"sticky", top:0, zIndex:10 }}>
+              {/* Row 1: logo + name + phase badge */}
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+                padding:"10px 16px", gap:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:9, minWidth:0 }}>
+                  <Logo />
+                  <span style={{ fontSize:13, fontWeight:700, color:"#0F172A",
+                    overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                    Helix
+                  </span>
                 </div>
-                <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
+                <PhaseBadge />
               </div>
-              <span style={{ color:"#E2E8F0" }}>|</span>
-              <div style={{ display:"flex", gap:2 }}>
-                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"]].map(([id,label])=>(
+              {/* Row 2: scrollable nav tabs */}
+              <div className="tab-scroll" style={{ borderTop:"1px solid #F1F5F9", paddingTop:4, paddingBottom:4 }}>
+                {TABS.map(([id,label])=>(
                   <button key={id} onClick={()=>setTab(id)} style={{
                     background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
-                    padding:"6px 12px", borderRadius:6, fontSize:13,
+                    padding:"7px 14px", borderRadius:6, fontSize:13, whiteSpace:"nowrap",
                     fontWeight: tab===id?600:400,
-                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
+                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit", flexShrink:0 }}>
                     {label}
                   </button>
                 ))}
               </div>
             </div>
-            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-              <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
-              <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
-                border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6 }}>
-                <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
-                <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
-                  Phase {d.currentPhase+1}: {d.phases[d.currentPhase]}
-                </span>
+          ) : (
+            // Desktop: single-row header
+            <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
+              display:"flex", alignItems:"center", justifyContent:"space-between",
+              height:56, position:"sticky", top:0, zIndex:10 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:9 }}>
+                  <Logo />
+                  <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
+                </div>
+                <span style={{ color:"#E2E8F0" }}>|</span>
+                <div style={{ display:"flex", gap:2 }}>
+                  {TABS.map(([id,label])=>(
+                    <button key={id} onClick={()=>setTab(id)} style={{
+                      background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
+                      padding:"6px 12px", borderRadius:6, fontSize:13,
+                      fontWeight: tab===id?600:400,
+                      color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
+                <PhaseBadge />
               </div>
             </div>
-          </div>
+          )}
 
-          <div style={{ maxWidth:1100, margin:"0 auto", padding:"28px" }}>
+          <div style={{ maxWidth:1100, margin:"0 auto", padding:pad }}>
 
             {/* ── OVERVIEW ── */}
             {tab==="overview" && <>
 
               {/* Phase bar */}
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                padding:"16px 20px", marginBottom:20,
-                display:"flex", alignItems:"center", gap:20 }}>
-                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>
-                <div style={{ display:"flex", flex:1, gap:8 }}>
+                padding:"14px 16px", marginBottom:16,
+                display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" }}>
+                {!isMobile && <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>}
+                <div style={{ display:"flex", flex:1, gap:8, minWidth:200 }}>
                   {d.phases.map((p,i)=>(
                     <div key={p} style={{ flex:1 }}>
                       <div style={{ height:5, borderRadius:3,
                         background: i<=d.currentPhase?"#2563EB":"#E2E8F0",
                         opacity: i<d.currentPhase?0.4:1 }} />
-                      <div style={{ fontSize:11, marginTop:5,
+                      <div style={{ fontSize:isMobile?10:11, marginTop:5,
                         color:i===d.currentPhase?"#2563EB":"#94A3B8",
                         fontWeight:i===d.currentPhase?600:400 }}>{p}</div>
                     </div>
@@ -382,137 +482,218 @@
                 </div>
               </div>
 
-              {/* Stat cards */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12, marginBottom:20 }}>
+              {/* Stat cards — 2 cols on mobile, 3 on tablet, 5 on desktop */}
+              <div style={{
+                display:"grid",
+                gridTemplateColumns: isMobile ? "repeat(2,1fr)" : isTablet ? "repeat(3,1fr)" : "repeat(5,1fr)",
+                gap:10, marginBottom:16 }}>
                 {[
-                  { label:"Total Tasks",   value:total,     color:"#1E293B", bg:"white",   border:"#E2E8F0" },
-                  { label:"Done",          value:done,      color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
-                  { label:"In Progress",   value:inProg,    color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
-                  { label:"Needs Input",   value:blocked,   color:"#DC2626", bg:"#FEF2F2", border:"#FECACA" },
-                  { label:"Overall",       value:`${pct}%`, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
-                ].map(s=>(
-                  <div key={s.label} style={{ background:s.bg, border:`1px solid ${s.border}`,
-                    borderRadius:10, padding:"16px 18px" }}>
-                    <div style={{ fontSize:26, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
+                  { label:"Total Tasks",  value:total,     color:"#1E293B", bg:"white",   border:"#E2E8F0" },
+                  { label:"Done",         value:done,      color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
+                  { label:"In Progress",  value:inProg,    color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
+                  { label:"Needs Input",  value:blocked,   color:"#DC2626", bg:"#FEF2F2", border:"#FECACA" },
+                  { label:"Overall",      value:`${pct}%`, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
+                ].map((s,idx)=>(
+                  <div key={s.label} style={{
+                    background:s.bg, border:`1px solid ${s.border}`, borderRadius:10, padding:"14px 16px",
+                    // On mobile: "Overall" spans full width as the 5th card
+                    gridColumn: isMobile && idx===4 ? "1 / -1" : undefined }}>
+                    <div style={{ fontSize:isMobile?22:26, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
                     <div style={{ fontSize:11, color:"#94A3B8", marginTop:5, fontWeight:500 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Disciplines table */}
+              {/* Disciplines — table on desktop, cards on mobile */}
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                overflow:"hidden", marginBottom:20 }}>
-                <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                overflow:"hidden", marginBottom:16 }}>
+                <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
                   display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Disciplines</span>
-                  <span style={{ fontSize:11, color:"#94A3B8" }}>Click a row to see tasks ↓</span>
+                  <span style={{ fontSize:11, color:"#94A3B8" }}>Tap to see tasks ↓</span>
                 </div>
-                <table>
-                  <thead>
-                    <tr style={{ background:"#F8FAFC" }}>
-                      {["Discipline","Progress","Tasks","Active","Needs Input","Owner"].map(h=>(
-                        <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
-                          fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
-                          letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
+
+                {isMobile ? (
+                  // Mobile: discipline cards
+                  <div>
                     {d.disciplines.map(disc=>{
                       const dDone  = disc.tasks.filter(t=>t.status==="done").length;
                       const dProg  = disc.tasks.filter(t=>t.status==="in-progress").length;
                       const dBlock = disc.tasks.filter(t=>t.status==="blocked").length;
                       const isSel  = sel===disc.id;
                       return (
-                        <tr key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                          cursor:"pointer", background:isSel?disc.lightColor:"white",
+                        <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                          padding:"14px 16px", cursor:"pointer",
+                          background:isSel?disc.lightColor:"white",
                           borderLeft:`3px solid ${isSel?disc.color:"transparent"}`,
-                          transition:"background .15s" }}>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                          borderBottom:"1px solid #F1F5F9", transition:"background .15s" }}>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
                             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                              <div style={{ width:28, height:28, borderRadius:6,
+                              <div style={{ width:26, height:26, borderRadius:6,
                                 background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
                                 display:"flex", alignItems:"center", justifyContent:"center",
-                                fontSize:12, fontWeight:700, color:disc.color }}>
+                                fontSize:11, fontWeight:700, color:disc.color }}>
                                 {disc.label[0]}
                               </div>
                               <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
                             </div>
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
-                            <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", textAlign:"center" }}>
-                            <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.tasks.length}</span>
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            {dBlock>0
-                              ? <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} items</Badge>
-                              : <span style={{ fontSize:11, color:"#CBD5E1" }}>—</span>}
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            <span style={{ fontSize:12, color:"#94A3B8" }}>{disc.owner}</span>
-                          </td>
-                        </tr>
+                            <span style={{ fontSize:12, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
+                          </div>
+                          <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
+                          {(dProg > 0 || dBlock > 0) && (
+                            <div style={{ display:"flex", gap:6, marginTop:8 }}>
+                              {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
+                              {dBlock>0 && <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} need input</Badge>}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
-                  </tbody>
-                </table>
+                  </div>
+                ) : (
+                  // Desktop: full table
+                  <div className="table-scroll">
+                    <table>
+                      <thead>
+                        <tr style={{ background:"#F8FAFC" }}>
+                          {["Discipline","Progress","Tasks","Active","Needs Input","Owner"].map(h=>(
+                            <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
+                              fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
+                              letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0", whiteSpace:"nowrap" }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {d.disciplines.map(disc=>{
+                          const dDone  = disc.tasks.filter(t=>t.status==="done").length;
+                          const dProg  = disc.tasks.filter(t=>t.status==="in-progress").length;
+                          const dBlock = disc.tasks.filter(t=>t.status==="blocked").length;
+                          const isSel  = sel===disc.id;
+                          return (
+                            <tr key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                              cursor:"pointer", background:isSel?disc.lightColor:"white",
+                              borderLeft:`3px solid ${isSel?disc.color:"transparent"}`,
+                              transition:"background .15s" }}>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                                  <div style={{ width:28, height:28, borderRadius:6,
+                                    background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
+                                    display:"flex", alignItems:"center", justifyContent:"center",
+                                    fontSize:12, fontWeight:700, color:disc.color }}>
+                                    {disc.label[0]}
+                                  </div>
+                                  <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
+                                </div>
+                              </td>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
+                                <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
+                              </td>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", textAlign:"center" }}>
+                                <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.tasks.length}</span>
+                              </td>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                                {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
+                              </td>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                                {dBlock>0
+                                  ? <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} items</Badge>
+                                  : <span style={{ fontSize:11, color:"#CBD5E1" }}>—</span>}
+                              </td>
+                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                                <span style={{ fontSize:12, color:"#94A3B8" }}>{disc.owner}</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
 
               {/* Task detail */}
               {selected && (
                 <div style={{ background:"white", border:`1px solid ${selected.borderColor}`,
                   borderRadius:10, overflow:"hidden" }}>
-                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                  <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
                     background:selected.lightColor, display:"flex", alignItems:"center", gap:10 }}>
-                    <div style={{ width:28, height:28, borderRadius:6, background:"white",
+                    <div style={{ width:26, height:26, borderRadius:6, background:"white",
                       border:`1px solid ${selected.borderColor}`,
                       display:"flex", alignItems:"center", justifyContent:"center",
-                      fontSize:12, fontWeight:700, color:selected.color }}>{selected.label[0]}</div>
+                      fontSize:11, fontWeight:700, color:selected.color }}>{selected.label[0]}</div>
                     <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>{selected.label} Tasks</span>
                     <span style={{ fontSize:11, color:"#94A3B8" }}>{selected.tasks.length} total</span>
                   </div>
-                  <TaskTable tasks={selected.tasks} />
+                  <TaskList tasks={selected.tasks} isMobile={isMobile} />
                 </div>
               )}
             </>}
 
-            {/* ── TASKS ── */}
+            {/* ── TASKS TAB ── */}
             {tab==="tasks" && (
-              <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:16 }}>
-                <div style={{ background:"white", border:"1px solid #E2E8F0",
-                  borderRadius:10, overflow:"hidden", alignSelf:"start" }}>
-                  {d.disciplines.map(disc=>{
-                    const dDone = disc.tasks.filter(t=>t.status==="done").length;
-                    return (
-                      <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                        padding:"10px 14px", cursor:"pointer",
-                        display:"flex", justifyContent:"space-between", alignItems:"center",
-                        background:sel===disc.id?disc.lightColor:"white",
-                        borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
-                        borderBottom:"1px solid #F1F5F9" }}>
-                        <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
-                          color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
-                        <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                {selected && (
-                  <div style={{ background:"white", border:"1px solid #E2E8F0",
-                    borderRadius:10, overflow:"hidden" }}>
-                    <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                      background:selected.lightColor }}>
-                      <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
-                    </div>
-                    <TaskTable tasks={selected.tasks} />
+              isMobile ? (
+                // Mobile: pill nav at top, full-width task list below
+                <div>
+                  <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:12,
+                    scrollbarWidth:"none", WebkitOverflowScrolling:"touch" }}>
+                    {d.disciplines.map(disc=>{
+                      const dDone = disc.tasks.filter(t=>t.status==="done").length;
+                      const isSel = sel===disc.id;
+                      return (
+                        <button key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                          flexShrink:0, padding:"7px 14px", borderRadius:20, cursor:"pointer",
+                          border:`1px solid ${isSel?disc.color:disc.borderColor}`,
+                          background:isSel?disc.lightColor:"white", fontFamily:"inherit",
+                          fontSize:13, fontWeight:isSel?600:400,
+                          color:isSel?disc.color:"#374151" }}>
+                          {disc.label} <span style={{ fontSize:11, color:"#94A3B8", marginLeft:4 }}>{dDone}/{disc.tasks.length}</span>
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
+                  {selected && (
+                    <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10, overflow:"hidden" }}>
+                      <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
+                        background:selected.lightColor }}>
+                        <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
+                      </div>
+                      <TaskList tasks={selected.tasks} isMobile={true} />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // Desktop: sidebar + content
+                <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:16 }}>
+                  <div style={{ background:"white", border:"1px solid #E2E8F0",
+                    borderRadius:10, overflow:"hidden", alignSelf:"start" }}>
+                    {d.disciplines.map(disc=>{
+                      const dDone = disc.tasks.filter(t=>t.status==="done").length;
+                      return (
+                        <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                          padding:"10px 14px", cursor:"pointer",
+                          display:"flex", justifyContent:"space-between", alignItems:"center",
+                          background:sel===disc.id?disc.lightColor:"white",
+                          borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
+                          borderBottom:"1px solid #F1F5F9" }}>
+                          <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
+                            color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
+                          <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {selected && (
+                    <div style={{ background:"white", border:"1px solid #E2E8F0",
+                      borderRadius:10, overflow:"hidden" }}>
+                      <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                        background:selected.lightColor }}>
+                        <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
+                      </div>
+                      <TaskList tasks={selected.tasks} isMobile={false} />
+                    </div>
+                  )}
+                </div>
+              )
             )}
 
             {/* ── DECISIONS ── */}
@@ -523,9 +704,15 @@
                   <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>{d.decisions.length} recorded</span>
                 </div>
                 {d.decisions.map((dec,i)=>(
-                  <div key={i} style={{ display:"grid", gridTemplateColumns:"130px 1fr",
-                    padding:"16px 18px", borderBottom:"1px solid #F8FAFC", gap:16 }}>
-                    <span style={{ fontSize:12, color:"#94A3B8", paddingTop:1 }}>{dec.date}</span>
+                  <div key={i} style={{
+                    padding: isMobile ? "14px 16px" : "16px 18px",
+                    borderBottom:"1px solid #F8FAFC",
+                    // Stack on mobile, side-by-side on desktop
+                    display: isMobile ? "block" : "grid",
+                    gridTemplateColumns: "130px 1fr",
+                    gap:16 }}>
+                    <span style={{ display:"block", fontSize:12, color:"#94A3B8",
+                      marginBottom: isMobile ? 4 : 0, paddingTop: isMobile ? 0 : 1 }}>{dec.date}</span>
                     <div>
                       <div style={{ fontSize:13, fontWeight:600, color:"#0F172A", marginBottom:4 }}>{dec.title}</div>
                       <div style={{ fontSize:12, color:"#64748B", lineHeight:1.6 }}>{dec.detail}</div>
@@ -547,9 +734,15 @@
                 {d.openQuestions.map((item,i)=>{
                   const u = URGENCY[item.urgency];
                   return (
-                    <div key={i} style={{ display:"grid", gridTemplateColumns:"80px 1fr",
-                      padding:"14px 18px", borderBottom:"1px solid #F8FAFC", gap:14, alignItems:"start" }}>
-                      <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
+                    <div key={i} style={{
+                      padding: isMobile ? "14px 16px" : "14px 18px",
+                      borderBottom:"1px solid #F8FAFC",
+                      display: isMobile ? "block" : "grid",
+                      gridTemplateColumns:"80px 1fr",
+                      gap:14, alignItems:"start" }}>
+                      <div style={{ marginBottom: isMobile ? 8 : 0 }}>
+                        <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
+                      </div>
                       <div>
                         <div style={{ fontSize:13, color:"#0F172A", fontWeight:500, marginBottom:4 }}>{item.q}</div>
                         <div style={{ fontSize:12, color:"#64748B", lineHeight:1.5 }}>{item.note}</div>
