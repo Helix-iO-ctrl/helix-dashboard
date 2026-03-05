@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Helix — Project Dashboard</title>
+  <title>Fitness Coaching App — Project Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -14,59 +14,55 @@
     body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; }
     table { border-collapse: collapse; width: 100%; }
     button { font-family: inherit; }
-    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .tab-scroll {
-      display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; padding: 0 16px;
-    }
-    .tab-scroll::-webkit-scrollbar { display: none; }
-    .disc-cards { display: flex; flex-direction: column; gap: 0; }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <!-- ============================================================
-    ✏️  PROJECT DATA — Update this section as work progresses
+    ✏️  EDIT YOUR PROJECT DATA HERE
+    This is the only section you need to update as work progresses.
     ============================================================ -->
   <script>
     window.PROJECT_DATA = {
       name: "Helix — Fitness Coaching App",
       client: "Jason",
-      lastUpdated: "Mar 5, 2026",
+      lastUpdated: "Mar 5, 2026",    // ← update this each time you edit
       phases: ["Discovery", "Design", "Build V1", "Launch"],
-      currentPhase: 0,
+      currentPhase: 0,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
 
+      // ── SUMMARY (keep in sync with tasks below) ──
       summary: { total: 51, done: 14, inProgress: 2, blocked: 3, todo: 32 },
 
-      // status: "todo" | "in-progress" | "blocked" | "done"
-      // priority: "high" | "medium" | "low"
+      // ── DISCIPLINES & TASKS ──
+      // status options: "todo" | "in-progress" | "blocked" | "done"
+      // priority options: "high" | "medium" | "low"
       disciplines: [
         {
           id: "product", label: "Product",
           color: "#2563EB", lightColor: "#EFF6FF", borderColor: "#BFDBFE",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
             { id: 1,  text: "Process discovery call transcript",                                      status: "done",    priority: "high" },
             { id: 2,  text: "Update product brief with client inputs",                                status: "done",    priority: "high" },
-            { id: 3,  text: "Validate assumptions tracker",                                           status: "done",    priority: "high" },
-            { id: 4,  text: "Confirm V1 vs V2 scope",                                                 status: "done",    priority: "high" },
-            { id: 5,  text: "Document full periodization methodology",                                status: "done",    priority: "high" },
-            { id: 23, text: "Feature spec: programming intake flow (sequence → phases → blocks → weeks → sessions)", status: "done", priority: "high" },
-            { id: 24, text: "Feature spec: pre-session readiness check-in and session adjustment logic", status: "done", priority: "high" },
-            { id: 25, text: "Feature spec: RPE-per-set logging and progressive overload decisions",   status: "done",    priority: "high" },
-            { id: 33, text: "Scope Nutrition module — deferred to Phase 2",                           status: "done",    priority: "high" },
-            { id: 42, text: "Awaiting Jason: Q4 — Exercise selection filter order for A1",            status: "blocked", priority: "high",
-              blocker: "Needed from Jason ASAP. Blocks exercise selection implementation." },
-            { id: 43, text: "Awaiting Jason: Q5 — When is barbell NOT the primary tool? What overrides the loading position hierarchy?", status: "blocked", priority: "high",
-              blocker: "Needed from Jason ASAP. Blocks exercise ordering and substitution rules." },
-            { id: 44, text: "Feature spec: performance assessments (intake-selectable, calendar-schedulable, configurable repeat frequency)", status: "todo", priority: "high" },
-            { id: 45, text: "Feature spec: coach dashboard (compliance, readiness flags, fatigue trend, override flow)", status: "todo", priority: "high" },
-            { id: 46, text: "Feature spec: Google Calendar integration",                              status: "todo",    priority: "high" },
-            { id: 47, text: "Gamification: 1RM tracker — user stories and acceptance criteria",       status: "todo",    priority: "high" },
+            { id: 3,  text: "Validate assumptions from tracker",                                      status: "done",    priority: "high" },
+            { id: 4,  text: "Confirm V1 vs V2 scope with client",                                     status: "done",    priority: "high" },
+            { id: 5,  text: "Document full periodization methodology — extract sticky logic pieces",  status: "done",    priority: "high" },
+            { id: 23, text: "Write feature spec: programming intake flow (sequence → phases → blocks → weeks → sessions)", status: "done", priority: "high" },
+            { id: 24, text: "Write feature spec: pre-session readiness check-in and session adjustment logic", status: "done", priority: "high" },
+            { id: 25, text: "Write feature spec: RPE-per-set logging and progressive overload decisions", status: "done", priority: "high" },
+            { id: 33, text: "Scope Nutrition module — complete spec or formally defer to Phase 2",    status: "done",    priority: "high" },
+            { id: 42, text: "BLOCKED — Get Jason's answer: Q4 (exercise selection filter order for A1)", status: "blocked", priority: "high",
+              blocker: "Jason did not answer Q4 in the 'Please Answer These' document. Blocks exercise selection implementation entirely." },
+            { id: 43, text: "BLOCKED — Get Jason's answer: Q5 (when is barbell NOT the primary tool — what overrides the loading position hierarchy?)", status: "blocked", priority: "high",
+              blocker: "Jason did not answer Q5. Blocks exercise ordering logic and substitution rules." },
+            { id: 44, text: "Write feature spec: performance assessments (intake-selectable, calendar-schedulable, repeat frequency)", status: "todo", priority: "high" },
+            { id: 45, text: "Write feature spec: coach dashboard (compliance, readiness flags, fatigue trend, override flow)", status: "todo", priority: "high" },
+            { id: 46, text: "Write feature spec: Google Calendar integration",                        status: "todo", priority: "high" },
+            { id: 47, text: "Define gamification feature: 1RM tracker — user stories and acceptance criteria", status: "todo", priority: "high" },
             { id: 22, text: "Review Jason's exercise database spreadsheet and finalize filter tag structure", status: "todo", priority: "high" },
-            { id: 32, text: "Define Phase 1 vs Phase 2 feature designations for Product Outline",     status: "todo",    priority: "high" },
-            { id: 34, text: "Clarify Hotel Travel programming mode integration with main engine",     status: "todo",    priority: "medium" },
+            { id: 32, text: "Define Phase 1 vs Phase 2 feature designations for Product Outline",     status: "todo", priority: "high" },
+            { id: 34, text: "Clarify Hotel Travel programming mode integration with main automation logic", status: "todo", priority: "medium" },
             { id: 35, text: "Define Ethnicity and Gender question downstream logic for programming engine", status: "todo", priority: "medium" },
             { id: 36, text: "Confirm whether Assessment sheet feeds directly into Synopsis by Joint Data", status: "todo", priority: "medium" },
             { id: 37, text: "Audit blank filter cells in Exercise Database (Single or Pair, Loading Position columns)", status: "todo", priority: "medium" },
@@ -75,98 +71,99 @@
         {
           id: "ux", label: "UX",
           color: "#7C3AED", lightColor: "#F5F3FF", borderColor: "#DDD6FE",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
-            { id: 6,  text: "Map full programming intake flow as UX user flow",               status: "todo", priority: "high" },
-            { id: 7,  text: "Design self-guided → coaching conversion moment",                 status: "todo", priority: "high" },
+            { id: 6,  text: "Map full programming intake flow as UX user flow",           status: "todo", priority: "high" },
+            { id: 7,  text: "Design self-guided → coaching conversion moment",             status: "todo", priority: "high" },
             { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "todo", priority: "high" },
-            { id: 9,  text: "Design pre-session readiness check-in screen flow",               status: "todo", priority: "high" },
-            { id: 26, text: "Design RPE per-set logging screen",                               status: "todo", priority: "medium" },
+            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "todo", priority: "high" },
+            { id: 26, text: "Design RPE per-set logging screen",                           status: "todo", priority: "medium" },
             { id: 27, text: "Design self-guided onboarding for travel kit users (QR → first workout)", status: "todo", priority: "medium" },
           ],
         },
         {
           id: "engineering", label: "Engineering",
           color: "#059669", lightColor: "#ECFDF5", borderColor: "#A7F3D0",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
-            { id: 10, text: "Tech stack decision (mobile framework, backend, database)",            status: "done", priority: "high" },
-            { id: 11, text: "Data model: exercise database (folders, filter tags, videos)",          status: "done", priority: "high" },
-            { id: 12, text: "Data model: adaptive programming engine (program hierarchy)",           status: "done", priority: "high" },
-            { id: 48, text: "Awaiting Jason: implement exercise selection filter logic (Q4/Q5)",     status: "blocked", priority: "high",
+            { id: 10, text: "Decide tech stack (mobile framework, backend, DB)",                  status: "done", priority: "high" },
+            { id: 11, text: "Design data model: exercise database (folders, filter tags, videos)", status: "done", priority: "high" },
+            { id: 12, text: "Design data model: adaptive programming engine (program hierarchy)",  status: "done", priority: "high" },
+            { id: 48, text: "BLOCKED — Implement exercise selection filter logic (awaiting Q4/Q5 answers)", status: "blocked", priority: "high",
               blocker: "Cannot implement A1 exercise selection or barbell override rules until Jason answers Q4 and Q5." },
-            { id: 49, text: "Implement FSS formula and week-to-week progressive overload engine",   status: "todo", priority: "high" },
-            { id: 50, text: "Implement cumulative fatigue model and 5-condition deload trigger",     status: "todo", priority: "high" },
-            { id: 51, text: "Implement performance assessment schema and scheduling logic",          status: "todo", priority: "high" },
-            { id: 13, text: "Set up repo and staging/production environment",                       status: "todo", priority: "medium" },
-            { id: 38, text: "Verify AVERAGE formulas in Joint ROM sheet are live calculations (not text strings)", status: "todo", priority: "high" },
-            { id: 39, text: "Client QA: review 648 applied exercise name changes, then delete Name Changes tab", status: "todo", priority: "high" },
-            { id: 40, text: "Validate Stork Balance equation (AP Sway + ML Sway) against methodology", status: "todo", priority: "medium" },
-            { id: 41, text: "Confirm 18-sheet Automation Matrix is complete — or identify missing Team Programming sheets", status: "todo", priority: "medium" },
+            { id: 49, text: "Implement FSS formula and week-to-week progressive overload engine", status: "todo", priority: "high" },
+            { id: 50, text: "Implement cumulative fatigue model and 5-condition deload trigger system", status: "todo", priority: "high" },
+            { id: 51, text: "Implement performance assessment schema and scheduling logic",        status: "todo", priority: "high" },
+            { id: 13, text: "Set up repo and staging/production environment",                     status: "todo", priority: "medium" },
+            { id: 38, text: "Verify all AVERAGE formulas in Joint ROM sheet are live calculations, not text strings", status: "todo", priority: "high" },
+            { id: 39, text: "Client to QA 648 applied exercise name changes, then delete Name Changes tab", status: "todo", priority: "high" },
+            { id: 40, text: "Validate Stork Balance equation (AP Sway + ML Sway) against client's methodology", status: "todo", priority: "medium" },
+            { id: 41, text: "Confirm 18-sheet Automation Matrix is complete set — or identify missing Team Programming sheets", status: "todo", priority: "medium" },
           ],
         },
         {
           id: "marketing", label: "Marketing",
           color: "#DC2626", lightColor: "#FEF2F2", borderColor: "#FECACA",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
-            { id: 14, text: "Finalize coach-facing positioning ('Get a day back every week')",      status: "in-progress", priority: "medium" },
-            { id: 15, text: "Research helix.io domain + backup options (helix.app, gethelix.com)",  status: "todo",        priority: "high" },
-            { id: 16, text: "Draft travel kit landing page strategy (Shopify → Amazon FBA)",        status: "todo",        priority: "high" },
-            { id: 28, text: "Define 4-layer business ecosystem funnel for marketing materials",     status: "todo",        priority: "medium" },
-            { id: 29, text: "Develop pre-sale campaign concept for travel kit (20-unit batch)",     status: "todo",        priority: "medium" },
+            { id: 14, text: "Finalize coach-facing positioning ('Get a day back every week')",    status: "in-progress", priority: "medium" },
+            { id: 15, text: "Research helix.io domain + backup options (helix.app, gethelix.com)", status: "todo", priority: "high" },
+            { id: 16, text: "Draft travel kit landing page strategy (Shopify → Amazon FBA)",      status: "todo", priority: "high" },
+            { id: 28, text: "Define 4-layer business ecosystem funnel for marketing materials",   status: "todo", priority: "medium" },
+            { id: 29, text: "Develop pre-sale campaign concept for travel kit (20-unit batch)",   status: "todo", priority: "medium" },
           ],
         },
         {
           id: "creative", label: "Creative",
           color: "#D97706", lightColor: "#FFFBEB", borderColor: "#FDE68A",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
-            { id: 17, text: "Visual identity exploration — mood board, palette, typography",         status: "in-progress", priority: "medium" },
-            { id: 18, text: "Travel kit branding concept (embroidered bag, QR card)",                status: "todo",        priority: "medium" },
-            { id: 30, text: "Formalize app name as Helix — reserve brand assets, confirm domain",   status: "todo",        priority: "high" },
+            { id: 17, text: "Begin visual identity exploration for Helix — mood board, palette, type", status: "in-progress", priority: "medium" },
+            { id: 18, text: "Design travel kit branding concept (embroidered bag, QR card)",          status: "todo",        priority: "medium" },
+            { id: 30, text: "Formalize app name as Helix — reserve brand assets, confirm domain",    status: "todo",        priority: "high" },
           ],
         },
         {
           id: "data", label: "Data",
           color: "#0891B2", lightColor: "#ECFEFF", borderColor: "#A5F3FC",
-          owner: "Helix Team",
+          owner: "Cowork",
           tasks: [
-            { id: 19, text: "Set up PostHog and instrument V1 events",               status: "todo", priority: "medium" },
-            { id: 20, text: "Define core event tracking plan",                        status: "done", priority: "high" },
-            { id: 21, text: "Define north star metrics",                              status: "done", priority: "high" },
-            { id: 31, text: "Define travel kit validation metrics (pre-sale KPIs)",   status: "todo", priority: "high" },
+            { id: 19, text: "Set up PostHog and instrument V1 events",              status: "todo", priority: "medium" },
+            { id: 20, text: "Define core event tracking plan",                      status: "done", priority: "high" },
+            { id: 21, text: "Define north star metrics",                            status: "done", priority: "high" },
+            { id: 31, text: "Define travel kit validation metrics (pre-sale KPIs)", status: "todo", priority: "high" },
           ],
         },
       ],
 
+      // ── DECISIONS ──
       decisions: [
         { date: "Mar 5, 2026", title: "Build order: Training MVP before Nutrition",
-          detail: "Training engine is built first; nutrition module is fully deferred to V2. Jake + Keagan defining nutrition MVP terms this week." },
+          detail: "Confirmed in Session 1.1 team sync. Training engine is built first; nutrition module is fully deferred to V2. Jake + Keagan defining nutrition MVP terms this week." },
         { date: "Mar 5, 2026", title: "Jake Cannizzaro — confirmed full collaborator",
-          detail: "Jake is a confirmed full collaborator with ownership of the V2 nutrition spec. His templates will be the data foundation for the nutrition module." },
+          detail: "Jake is not just a nutrition consultant — he is a confirmed full collaborator with ownership of the V2 nutrition spec. His templates will be the data foundation for the nutrition module." },
         { date: "Mar 5, 2026", title: "Target market: coach tool, not large platform",
-          detail: "Primary market is individual PTs, performance coaches, and small coaching businesses. Not a consumer fitness marketplace." },
+          detail: "Jason wants to market to individual PTs, performance coaches, and small coaching businesses (LA Fitness, coaching agencies). Not a consumer fitness marketplace." },
         { date: "Mar 5, 2026", title: "MVP beta: 10–15 people",
-          detail: "First test cohort is 10–15 coached clients. Josh (USA Men's Sevens rugby S&C coach) flagged as a high-value potential beta user and advisor." },
-        { date: "Mar 5, 2026", title: "Weekly workflow: Tuesdays + Fridays",
-          detail: "Tuesdays: Jason + Keagan sync. Fridays: full team with Hayden. Tuesday meetings define the week's work; Friday reviews progress and sets next action items." },
+          detail: "First test cohort is 10-15 coached clients. Josh (USA Men's Sevens rugby S&C coach) flagged as a high-value potential beta user and advisor." },
+        { date: "Mar 5, 2026", title: "Weekly workflow updated: Tuesdays + Fridays",
+          detail: "Tuesdays: Jason + Keagan sync. Fridays: full team with Hayden. (Previously listed as Wednesday + Friday — corrected.)" },
         { date: "Mar 5, 2026", title: "Performance testing: V1 feature (calendar-schedulable, intake-selectable)",
           detail: "4 categories: Balance, Power, COD/Agility, Strength. ~43 tests total. Client selects relevant tests at intake; tests are scheduled to calendar with configurable repeat frequency." },
-        { date: "Mar 5, 2026", title: "Official training zones: 6 zones (canonical set confirmed)",
-          detail: "Strength, Strength Endurance, Power, Power Endurance, Hypertrophy, Muscular Endurance. These are the only zones in V1. Prior docs listing 7 zones were incorrect." },
+        { date: "Mar 5, 2026", title: "Official training zones: 6 zones only (canonical set confirmed)",
+          detail: "Strength, Strength Endurance, Power, Power Endurance, Hypertrophy, Muscular Endurance. These are the only zones in V1 — no others. Prior docs listing 7 zones were incorrect." },
         { date: "Mar 5, 2026", title: "Block transitions: default time-based, event-triggered for athletes",
-          detail: "Most demographics transition at end of block by week count. Athlete demographic uses event date for taper logic." },
-        { date: "Mar 5, 2026", title: "Adaptive engine: full spec documented",
-          detail: "FSS formula, RPE ladders, 6 zones, tier structures, cumulative fatigue model, 5 deload triggers, plateau detection, and block construction rules all captured. Q4/Q5 still pending." },
+          detail: "Most demographics transition at end of block by week count. Athlete demographic uses event date for taper logic. Documented in adaptive-engine-spec.md Section XIV." },
+        { date: "Mar 5, 2026", title: "Adaptive engine: full spec documented in adaptive-engine-spec.md",
+          detail: "Q1–Q3 fully answered. FSS formula, RPE ladders, 6 zones, tier structures, cumulative fatigue model, 5 deload triggers, plateau detection, and block construction rules all captured. Q4/Q5 still pending — critical blockers." },
         { date: "Mar 1, 2026", title: "Volleyball positions added to intake form",
           detail: "Added Setter, Outside Hitter, Middle Blocker, Opposite Hitter, Libero, Defensive Specialist. Client to confirm these are correct for their athlete population." },
         { date: "Mar 1, 2026", title: "Exercise name standardization applied",
-          detail: "648 renames applied across all 34 exercise sheets. Client QA required before Name Changes tab is deleted." },
+          detail: "648 renames applied across all 34 exercise sheets (wall ball → med ball, straight bar → small bar, pull down bar updates, banded body renames). Client QA required before Name Changes tab is deleted." },
         { date: "Mar 1, 2026", title: "Fitness ranking field — data format corrected",
-          detail: "23 cells corrected from datetime objects to proper text scale format (1 – 2, 3 – 4, etc.). Schema must enforce text type for this field." },
+          detail: "23 cells corrected from datetime objects (e.g., 2025-01-02) to proper text scale format (1 – 2, 3 – 4, etc.). Schema must enforce text type for this field." },
         { date: "Feb 27, 2026", title: "App name: Helix",
-          detail: "Domain target: helix.io. Supports future voice feature ('Hey Helix...')." },
+          detail: "AI-suggested name selected by Jason. Domain target: helix.io. Supports future voice feature ('Hey Helix...')." },
         { date: "Feb 27, 2026", title: "V1 scope locked",
           detail: "V1: adaptive engine, readiness check-ins, RPE logging, coach dashboard, client app (iOS + Android), messaging, Stripe. V2: motion capture, team management, nutrition, professional sports." },
         { date: "Feb 27, 2026", title: "Business ecosystem: 4-layer model",
@@ -177,42 +174,45 @@
           detail: "Shopify landing page → Amazon checkout → FBA fulfillment. No warehouse needed. Source from Amazon initially, Alibaba at scale." },
         { date: "Feb 27, 2026", title: "Nutrition is V2 — MyFitnessPal API",
           detail: "MFP API is free and has the largest food database. Helix adds adaptive intelligence on top. Jake Cannizzaro owns the nutrition spec." },
-        { date: "Feb 27, 2026", title: "Travel kit pre-sale validation strategy",
-          detail: "Launch with 20 units, sell out, then run a pre-sale before buying more inventory. Use pre-sale revenue to fund the next batch." },
+        { date: "Feb 27, 2026", title: "Meeting cadence established",
+          detail: "Updated in Session 1.1: Tuesdays — Keagan + Jason sync. Fridays — full team with Hayden." },
+        { date: "Feb 27, 2026", title: "Project folder structure finalized",
+          detail: "Using .skills/, docs/, tasks/, decisions/ architecture for Cowork and Claude Code." },
+        { date: "Feb 27, 2026", title: "Cowork selected as primary execution tool",
+          detail: "Paired with Claude Code for engineering tasks." },
         { date: "Feb 27, 2026", title: "PostHog selected for analytics",
           detail: "All-in-one: funnels, session replay, A/B testing." },
-        { date: "Feb 27, 2026", title: "Voice agent feature: future roadmap (post-V1)",
-          detail: "Hands-free logging ('Hey Helix, log 10 reps at 80 lbs') is confirmed as a future feature. App name supports this naturally." },
       ],
 
-      // urgency: "critical" | "high" | "medium"
+      // ── OPEN QUESTIONS ──
+      // urgency options: "critical" | "high" | "medium"
       openQuestions: [
-        { q: "Q4: What filters does the system apply when picking the A1 exercise, and in what order?",
-          urgency: "critical", note: "Owner: Jason — needed ASAP. Blocks exercise selection implementation entirely." },
-        { q: "Q5: When is barbell NOT the primary tool? What overrides the default loading position hierarchy (Barbell → Hex Bar → KB → DB)?",
-          urgency: "critical", note: "Owner: Jason — needed ASAP. Blocks exercise ordering and substitution logic." },
+        { q: "Q4 (unanswered): What filters does the system apply when picking the A1 exercise, and in what order?",
+          urgency: "critical", note: "Jason did not answer this in the 'Please Answer These' doc. Blocks exercise selection implementation entirely. Owner: Jason — due ASAP." },
+        { q: "Q5 (unanswered): When is barbell NOT the primary tool? What rule overrides the default loading position hierarchy (Barbell → Hex Bar → KB → DB)?",
+          urgency: "critical", note: "Jason did not answer this. Blocks exercise ordering and substitution logic. Owner: Jason — due ASAP." },
         { q: "What are the simplest MVP terms for the nutrition piece?",
-          urgency: "high", note: "Owner: Jake + Keagan — define this week. V2 spec definition should start now." },
+          urgency: "high", note: "Jake + Keagan to define this week. Nutrition module is V2 build but spec definition should start now." },
         { q: "What is the equity/compensation structure between Jason, Jake, Keagan, and Hayden?",
-          urgency: "high", note: "Four-way conversation needed now that Jake is confirmed as a full collaborator." },
+          urgency: "high", note: "Four-way conversation needed now that Jake is confirmed as a full collaborator. Jason has flagged he wants everyone to have a piece." },
         { q: "What are the startup costs for the travel kit (per-unit COGS, packaging, shipping)?",
-          urgency: "high", note: "Owner: Keagan — needed to validate the pre-sale pricing model." },
+          urgency: "high", note: "Keagan to research. Needed to validate the pre-sale pricing model." },
         { q: "What is the target coaching price point per client per month?",
           urgency: "medium", note: "Informs positioning and feature prioritization." },
         { q: "Does vertical jump factor into readiness inputs, or just fatigue + soreness?",
-          urgency: "medium", note: "Owner: Jason — soreness + tiredness confirmed; clarify if vertical jump still applies." },
+          urgency: "medium", note: "Vertical jump was not mentioned in the Session 1.1 Q&A. Soreness + tiredness confirmed as the two inputs. Jason to clarify if vertical jump still applies." },
         { q: "Does the 'Decline to Identify' gender selection bypass gender-based programming adjustments?",
-          urgency: "medium", note: "Owner: Jason — must be defined before building intake form and programming engine." },
-        { q: "Is the Ethnicity field optional or required? Does it affect downstream programming logic?",
+          urgency: "medium", note: "Intake form has this option — downstream logic is undefined. Clarify with Jason." },
+        { q: "Is the Ethnicity field optional or required, and does it affect downstream automation logic?",
           urgency: "medium", note: "Must be defined before building intake form and programming engine." },
         { q: "How does Hotel Travel programming mode integrate with the main engine — standalone mode or subset?",
-          urgency: "medium", note: "Architecture decision needed: filter the main DB or pull from a separate table?" },
+          urgency: "medium", note: "Architecture decision needed: does it filter the main exercise DB or pull from a separate table?" },
         { q: "What is the repeat frequency for each performance test category (Balance, Power, COD, Strength)?",
           urgency: "medium", note: "Needed to finalize performance assessment feature spec and scheduling logic." },
         { q: "When does Jason plan to leave Superhuman, and how does that affect the 4-week timeline goal?",
-          urgency: "medium", note: "Context on Jason's availability affects build sequencing." },
+          urgency: "medium", note: "Timeline pressure from Session 1.1. Context on Jason's availability affects build sequencing." },
         { q: "Are there additional exercise categories planned beyond the current 34 sheets?",
-          urgency: "medium", note: "Affects schema design — need final category count before building." },
+          urgency: "medium", note: "Affects schema design for the exercise database — need final category count before building." },
         { q: "Is the 18-sheet Automation Matrix the complete set, or are Team Programming sheets planned?",
           urgency: "medium", note: "Engineering needs to know if the data model covers the full scope." },
       ],
@@ -220,27 +220,27 @@
   </script>
 
   <!-- ============================================================
-    🔧 APP CODE
+    🔌 SUPABASE CONFIG
+    Update PROJECT_SLUG for each new client dashboard.
+    Do not change SUPABASE_URL or SUPABASE_ANON_KEY.
+    ============================================================ -->
+  <script>
+    window.SUPABASE_URL      = 'https://gzpuectetjatqbpcdgqt.supabase.co';
+    window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6cHVlY3RldGphdHFicGNkZ3F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTc3MTMsImV4cCI6MjA4ODI5MzcxM30.KkIr6SSqQtO3aGDtCCxUIBOgbEgjtVeqExlW_Yv-QZ0';
+    window.PROJECT_SLUG      = 'helix-io'; // ← change this per client dashboard
+  </script>
+
+  <!-- ============================================================
+    🔧 APP CODE — no need to edit below this line
     ============================================================ -->
   <script type="text/babel">
     const { useState, useEffect } = React;
     const d = window.PROJECT_DATA;
 
-    // ── Responsive breakpoints ──
-    function useWindowWidth() {
-      const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
-      useEffect(() => {
-        const handler = () => setW(window.innerWidth);
-        window.addEventListener("resize", handler);
-        return () => window.removeEventListener("resize", handler);
-      }, []);
-      return w;
-    }
-
     const STATUS = {
       done:          { label: "Done",        dot: "#059669", badge: "#DCFCE7", badgeText: "#166534" },
       "in-progress": { label: "In Progress", dot: "#2563EB", badge: "#DBEAFE", badgeText: "#1E40AF" },
-      blocked:       { label: "Needs Input", dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
+      blocked:       { label: "Blocked",     dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
       todo:          { label: "To Do",       dot: "#9CA3AF", badge: "#F3F4F6", badgeText: "#6B7280" },
     };
     const PRIORITY = {
@@ -254,7 +254,10 @@
       medium:   { color: "#2563EB", bg: "#EFF6FF", label: "Medium" },
     };
 
-    const TABS = [["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Questions"]];
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    }
 
     function Badge({ color, bg, children }) {
       return (
@@ -277,38 +280,56 @@
       );
     }
 
-    // On mobile: each task is a card. On desktop: a table row.
-    function TaskList({ tasks, isMobile }) {
-      if (isMobile) {
-        return (
-          <div>
-            {tasks.map(t => {
-              const s = STATUS[t.status]; const p = PRIORITY[t.priority];
-              return (
-                <div key={t.id} style={{ padding:"14px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                  <div style={{ display:"flex", alignItems:"flex-start", gap:9, marginBottom: t.blocker ? 6 : 0 }}>
-                    <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                      background:s.dot, marginTop:5, flexShrink:0 }} />
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
-                        textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5, marginBottom:6 }}>
-                        {t.text}
-                      </div>
-                      {t.blocker && (
-                        <div style={{ fontSize:11, color:"#DC2626", marginBottom:6, lineHeight:1.4 }}>⚠ {t.blocker}</div>
-                      )}
-                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                        <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
-                        <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
+    function TaskTable({ tasks, comments = {}, onCommentAdded }) {
+      const [hoveredTask, setHoveredTask]   = useState(null);
+      const [openPanel, setOpenPanel]       = useState(null);
+      const [panelName, setPanelName]       = useState('');
+      const [panelBody, setPanelBody]       = useState('');
+      const [panelError, setPanelError]     = useState('');
+      const [panelLoading, setPanelLoading] = useState(false);
+
+      function openComment(taskId) {
+        setOpenPanel(taskId);
+        setPanelName(''); setPanelBody(''); setPanelError('');
       }
+      function closePanel() {
+        setOpenPanel(null);
+        setPanelName(''); setPanelBody(''); setPanelError('');
+      }
+      async function submitComment(t) {
+        setPanelLoading(true); setPanelError('');
+        try {
+          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
+            method: 'POST',
+            headers: {
+              'apikey': window.SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation',
+            },
+            body: JSON.stringify({
+              project_slug: window.PROJECT_SLUG,
+              item_type: 'task',
+              item_id: String(t.id),
+              item_text: t.text,
+              commenter_name: panelName.trim(),
+              body: panelBody.trim(),
+            }),
+          });
+          if (!res.ok) throw new Error(`Error ${res.status}`);
+          const [newComment] = await res.json();
+          onCommentAdded(newComment);
+          closePanel();
+        } catch(e) {
+          setPanelError('Something went wrong — please try again.');
+          console.error('Comment submit failed:', e);
+        } finally {
+          setPanelLoading(false);
+        }
+      }
+
+      const canSend = panelName.trim() && panelBody.trim() && !panelLoading;
+
       return (
         <table>
           <thead>
@@ -323,30 +344,115 @@
           <tbody>
             {tasks.map(t => {
               const s = STATUS[t.status]; const p = PRIORITY[t.priority];
+              const taskComments  = comments[`task-${t.id}`] || [];
+              const isPanelOpen   = openPanel === t.id;
+              const hasBelowContent = taskComments.length > 0 || isPanelOpen;
               return (
-                <tr key={t.id}>
-                  <td style={{ padding:"11px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                    <div style={{ display:"flex", alignItems:"flex-start", gap:9 }}>
-                      <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                        background:s.dot, marginTop:4, flexShrink:0 }} />
-                      <div>
-                        <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
-                          textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
-                          {t.text}
+                <React.Fragment key={t.id}>
+                  {/* ── Task row ── */}
+                  <tr
+                    onMouseEnter={() => setHoveredTask(t.id)}
+                    onMouseLeave={() => setHoveredTask(null)}
+                    style={{ background: hoveredTask === t.id ? '#FAFBFF' : 'white' }}
+                  >
+                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9" }}>
+                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
+                        <div style={{ display:"flex", alignItems:"flex-start", gap:9, flex:1 }}>
+                          <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
+                            background:s.dot, marginTop:4, flexShrink:0 }} />
+                          <div>
+                            <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
+                              textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
+                              {t.text}
+                            </div>
+                            {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
+                          </div>
                         </div>
-                        {t.blocker && (
-                          <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>
+                        {hoveredTask === t.id && !isPanelOpen && (
+                          <button onClick={() => openComment(t.id)} style={{
+                            background:"none", border:"1px solid #E2E8F0", borderRadius:4,
+                            padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
+                            display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
+                            fontFamily:"inherit" }}>
+                            💬 Note
+                          </button>
                         )}
                       </div>
-                    </div>
-                  </td>
-                  <td style={{ padding:"11px 16px", borderBottom:"1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                    <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
-                  </td>
-                  <td style={{ padding:"11px 16px", borderBottom:"1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                    <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
-                  </td>
-                </tr>
+                    </td>
+                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
+                      <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
+                    </td>
+                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
+                      <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
+                    </td>
+                  </tr>
+
+                  {/* ── Inline comment panel ── */}
+                  {isPanelOpen && (
+                    <tr>
+                      <td colSpan={3} style={{
+                        padding:"0 16px 12px 44px",
+                        borderBottom: taskComments.length > 0 ? "none" : "1px solid #F1F5F9",
+                        background:"#F8FAFC" }}>
+                        <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"14px 16px" }}>
+                          <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
+                            Leave a note on: <strong style={{ color:"#374151" }}>"{t.text}"</strong>
+                          </div>
+                          <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
+                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
+                            <input
+                              value={panelName}
+                              onChange={e => setPanelName(e.target.value)}
+                              placeholder="e.g. Jason"
+                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
+                            />
+                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
+                            <textarea
+                              value={panelBody}
+                              onChange={e => setPanelBody(e.target.value)}
+                              placeholder="Type your note here..."
+                              rows={2}
+                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }}
+                            />
+                          </div>
+                          {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
+                          <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
+                            <button onClick={closePanel} style={{
+                              fontSize:12, padding:"6px 14px", border:"1px solid #E2E8F0",
+                              borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
+                              Cancel
+                            </button>
+                            <button onClick={() => submitComment(t)} disabled={!canSend} style={{
+                              fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
+                              fontFamily:"inherit", fontWeight:600,
+                              cursor: canSend ? "pointer" : "not-allowed",
+                              background: canSend ? "#2563EB" : "#E2E8F0",
+                              color: canSend ? "white" : "#94A3B8" }}>
+                              {panelLoading ? 'Sending...' : 'Send →'}
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+
+                  {/* ── Existing comments ── */}
+                  {taskComments.map((c, ci) => (
+                    <tr key={`c-${ci}`}>
+                      <td colSpan={3} style={{
+                        padding: ci === taskComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
+                        borderBottom: ci === taskComments.length - 1 ? "1px solid #F1F5F9" : "none",
+                        background:"#F8FAFC" }}>
+                        <span style={{ fontSize:12, color:"#64748B" }}>
+                          💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
+                          , {formatDate(c.created_at)} · "{c.body}"
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               );
             })}
           </tbody>
@@ -354,127 +460,350 @@
       );
     }
 
-    // Helix logo mark
-    function Logo() {
+    const REACTIONS = [
+      { key:'agree',    emoji:'👍', label:'Agreed',   defaultBody:'Agreed'   },
+      { key:'question', emoji:'❓', label:'Question',  defaultBody:'Question' },
+      { key:'concern',  emoji:'⚠️', label:'Concern',  defaultBody:'Concern'  },
+    ];
+
+    function DecisionRow({ dec, index, comments, onCommentAdded }) {
+      const [selected, setSelected] = useState(null);
+      const [name, setName]         = useState('');
+      const [note, setNote]         = useState('');
+      const [error, setError]       = useState('');
+      const [loading, setLoading]   = useState(false);
+
+      const decComments = comments[`decision-${index}`] || [];
+      const counts = { agree:0, question:0, concern:0 };
+      decComments.forEach(c => { if (c.reaction) counts[c.reaction]++; });
+      const notes = decComments.filter(c => !REACTIONS.map(r=>r.defaultBody).includes(c.body));
+
+      function pickReaction(key) {
+        setSelected(key === selected ? null : key);
+        setName(''); setNote(''); setError('');
+      }
+
+      async function submitReaction() {
+        setLoading(true); setError('');
+        const r = REACTIONS.find(r => r.key === selected);
+        try {
+          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
+            method: 'POST',
+            headers: {
+              'apikey': window.SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation',
+            },
+            body: JSON.stringify({
+              project_slug: window.PROJECT_SLUG,
+              item_type: 'decision',
+              item_id: String(index),
+              item_text: dec.title,
+              commenter_name: name.trim(),
+              body: note.trim() || r.defaultBody,
+              reaction: selected,
+            }),
+          });
+          if (!res.ok) throw new Error(`Error ${res.status}`);
+          const [newComment] = await res.json();
+          onCommentAdded(newComment);
+          setSelected(null); setName(''); setNote('');
+        } catch(e) {
+          setError('Something went wrong — please try again.');
+          console.error('Reaction submit failed:', e);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      const canConfirm = name.trim() && !loading;
+
       return (
-        <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB", flexShrink:0,
-          display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-            <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-            <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-            <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-          </svg>
+        <div style={{ borderBottom:"1px solid #F1F5F9" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"130px 1fr", padding:"16px 18px", gap:16 }}>
+            <span style={{ fontSize:12, color:"#94A3B8", paddingTop:1 }}>{dec.date}</span>
+            <div>
+              <div style={{ fontSize:13, fontWeight:600, color:"#0F172A", marginBottom:4 }}>{dec.title}</div>
+              <div style={{ fontSize:12, color:"#64748B", lineHeight:1.6, marginBottom:12 }}>{dec.detail}</div>
+
+              {/* Notes from reactions that included custom text */}
+              {notes.map((c, ci) => (
+                <div key={ci} style={{ fontSize:12, color:"#64748B", marginBottom:6 }}>
+                  {REACTIONS.find(r=>r.key===c.reaction)?.emoji || '💬'}{' '}
+                  <strong style={{ color:"#374151" }}>{c.commenter_name}</strong>
+                  , {formatDate(c.created_at)} · "{c.body}"
+                </div>
+              ))}
+
+              {/* Reaction buttons */}
+              <div style={{ display:"flex", gap:8, marginTop: notes.length ? 10 : 0 }}>
+                {REACTIONS.map(r => {
+                  const isActive = selected === r.key;
+                  return (
+                    <button key={r.key} onClick={() => pickReaction(r.key)} style={{
+                      fontSize:12, padding:"5px 12px", borderRadius:6, fontFamily:"inherit",
+                      border: isActive ? '1px solid #2563EB' : '1px solid #E2E8F0',
+                      background: isActive ? '#EFF6FF' : 'white',
+                      color: isActive ? '#2563EB' : '#374151',
+                      fontWeight: isActive ? 600 : 400,
+                      cursor:"pointer", transition:"all .1s" }}>
+                      {r.emoji} {r.label}{counts[r.key] > 0 ? ` (${counts[r.key]})` : ''}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Confirm form — appears when a reaction is selected */}
+              {selected && (
+                <div style={{ marginTop:10, padding:"12px 14px", background:"#F8FAFC",
+                  borderRadius:8, border:"1px solid #E2E8F0" }}>
+                  <div style={{ fontSize:12, color:"#64748B", marginBottom:8 }}>
+                    {REACTIONS.find(r=>r.key===selected).emoji} {REACTIONS.find(r=>r.key===selected).label} — confirm your name and add an optional note
+                  </div>
+                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                    <input
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      placeholder="Your name"
+                      style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                        borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", width:160 }}
+                    />
+                    <input
+                      value={note}
+                      onChange={e => setNote(e.target.value)}
+                      placeholder="Add a note (optional)"
+                      style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                        borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", flex:1, minWidth:160 }}
+                    />
+                  </div>
+                  {error && <div style={{ fontSize:12, color:"#DC2626", marginTop:6 }}>⚠ {error}</div>}
+                  <div style={{ display:"flex", gap:8, marginTop:8 }}>
+                    <button onClick={() => { setSelected(null); setName(''); setNote(''); }} style={{
+                      fontSize:12, padding:"5px 12px", border:"1px solid #E2E8F0",
+                      borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
+                      Cancel
+                    </button>
+                    <button onClick={submitReaction} disabled={!canConfirm} style={{
+                      fontSize:12, padding:"5px 12px", border:"none", borderRadius:6,
+                      fontFamily:"inherit", fontWeight:600,
+                      cursor: canConfirm ? "pointer" : "not-allowed",
+                      background: canConfirm ? "#2563EB" : "#E2E8F0",
+                      color: canConfirm ? "white" : "#94A3B8" }}>
+                      {loading ? 'Submitting...' : 'Confirm →'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       );
     }
 
-    function PhaseBadge() {
+    function QuestionRow({ item, index, comments, onCommentAdded }) {
+      const [name, setName]       = useState('');
+      const [answer, setAnswer]   = useState('');
+      const [error, setError]     = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const u = URGENCY[item.urgency];
+      const qComments = comments[`question-${index}`] || [];
+      const canSubmit = name.trim() && answer.trim() && !loading;
+
+      async function submitAnswer() {
+        setLoading(true); setError('');
+        try {
+          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
+            method: 'POST',
+            headers: {
+              'apikey': window.SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation',
+            },
+            body: JSON.stringify({
+              project_slug: window.PROJECT_SLUG,
+              item_type: 'question',
+              item_id: String(index),
+              item_text: item.q,
+              commenter_name: name.trim(),
+              body: answer.trim(),
+            }),
+          });
+          if (!res.ok) throw new Error(`Error ${res.status}`);
+          const [newComment] = await res.json();
+          onCommentAdded(newComment);
+          setName(''); setAnswer('');
+        } catch(e) {
+          setError('Something went wrong — please try again.');
+          console.error('Answer submit failed:', e);
+        } finally {
+          setLoading(false);
+        }
+      }
+
       return (
-        <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
-          border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6, flexShrink:0 }}>
-          <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
-          <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
-            Phase {d.currentPhase+1}: {d.phases[d.currentPhase]}
-          </span>
+        <div style={{ borderBottom:"1px solid #F1F5F9" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", padding:"16px 18px", gap:14, alignItems:"start" }}>
+            <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
+            <div>
+              <div style={{ fontSize:13, color:"#0F172A", fontWeight:500, marginBottom:4 }}>{item.q}</div>
+              <div style={{ fontSize:12, color:"#64748B", lineHeight:1.5, marginBottom:12 }}>{item.note}</div>
+
+              {/* Existing answers */}
+              {qComments.map((c, ci) => (
+                <div key={ci} style={{ fontSize:12, marginBottom:10, padding:"10px 12px",
+                  background:"#F8FAFC", borderRadius:6, borderLeft:"2px solid #E2E8F0" }}>
+                  <span style={{ color:"#94A3B8" }}>
+                    <strong style={{ color:"#374151" }}>{c.commenter_name}</strong>, {formatDate(c.created_at)}
+                  </span>
+                  <div style={{ marginTop:4, color:"#1E293B", lineHeight:1.6, fontSize:13 }}>{c.body}</div>
+                </div>
+              ))}
+
+              {/* Answer form */}
+              <textarea
+                value={answer}
+                onChange={e => setAnswer(e.target.value)}
+                placeholder="Type your answer here..."
+                rows={2}
+                style={{ width:"100%", fontSize:13, padding:"8px 10px", border:"1px solid #E2E8F0",
+                  borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical",
+                  color:"#1E293B", marginBottom:8, display:"block" }}
+              />
+              <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                <input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Your name"
+                  style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                    borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", width:160 }}
+                />
+                <button onClick={submitAnswer} disabled={!canSubmit} style={{
+                  fontSize:12, padding:"6px 16px", border:"none", borderRadius:6,
+                  fontFamily:"inherit", fontWeight:600,
+                  cursor: canSubmit ? "pointer" : "not-allowed",
+                  background: canSubmit ? "#2563EB" : "#E2E8F0",
+                  color: canSubmit ? "white" : "#94A3B8" }}>
+                  {loading ? 'Submitting...' : 'Submit Answer →'}
+                </button>
+                {error && <span style={{ fontSize:12, color:"#DC2626" }}>⚠ {error}</span>}
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
 
     function App() {
-      const [sel, setSel] = useState("product");
-      const [tab, setTab] = useState("overview");
-      const width         = useWindowWidth();
-      const isMobile      = width < 640;
-      const isTablet      = width < 900;
-      const selected      = d.disciplines.find(x => x.id === sel);
-      const total         = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
-      const done          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
-      const inProg        = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
-      const blocked       = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
-      const pct           = Math.round((done/total)*100);
-      const pad           = isMobile ? "16px" : "28px";
+      const [sel, setSel]           = useState("product");
+      const [tab, setTab]           = useState("overview");
+      const [comments, setComments] = useState({});
+
+      useEffect(() => {
+        async function fetchComments() {
+          try {
+            const res = await fetch(
+              `${window.SUPABASE_URL}/rest/v1/comments` +
+              `?project_slug=eq.${window.PROJECT_SLUG}&order=created_at.asc`,
+              { headers: {
+                  'apikey': window.SUPABASE_ANON_KEY,
+                  'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+              }}
+            );
+            if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+            const data = await res.json();
+            const grouped = {};
+            data.forEach(c => {
+              const key = `${c.item_type}-${c.item_id}`;
+              if (!grouped[key]) grouped[key] = [];
+              grouped[key].push(c);
+            });
+            setComments(grouped);
+          } catch (e) {
+            console.error('Comments fetch failed:', e);
+          }
+        }
+        fetchComments();
+      }, []);
+
+      function onCommentAdded(newComment) {
+        setComments(prev => {
+          const key = `${newComment.item_type}-${newComment.item_id}`;
+          return { ...prev, [key]: [...(prev[key] || []), newComment] };
+        });
+      }
+
+      const selected        = d.disciplines.find(x => x.id === sel);
+      const total           = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
+      const done            = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
+      const inProg          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
+      const blocked         = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
+      const pct             = total > 0 ? Math.round((done/total)*100) : 0;
 
       return (
         <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter',system-ui,sans-serif" }}>
 
           {/* ── TOP BAR ── */}
-          {isMobile ? (
-            // Mobile: 2-row header
-            <div style={{ background:"white", borderBottom:"1px solid #E2E8F0",
-              position:"sticky", top:0, zIndex:10 }}>
-              {/* Row 1: logo + name + phase badge */}
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
-                padding:"10px 16px", gap:10 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:9, minWidth:0 }}>
-                  <Logo />
-                  <span style={{ fontSize:13, fontWeight:700, color:"#0F172A",
-                    overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                    Helix
-                  </span>
+          <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
+            display:"flex", alignItems:"center", justifyContent:"space-between",
+            height:56, position:"sticky", top:0, zIndex:10 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:9 }}>
+                <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB",
+                  display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+                    <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+                    <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+                    <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+                  </svg>
                 </div>
-                <PhaseBadge />
+                <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
               </div>
-              {/* Row 2: scrollable nav tabs */}
-              <div className="tab-scroll" style={{ borderTop:"1px solid #F1F5F9", paddingTop:4, paddingBottom:4 }}>
-                {TABS.map(([id,label])=>(
+              <span style={{ color:"#E2E8F0" }}>|</span>
+              <div style={{ display:"flex", gap:2 }}>
+                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"]].map(([id,label])=>(
                   <button key={id} onClick={()=>setTab(id)} style={{
                     background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
-                    padding:"7px 14px", borderRadius:6, fontSize:13, whiteSpace:"nowrap",
+                    padding:"6px 12px", borderRadius:6, fontSize:13,
                     fontWeight: tab===id?600:400,
-                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit", flexShrink:0 }}>
+                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
                     {label}
                   </button>
                 ))}
               </div>
             </div>
-          ) : (
-            // Desktop: single-row header
-            <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
-              display:"flex", alignItems:"center", justifyContent:"space-between",
-              height:56, position:"sticky", top:0, zIndex:10 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:20 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:9 }}>
-                  <Logo />
-                  <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
-                </div>
-                <span style={{ color:"#E2E8F0" }}>|</span>
-                <div style={{ display:"flex", gap:2 }}>
-                  {TABS.map(([id,label])=>(
-                    <button key={id} onClick={()=>setTab(id)} style={{
-                      background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
-                      padding:"6px 12px", borderRadius:6, fontSize:13,
-                      fontWeight: tab===id?600:400,
-                      color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
-                <PhaseBadge />
+            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+              <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
+              <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
+                border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6 }}>
+                <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
+                <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
+                  Phase {d.currentPhase+1}: {d.phases[d.currentPhase]}
+                </span>
               </div>
             </div>
-          )}
+          </div>
 
-          <div style={{ maxWidth:1100, margin:"0 auto", padding:pad }}>
+          <div style={{ maxWidth:1100, margin:"0 auto", padding:"28px" }}>
 
             {/* ── OVERVIEW ── */}
             {tab==="overview" && <>
 
               {/* Phase bar */}
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                padding:"14px 16px", marginBottom:16,
-                display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" }}>
-                {!isMobile && <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>}
-                <div style={{ display:"flex", flex:1, gap:8, minWidth:200 }}>
+                padding:"16px 20px", marginBottom:20,
+                display:"flex", alignItems:"center", gap:20 }}>
+                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>
+                <div style={{ display:"flex", flex:1, gap:8 }}>
                   {d.phases.map((p,i)=>(
                     <div key={p} style={{ flex:1 }}>
                       <div style={{ height:5, borderRadius:3,
                         background: i<=d.currentPhase?"#2563EB":"#E2E8F0",
                         opacity: i<d.currentPhase?0.4:1 }} />
-                      <div style={{ fontSize:isMobile?10:11, marginTop:5,
+                      <div style={{ fontSize:11, marginTop:5,
                         color:i===d.currentPhase?"#2563EB":"#94A3B8",
                         fontWeight:i===d.currentPhase?600:400 }}>{p}</div>
                     </div>
@@ -482,218 +811,137 @@
                 </div>
               </div>
 
-              {/* Stat cards — 2 cols on mobile, 3 on tablet, 5 on desktop */}
-              <div style={{
-                display:"grid",
-                gridTemplateColumns: isMobile ? "repeat(2,1fr)" : isTablet ? "repeat(3,1fr)" : "repeat(5,1fr)",
-                gap:10, marginBottom:16 }}>
+              {/* Stat cards */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12, marginBottom:20 }}>
                 {[
                   { label:"Total Tasks",  value:total,     color:"#1E293B", bg:"white",   border:"#E2E8F0" },
                   { label:"Done",         value:done,      color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
                   { label:"In Progress",  value:inProg,    color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
-                  { label:"Needs Input",  value:blocked,   color:"#DC2626", bg:"#FEF2F2", border:"#FECACA" },
+                  { label:"Blocked",      value:blocked,   color:"#DC2626", bg:"#FEF2F2", border:"#FECACA" },
                   { label:"Overall",      value:`${pct}%`, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
-                ].map((s,idx)=>(
-                  <div key={s.label} style={{
-                    background:s.bg, border:`1px solid ${s.border}`, borderRadius:10, padding:"14px 16px",
-                    // On mobile: "Overall" spans full width as the 5th card
-                    gridColumn: isMobile && idx===4 ? "1 / -1" : undefined }}>
-                    <div style={{ fontSize:isMobile?22:26, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
+                ].map(s=>(
+                  <div key={s.label} style={{ background:s.bg, border:`1px solid ${s.border}`,
+                    borderRadius:10, padding:"16px 18px" }}>
+                    <div style={{ fontSize:26, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
                     <div style={{ fontSize:11, color:"#94A3B8", marginTop:5, fontWeight:500 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Disciplines — table on desktop, cards on mobile */}
+              {/* Disciplines table */}
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                overflow:"hidden", marginBottom:16 }}>
-                <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
+                overflow:"hidden", marginBottom:20 }}>
+                <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
                   display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Disciplines</span>
-                  <span style={{ fontSize:11, color:"#94A3B8" }}>Tap to see tasks ↓</span>
+                  <span style={{ fontSize:11, color:"#94A3B8" }}>Click a row to see tasks ↓</span>
                 </div>
-
-                {isMobile ? (
-                  // Mobile: discipline cards
-                  <div>
+                <table>
+                  <thead>
+                    <tr style={{ background:"#F8FAFC" }}>
+                      {["Discipline","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
+                        <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
+                          fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
+                          letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
                     {d.disciplines.map(disc=>{
                       const dDone  = disc.tasks.filter(t=>t.status==="done").length;
                       const dProg  = disc.tasks.filter(t=>t.status==="in-progress").length;
                       const dBlock = disc.tasks.filter(t=>t.status==="blocked").length;
                       const isSel  = sel===disc.id;
                       return (
-                        <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                          padding:"14px 16px", cursor:"pointer",
-                          background:isSel?disc.lightColor:"white",
+                        <tr key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                          cursor:"pointer", background:isSel?disc.lightColor:"white",
                           borderLeft:`3px solid ${isSel?disc.color:"transparent"}`,
-                          borderBottom:"1px solid #F1F5F9", transition:"background .15s" }}>
-                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                          transition:"background .15s" }}>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
                             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                              <div style={{ width:26, height:26, borderRadius:6,
+                              <div style={{ width:28, height:28, borderRadius:6,
                                 background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
                                 display:"flex", alignItems:"center", justifyContent:"center",
-                                fontSize:11, fontWeight:700, color:disc.color }}>
+                                fontSize:12, fontWeight:700, color:disc.color }}>
                                 {disc.label[0]}
                               </div>
                               <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
                             </div>
-                            <span style={{ fontSize:12, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
-                          </div>
-                          <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
-                          {(dProg > 0 || dBlock > 0) && (
-                            <div style={{ display:"flex", gap:6, marginTop:8 }}>
-                              {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
-                              {dBlock>0 && <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} need input</Badge>}
-                            </div>
-                          )}
-                        </div>
+                          </td>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
+                            <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
+                          </td>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", textAlign:"center" }}>
+                            <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.tasks.length}</span>
+                          </td>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                            {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
+                          </td>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                            {dBlock>0
+                              ? <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} blocked</Badge>
+                              : <span style={{ fontSize:11, color:"#CBD5E1" }}>—</span>}
+                          </td>
+                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
+                            <span style={{ fontSize:12, color:"#94A3B8" }}>{disc.owner}</span>
+                          </td>
+                        </tr>
                       );
                     })}
-                  </div>
-                ) : (
-                  // Desktop: full table
-                  <div className="table-scroll">
-                    <table>
-                      <thead>
-                        <tr style={{ background:"#F8FAFC" }}>
-                          {["Discipline","Progress","Tasks","Active","Needs Input","Owner"].map(h=>(
-                            <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
-                              fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
-                              letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0", whiteSpace:"nowrap" }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {d.disciplines.map(disc=>{
-                          const dDone  = disc.tasks.filter(t=>t.status==="done").length;
-                          const dProg  = disc.tasks.filter(t=>t.status==="in-progress").length;
-                          const dBlock = disc.tasks.filter(t=>t.status==="blocked").length;
-                          const isSel  = sel===disc.id;
-                          return (
-                            <tr key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                              cursor:"pointer", background:isSel?disc.lightColor:"white",
-                              borderLeft:`3px solid ${isSel?disc.color:"transparent"}`,
-                              transition:"background .15s" }}>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                                  <div style={{ width:28, height:28, borderRadius:6,
-                                    background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
-                                    display:"flex", alignItems:"center", justifyContent:"center",
-                                    fontSize:12, fontWeight:700, color:disc.color }}>
-                                    {disc.label[0]}
-                                  </div>
-                                  <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
-                                </div>
-                              </td>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
-                                <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
-                              </td>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", textAlign:"center" }}>
-                                <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.tasks.length}</span>
-                              </td>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                                {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
-                              </td>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                                {dBlock>0
-                                  ? <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} items</Badge>
-                                  : <span style={{ fontSize:11, color:"#CBD5E1" }}>—</span>}
-                              </td>
-                              <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                                <span style={{ fontSize:12, color:"#94A3B8" }}>{disc.owner}</span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                  </tbody>
+                </table>
               </div>
 
               {/* Task detail */}
               {selected && (
                 <div style={{ background:"white", border:`1px solid ${selected.borderColor}`,
                   borderRadius:10, overflow:"hidden" }}>
-                  <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
+                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
                     background:selected.lightColor, display:"flex", alignItems:"center", gap:10 }}>
-                    <div style={{ width:26, height:26, borderRadius:6, background:"white",
+                    <div style={{ width:28, height:28, borderRadius:6, background:"white",
                       border:`1px solid ${selected.borderColor}`,
                       display:"flex", alignItems:"center", justifyContent:"center",
-                      fontSize:11, fontWeight:700, color:selected.color }}>{selected.label[0]}</div>
+                      fontSize:12, fontWeight:700, color:selected.color }}>{selected.label[0]}</div>
                     <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>{selected.label} Tasks</span>
                     <span style={{ fontSize:11, color:"#94A3B8" }}>{selected.tasks.length} total</span>
                   </div>
-                  <TaskList tasks={selected.tasks} isMobile={isMobile} />
+                  <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
                 </div>
               )}
             </>}
 
-            {/* ── TASKS TAB ── */}
+            {/* ── TASKS ── */}
             {tab==="tasks" && (
-              isMobile ? (
-                // Mobile: pill nav at top, full-width task list below
-                <div>
-                  <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:12,
-                    scrollbarWidth:"none", WebkitOverflowScrolling:"touch" }}>
-                    {d.disciplines.map(disc=>{
-                      const dDone = disc.tasks.filter(t=>t.status==="done").length;
-                      const isSel = sel===disc.id;
-                      return (
-                        <button key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                          flexShrink:0, padding:"7px 14px", borderRadius:20, cursor:"pointer",
-                          border:`1px solid ${isSel?disc.color:disc.borderColor}`,
-                          background:isSel?disc.lightColor:"white", fontFamily:"inherit",
-                          fontSize:13, fontWeight:isSel?600:400,
-                          color:isSel?disc.color:"#374151" }}>
-                          {disc.label} <span style={{ fontSize:11, color:"#94A3B8", marginLeft:4 }}>{dDone}/{disc.tasks.length}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {selected && (
-                    <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10, overflow:"hidden" }}>
-                      <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9",
-                        background:selected.lightColor }}>
-                        <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
+              <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:16 }}>
+                <div style={{ background:"white", border:"1px solid #E2E8F0",
+                  borderRadius:10, overflow:"hidden", alignSelf:"start" }}>
+                  {d.disciplines.map(disc=>{
+                    const dDone = disc.tasks.filter(t=>t.status==="done").length;
+                    return (
+                      <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
+                        padding:"10px 14px", cursor:"pointer",
+                        display:"flex", justifyContent:"space-between", alignItems:"center",
+                        background:sel===disc.id?disc.lightColor:"white",
+                        borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
+                        borderBottom:"1px solid #F1F5F9" }}>
+                        <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
+                          color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
+                        <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
                       </div>
-                      <TaskList tasks={selected.tasks} isMobile={true} />
-                    </div>
-                  )}
+                    );
+                  })}
                 </div>
-              ) : (
-                // Desktop: sidebar + content
-                <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:16 }}>
+                {selected && (
                   <div style={{ background:"white", border:"1px solid #E2E8F0",
-                    borderRadius:10, overflow:"hidden", alignSelf:"start" }}>
-                    {d.disciplines.map(disc=>{
-                      const dDone = disc.tasks.filter(t=>t.status==="done").length;
-                      return (
-                        <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                          padding:"10px 14px", cursor:"pointer",
-                          display:"flex", justifyContent:"space-between", alignItems:"center",
-                          background:sel===disc.id?disc.lightColor:"white",
-                          borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
-                          borderBottom:"1px solid #F1F5F9" }}>
-                          <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
-                            color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
-                          <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {selected && (
-                    <div style={{ background:"white", border:"1px solid #E2E8F0",
-                      borderRadius:10, overflow:"hidden" }}>
-                      <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                        background:selected.lightColor }}>
-                        <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
-                      </div>
-                      <TaskList tasks={selected.tasks} isMobile={false} />
+                    borderRadius:10, overflow:"hidden" }}>
+                    <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                      background:selected.lightColor }}>
+                      <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
                     </div>
-                  )}
-                </div>
-              )
+                    <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
+                  </div>
+                )}
+              </div>
             )}
 
             {/* ── DECISIONS ── */}
@@ -703,22 +951,13 @@
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Decision Log</span>
                   <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>{d.decisions.length} recorded</span>
                 </div>
-                {d.decisions.map((dec,i)=>(
-                  <div key={i} style={{
-                    padding: isMobile ? "14px 16px" : "16px 18px",
-                    borderBottom:"1px solid #F8FAFC",
-                    // Stack on mobile, side-by-side on desktop
-                    display: isMobile ? "block" : "grid",
-                    gridTemplateColumns: "130px 1fr",
-                    gap:16 }}>
-                    <span style={{ display:"block", fontSize:12, color:"#94A3B8",
-                      marginBottom: isMobile ? 4 : 0, paddingTop: isMobile ? 0 : 1 }}>{dec.date}</span>
-                    <div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#0F172A", marginBottom:4 }}>{dec.title}</div>
-                      <div style={{ fontSize:12, color:"#64748B", lineHeight:1.6 }}>{dec.detail}</div>
-                    </div>
-                  </div>
+                {d.decisions.map((dec, i) => (
+                  <DecisionRow key={i} dec={dec} index={i} comments={comments} onCommentAdded={onCommentAdded} />
                 ))}
+                <div style={{ padding:"12px 18px", background:"#F8FAFC",
+                  borderTop:"1px solid #E2E8F0", fontSize:12, color:"#94A3B8" }}>
+                  💡 After each client call, Cowork will automatically log new decisions here from the transcript.
+                </div>
               </div>
             )}
 
@@ -728,37 +967,17 @@
                 <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9" }}>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Open Questions</span>
                   <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                    {d.openQuestions.length} questions need answers before or during build
+                    {d.openQuestions.length} need answers before engineering begins
                   </span>
                 </div>
-                {d.openQuestions.map((item,i)=>{
-                  const u = URGENCY[item.urgency];
-                  return (
-                    <div key={i} style={{
-                      padding: isMobile ? "14px 16px" : "14px 18px",
-                      borderBottom:"1px solid #F8FAFC",
-                      display: isMobile ? "block" : "grid",
-                      gridTemplateColumns:"80px 1fr",
-                      gap:14, alignItems:"start" }}>
-                      <div style={{ marginBottom: isMobile ? 8 : 0 }}>
-                        <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
-                      </div>
-                      <div>
-                        <div style={{ fontSize:13, color:"#0F172A", fontWeight:500, marginBottom:4 }}>{item.q}</div>
-                        <div style={{ fontSize:12, color:"#64748B", lineHeight:1.5 }}>{item.note}</div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {d.openQuestions.map((item, i) => (
+                  <QuestionRow key={i} item={item} index={i} comments={comments} onCommentAdded={onCommentAdded} />
+                ))}
               </div>
             )}
 
           </div>
 
-          {/* ── FOOTER ── */}
-          <div style={{ textAlign:"center", padding:"24px 0 32px", fontSize:12, color:"#CBD5E1" }}>
-            Helix.io App · Dashboard managed by Hayden · Updated {d.lastUpdated}
-          </div>
         </div>
       );
     }
