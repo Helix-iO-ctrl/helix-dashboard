@@ -445,6 +445,12 @@
                   const groupAsset = group.find(g => g.groupAsset)?.groupAsset;
                   const groupLabel = group.find(g => g.groupLabel)?.groupLabel || "Shared deliverable";
 
+                  // Collect all comments for tasks in this group + group-level comments
+                  const groupComments = comments[`group-${t.groupId}`] || [];
+                  const allTaskComments = {};
+                  group.forEach(g => { allTaskComments[g.id] = comments[`task-${g.id}`] || []; });
+                  const isGroupPanelOpen = openPanel === `group-${t.groupId}`;
+
                   rows.push(
                     <React.Fragment key={`group-${t.groupId}`}>
                       <tr>
@@ -461,35 +467,102 @@
                               </span>
                             </div>
 
-                            {/* Stacked task items */}
+                            {/* Stacked task items — each with hover note */}
                             {group.map((g, gi) => {
                               const gs = STATUS[g.status]; const gp = PRIORITY[g.priority];
+                              const taskNotes = allTaskComments[g.id] || [];
+                              const isTaskPanelOpen = openPanel === g.id;
                               return (
-                                <div key={g.id} style={{
-                                  display:"flex", alignItems:"center", justifyContent:"space-between",
-                                  padding:"6px 0",
-                                  borderTop: gi > 0 ? "1px solid #F1F5F9" : "none" }}>
-                                  <div style={{ display:"flex", alignItems:"center", gap:8, flex:1 }}>
-                                    <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                                      background:gs.dot, flexShrink:0 }} />
-                                    <span style={{ fontSize:13,
-                                      color: g.status==="done" ? "#94A3B8" : "#1E293B",
-                                      textDecoration: g.status==="done" ? "line-through" : "none",
-                                      lineHeight:1.5 }}>
-                                      {g.text}
-                                    </span>
+                                <div key={g.id}>
+                                  <div
+                                    onMouseEnter={() => setHoveredTask(g.id)}
+                                    onMouseLeave={() => setHoveredTask(null)}
+                                    style={{
+                                      display:"flex", alignItems:"center", justifyContent:"space-between",
+                                      padding:"6px 0",
+                                      borderTop: gi > 0 ? "1px solid #F1F5F9" : "none",
+                                      background: hoveredTask === g.id ? "#FAFBFF" : "transparent",
+                                      borderRadius:4, margin:"0 -4px", padding:"6px 4px" }}>
+                                    <div style={{ display:"flex", alignItems:"center", gap:8, flex:1 }}>
+                                      <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
+                                        background:gs.dot, flexShrink:0 }} />
+                                      <span style={{ fontSize:13,
+                                        color: g.status==="done" ? "#94A3B8" : "#1E293B",
+                                        textDecoration: g.status==="done" ? "line-through" : "none",
+                                        lineHeight:1.5 }}>
+                                        {g.text}
+                                      </span>
+                                    </div>
+                                    <div style={{ display:"flex", gap:6, flexShrink:0, marginLeft:12, alignItems:"center" }}>
+                                      {hoveredTask === g.id && !isTaskPanelOpen && (
+                                        <button onClick={() => openComment(g.id)} style={{
+                                          background:"none", border:"1px solid #E2E8F0", borderRadius:4,
+                                          padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
+                                          display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap",
+                                          fontFamily:"inherit" }}>
+                                          💬 Note
+                                        </button>
+                                      )}
+                                      <Badge color={gp.color} bg={gp.bg}>{gp.label}</Badge>
+                                      <Badge color={gs.badgeText} bg={gs.badge}>{gs.label}</Badge>
+                                    </div>
                                   </div>
-                                  <div style={{ display:"flex", gap:6, flexShrink:0, marginLeft:12 }}>
-                                    <Badge color={gp.color} bg={gp.bg}>{gp.label}</Badge>
-                                    <Badge color={gs.badgeText} bg={gs.badge}>{gs.label}</Badge>
-                                  </div>
+
+                                  {/* Per-task inline comment panel */}
+                                  {isTaskPanelOpen && (
+                                    <div style={{ padding:"8px 0 8px 15px" }}>
+                                      <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"12px 14px" }}>
+                                        <div style={{ fontSize:12, color:"#64748B", marginBottom:10 }}>
+                                          Note on: <strong style={{ color:"#374151" }}>"{g.text}"</strong>
+                                        </div>
+                                        <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
+                                          <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
+                                          <input value={panelName} onChange={e => setPanelName(e.target.value)}
+                                            placeholder="e.g. Jason" style={{ fontSize:13, padding:"6px 10px",
+                                            border:"1px solid #E2E8F0", borderRadius:6, outline:"none",
+                                            fontFamily:"inherit", color:"#1E293B" }} />
+                                          <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
+                                          <textarea value={panelBody} onChange={e => setPanelBody(e.target.value)}
+                                            placeholder="Type your note here..." rows={2}
+                                            style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                            borderRadius:6, outline:"none", fontFamily:"inherit",
+                                            resize:"vertical", color:"#1E293B" }} />
+                                        </div>
+                                        {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
+                                        <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:10 }}>
+                                          <button onClick={closePanel} style={{ fontSize:12, padding:"6px 14px",
+                                            border:"1px solid #E2E8F0", borderRadius:6, background:"white",
+                                            color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>Cancel</button>
+                                          <button onClick={() => submitComment(g)} disabled={!canSend} style={{
+                                            fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
+                                            fontFamily:"inherit", fontWeight:600,
+                                            cursor: canSend ? "pointer" : "not-allowed",
+                                            background: canSend ? BRAND : "#E2E8F0",
+                                            color: canSend ? "white" : "#94A3B8" }}>
+                                            {panelLoading ? 'Sending...' : 'Send →'}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Per-task existing comments */}
+                                  {taskNotes.map((c, ci) => (
+                                    <div key={`tc-${ci}`} style={{ padding:"2px 0 2px 15px" }}>
+                                      <span style={{ fontSize:12, color:"#64748B" }}>
+                                        💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
+                                        , {formatDate(c.created_at)} · "{c.body}"
+                                      </span>
+                                    </div>
+                                  ))}
                                 </div>
                               );
                             })}
 
-                            {/* Shared asset button — one for the whole group */}
-                            {groupAsset && (
-                              <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #F1F5F9" }}>
+                            {/* Shared asset + group-level note — one for the whole group */}
+                            <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #F1F5F9",
+                              display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
+                              {groupAsset && (
                                 <button onClick={() => openAsset(groupAsset)} style={{
                                   background:"none", border:`1px solid ${BRAND}`,
                                   borderRadius:5, padding:"4px 12px", fontSize:11, color:BRAND,
@@ -503,8 +576,89 @@
                                   )}
                                   View asset →
                                 </button>
+                              )}
+                              {!isGroupPanelOpen && (
+                                <button onClick={() => openComment(`group-${t.groupId}`)} style={{
+                                  background:"none", border:"1px solid #E2E8F0", borderRadius:5,
+                                  padding:"4px 12px", fontSize:11, color:"#64748B", cursor:"pointer",
+                                  display:"inline-flex", alignItems:"center", gap:5,
+                                  fontFamily:"inherit" }}>
+                                  💬 Note on deliverable
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Group-level comment panel */}
+                            {isGroupPanelOpen && (
+                              <div style={{ marginTop:10 }}>
+                                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"12px 14px" }}>
+                                  <div style={{ fontSize:12, color:"#64748B", marginBottom:10 }}>
+                                    Note on deliverable: <strong style={{ color:"#374151" }}>"{groupLabel}"</strong>
+                                  </div>
+                                  <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
+                                    <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
+                                    <input value={panelName} onChange={e => setPanelName(e.target.value)}
+                                      placeholder="e.g. Jason" style={{ fontSize:13, padding:"6px 10px",
+                                      border:"1px solid #E2E8F0", borderRadius:6, outline:"none",
+                                      fontFamily:"inherit", color:"#1E293B" }} />
+                                    <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
+                                    <textarea value={panelBody} onChange={e => setPanelBody(e.target.value)}
+                                      placeholder="Overall feedback on this deliverable..." rows={2}
+                                      style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                      borderRadius:6, outline:"none", fontFamily:"inherit",
+                                      resize:"vertical", color:"#1E293B" }} />
+                                  </div>
+                                  {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
+                                  <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:10 }}>
+                                    <button onClick={closePanel} style={{ fontSize:12, padding:"6px 14px",
+                                      border:"1px solid #E2E8F0", borderRadius:6, background:"white",
+                                      color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>Cancel</button>
+                                    <button onClick={() => {
+                                      // Submit as group-level comment
+                                      setPanelLoading(true); setPanelError('');
+                                      fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
+                                        method: 'POST',
+                                        headers: {
+                                          'apikey': window.SUPABASE_ANON_KEY,
+                                          'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+                                          'Content-Type': 'application/json',
+                                          'Prefer': 'return=representation',
+                                        },
+                                        body: JSON.stringify({
+                                          project_slug: window.PROJECT_SLUG,
+                                          item_type: 'group',
+                                          item_id: t.groupId,
+                                          item_text: groupLabel,
+                                          commenter_name: panelName.trim(),
+                                          body: panelBody.trim(),
+                                        }),
+                                      })
+                                      .then(res => { if (!res.ok) throw new Error(`Error ${res.status}`); return res.json(); })
+                                      .then(([newComment]) => { onCommentAdded(newComment); closePanel(); })
+                                      .catch(() => { setPanelError('Something went wrong — please try again.'); })
+                                      .finally(() => setPanelLoading(false));
+                                    }} disabled={!canSend} style={{
+                                      fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
+                                      fontFamily:"inherit", fontWeight:600,
+                                      cursor: canSend ? "pointer" : "not-allowed",
+                                      background: canSend ? BRAND : "#E2E8F0",
+                                      color: canSend ? "white" : "#94A3B8" }}>
+                                      {panelLoading ? 'Sending...' : 'Send →'}
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
                             )}
+
+                            {/* Group-level existing comments */}
+                            {groupComments.map((c, ci) => (
+                              <div key={`gc-${ci}`} style={{ marginTop: ci === 0 ? 8 : 4 }}>
+                                <span style={{ fontSize:12, color:"#64748B" }}>
+                                  💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
+                                  , {formatDate(c.created_at)} · "{c.body}"
+                                </span>
+                              </div>
+                            ))}
                           </div>
                         </td>
                       </tr>
