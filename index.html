@@ -188,6 +188,26 @@
       // Each entry: { week, dateRange, pct, done, blockers, wins, nextUp, snapshotUrl }
       weeklyUpdates: [
         {
+          week: 1,
+          dateRange: "Feb 24 – Feb 27",
+          pct: 10,
+          done: 5,
+          blockers: 1,
+          wins: [
+            "Full competitive analysis completed across 7 platforms — clear differentiation confirmed",
+            "North star metrics defined — weekly active clients completing check-in + workout",
+            "Full project management system built — Cowork-ready folder structure with 7 skill files",
+            "26 assumptions documented and prioritized — ready to validate on discovery call",
+            "Discovery call prep completed — focused question guide with must-answers identified",
+          ],
+          nextUp: [
+            "Process discovery call transcript — update product brief and log decisions",
+            "Confirm V1 scope — what's in, what's explicitly out, timeline estimate",
+            "Begin methodology extraction session — document periodization rules into engineering spec",
+          ],
+          snapshotUrl: "https://helix-io-ctrl.github.io/helix-dashboard/snapshots/snapshot-2026-02-27.html"
+        },
+        {
           week: 2,
           dateRange: "Mar 2 – Mar 6",
           pct: 35,
@@ -1134,17 +1154,46 @@
             {/* ── WEEKLY UPDATES ── */}
             {tab==="updates" && (
               <div>
-                {/* Section header */}
+                {/* Velocity summary strip */}
+                {d.weeklyUpdates.length > 0 && (() => {
+                  const latest = d.weeklyUpdates[d.weeklyUpdates.length - 1];
+                  const totalDone = d.weeklyUpdates.reduce((a, w) => a + (w.done || 0), 0);
+                  return (
+                    <div style={{ background:"#0F172A", borderRadius:12, padding:"22px 28px",
+                      marginBottom:20, display:"grid",
+                      gridTemplateColumns:"repeat(4,1fr)", gap:0 }}>
+                      {[
+                        { num: d.weeklyUpdates.length, label:"Weeks tracked", color:"white" },
+                        { num: totalDone, label:"Tasks completed total", color:"#4ADE80" },
+                        { num: latest.done, label:"Completed this week", color:"#60A5FA" },
+                        { num: `${latest.pct}%`, label:"Overall progress", color:"#A78BFA" },
+                      ].map((s, i) => (
+                        <div key={i} style={{ textAlign:"center",
+                          borderRight: i < 3 ? "1px solid #1E293B" : "none",
+                          padding:"0 20px" }}>
+                          <div style={{ fontSize:30, fontWeight:800, color:s.color,
+                            lineHeight:1, letterSpacing:"-0.02em" }}>{s.num}</div>
+                          <div style={{ fontSize:11, color:"#475569", marginTop:6,
+                            textTransform:"uppercase", letterSpacing:"0.07em",
+                            fontWeight:600 }}>{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+
+                {/* Section label */}
                 <div style={{ display:"flex", justifyContent:"space-between",
-                  alignItems:"center", marginBottom:18 }}>
+                  alignItems:"center", marginBottom:16 }}>
                   <div>
                     <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>Weekly Snapshots</span>
                     <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
                       {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
                     </span>
                   </div>
-                  <span style={{ fontSize:11, color:"#94A3B8" }}>Auto-posted every Friday</span>
+                  <span style={{ fontSize:11, color:"#94A3B8" }}>Auto-posted every Friday · Click any card to view full report</span>
                 </div>
+
                 {d.weeklyUpdates.length === 0 ? (
                   <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:12,
                     padding:"48px 24px", textAlign:"center" }}>
