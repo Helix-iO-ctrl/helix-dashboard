@@ -27,12 +27,12 @@
     window.PROJECT_DATA = {
       name: "Helix — Fitness Coaching App",
       client: "Jason",
-      lastUpdated: "Mar 5, 2026",    // ← update this each time you edit
+      lastUpdated: "Mar 6, 2026",     // ← update this each time you edit
       phases: ["Discovery", "Design", "Build V1", "Launch"],
       currentPhase: 0,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
 
       // ── SUMMARY (keep in sync with tasks below) ──
-      summary: { total: 51, done: 14, inProgress: 2, blocked: 3, todo: 32 },
+      summary: { total: 54, done: 19, inProgress: 0, blocked: 0, todo: 35 },
 
       // ── DISCIPLINES & TASKS ──
       // status options: "todo" | "in-progress" | "blocked" | "done"
@@ -52,10 +52,8 @@
             { id: 24, text: "Write feature spec: pre-session readiness check-in and session adjustment logic", status: "done", priority: "high" },
             { id: 25, text: "Write feature spec: RPE-per-set logging and progressive overload decisions", status: "done", priority: "high" },
             { id: 33, text: "Scope Nutrition module — complete spec or formally defer to Phase 2",    status: "done",    priority: "high" },
-            { id: 42, text: "BLOCKED — Get Jason's answer: Q4 (exercise selection filter order for A1)", status: "blocked", priority: "high",
-              blocker: "Jason did not answer Q4 in the 'Please Answer These' document. Blocks exercise selection implementation entirely." },
-            { id: 43, text: "BLOCKED — Get Jason's answer: Q5 (when is barbell NOT the primary tool — what overrides the loading position hierarchy?)", status: "blocked", priority: "high",
-              blocker: "Jason did not answer Q5. Blocks exercise ordering logic and substitution rules." },
+            { id: 42, text: "✅ Q4 ANSWERED — Exercise selection filter order (A1): Zone → Focus → Equipment → Injury → Duplication → Order Validation", status: "done", priority: "high" },
+            { id: 43, text: "✅ Q5 ANSWERED — Barbell override: 7 rule categories (zone, folder conflicts, genre rules, equipment conflicts, fatigue, Helix Rank, neural stacking)", status: "done", priority: "high" },
             { id: 44, text: "Write feature spec: performance assessments (intake-selectable, calendar-schedulable, repeat frequency)", status: "todo", priority: "high" },
             { id: 45, text: "Write feature spec: coach dashboard (compliance, readiness flags, fatigue trend, override flow)", status: "todo", priority: "high" },
             { id: 46, text: "Write feature spec: Google Calendar integration",                        status: "todo", priority: "high" },
@@ -89,8 +87,7 @@
             { id: 10, text: "Decide tech stack (mobile framework, backend, DB)",                  status: "done", priority: "high" },
             { id: 11, text: "Design data model: exercise database (folders, filter tags, videos)", status: "done", priority: "high" },
             { id: 12, text: "Design data model: adaptive programming engine (program hierarchy)",  status: "done", priority: "high" },
-            { id: 48, text: "BLOCKED — Implement exercise selection filter logic (awaiting Q4/Q5 answers)", status: "blocked", priority: "high",
-              blocker: "Cannot implement A1 exercise selection or barbell override rules until Jason answers Q4 and Q5." },
+            { id: 48, text: "Implement exercise selection filter logic (Q4/Q5 ANSWERED — now unblocked)", status: "todo", priority: "high" },
             { id: 49, text: "Implement FSS formula and week-to-week progressive overload engine", status: "todo", priority: "high" },
             { id: 50, text: "Implement cumulative fatigue model and 5-condition deload trigger system", status: "todo", priority: "high" },
             { id: 51, text: "Implement performance assessment schema and scheduling logic",        status: "todo", priority: "high" },
@@ -154,8 +151,10 @@
           detail: "Strength, Strength Endurance, Power, Power Endurance, Hypertrophy, Muscular Endurance. These are the only zones in V1 — no others. Prior docs listing 7 zones were incorrect." },
         { date: "Mar 5, 2026", title: "Block transitions: default time-based, event-triggered for athletes",
           detail: "Most demographics transition at end of block by week count. Athlete demographic uses event date for taper logic. Documented in adaptive-engine-spec.md Section XIV." },
+        { date: "Mar 6, 2026", title: "Q4 & Q5 ANSWERED — Adaptive engine fully unblocked",
+          detail: "Q4: A1 exercise selection filter order confirmed (6 steps). Q5: Barbell override rules confirmed (7 categories). Helix Rank system introduced (5 levels: Foundation → Apex). Stress added as 3rd readiness input. Folder conflict rules (33 folder system), movement genre rules, and equipment conflict rules all documented. See adaptive-engine-spec.md sections XXIII–XXV." },
         { date: "Mar 5, 2026", title: "Adaptive engine: full spec documented in adaptive-engine-spec.md",
-          detail: "Q1–Q3 fully answered. FSS formula, RPE ladders, 6 zones, tier structures, cumulative fatigue model, 5 deload triggers, plateau detection, and block construction rules all captured. Q4/Q5 still pending — critical blockers." },
+          detail: "Q1–Q3 fully answered. FSS formula, RPE ladders, 6 zones, tier structures, cumulative fatigue model, 5 deload triggers, plateau detection, and block construction rules all captured." },
         { date: "Mar 1, 2026", title: "Volleyball positions added to intake form",
           detail: "Added Setter, Outside Hitter, Middle Blocker, Opposite Hitter, Libero, Defensive Specialist. Client to confirm these are correct for their athlete population." },
         { date: "Mar 1, 2026", title: "Exercise name standardization applied",
@@ -187,15 +186,32 @@
       // ── WEEKLY UPDATES ──
       // Added automatically each Friday by the weekly snapshot scheduled task.
       // Each entry: { week, dateRange, pct, done, blockers, wins, nextUp, snapshotUrl }
-      weeklyUpdates: [],
+      weeklyUpdates: [
+        {
+          week: 2,
+          dateRange: "Mar 2 – Mar 6",
+          pct: 35,
+          done: 19,
+          blockers: 0,
+          wins: [
+            "Processed Session 1.1 transcript + Jason's Q&A doc — complete periodization methodology extracted",
+            "Created adaptive-engine-spec.md covering FSS formula, RPE ladders, 6-zone system, and deload logic",
+            "Q4 RESOLVED: A1 exercise selection filter order confirmed (6-step deterministic algorithm)",
+            "Q5 RESOLVED: Barbell override rules + Helix Rank 5-level system fully documented",
+            "Updated data model with Session 1.1 entities and 9 new decisions logged",
+          ],
+          nextUp: [
+            "Write feature specs: performance assessments, coach dashboard, Google Calendar integration",
+            "Begin Supabase schema implementation using updated data-model.md",
+            "Implement exercise selection filter logic (now unblocked by Q4/Q5)",
+          ],
+          snapshotUrl: "https://helix-io-ctrl.github.io/helix-dashboard/snapshots/snapshot-2026-03-06.html"
+        },
+      ],
 
       // ── OPEN QUESTIONS ──
       // urgency options: "critical" | "high" | "medium"
       openQuestions: [
-        { q: "Q4 (unanswered): What filters does the system apply when picking the A1 exercise, and in what order?",
-          urgency: "critical", note: "Jason did not answer this in the 'Please Answer These' doc. Blocks exercise selection implementation entirely. Owner: Jason — due ASAP." },
-        { q: "Q5 (unanswered): When is barbell NOT the primary tool? What rule overrides the default loading position hierarchy (Barbell → Hex Bar → KB → DB)?",
-          urgency: "critical", note: "Jason did not answer this. Blocks exercise ordering and substitution logic. Owner: Jason — due ASAP." },
         { q: "What are the simplest MVP terms for the nutrition piece?",
           urgency: "high", note: "Jake + Keagan to define this week. Nutrition module is V2 build but spec definition should start now." },
         { q: "What is the equity/compensation structure between Jason, Jake, Keagan, and Hayden?",
@@ -204,8 +220,8 @@
           urgency: "high", note: "Keagan to research. Needed to validate the pre-sale pricing model." },
         { q: "What is the target coaching price point per client per month?",
           urgency: "medium", note: "Informs positioning and feature prioritization." },
-        { q: "Does vertical jump factor into readiness inputs, or just fatigue + soreness?",
-          urgency: "medium", note: "Vertical jump was not mentioned in the Session 1.1 Q&A. Soreness + tiredness confirmed as the two inputs. Jason to clarify if vertical jump still applies." },
+        { q: "Does vertical jump factor into readiness inputs in addition to fatigue + soreness + stress?",
+          urgency: "medium", note: "Stress confirmed as 3rd readiness input (from Q5 doc). Vertical jump not mentioned. Jason to confirm if it applies at all." },
         { q: "Does the 'Decline to Identify' gender selection bypass gender-based programming adjustments?",
           urgency: "medium", note: "Intake form has this option — downstream logic is undefined. Clarify with Jason." },
         { q: "Is the Ethnicity field optional or required, and does it affect downstream automation logic?",
