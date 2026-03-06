@@ -717,10 +717,159 @@
       );
     }
 
+    // ── Report Modal ──────────────────────────────────────────────
+    function ReportModal({ url, week, onClose }) {
+      useEffect(() => {
+        function onKey(e) { if (e.key === 'Escape') onClose(); }
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [onClose]);
+      return (
+        <div onClick={onClose} style={{
+          position:"fixed", top:0, left:0, right:0, bottom:0,
+          background:"rgba(0,0,0,0.7)", zIndex:1000,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          backdropFilter:"blur(4px)" }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            width:"90vw", height:"90vh", background:"white", borderRadius:14,
+            overflow:"hidden", display:"flex", flexDirection:"column",
+            boxShadow:"0 30px 80px rgba(0,0,0,0.5)" }}>
+            {/* Modal header */}
+            <div style={{ padding:"14px 20px", background:"#0F172A",
+              display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:"#2563EB" }} />
+                  <span style={{ fontSize:14, fontWeight:600, color:"white" }}>
+                    Week {week.week} — {week.dateRange}
+                  </span>
+                </div>
+                <span style={{ fontSize:11, color:"#475569", background:"#1E293B",
+                  padding:"2px 8px", borderRadius:4 }}>Weekly Snapshot</span>
+              </div>
+              <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+                <a href={url} target="_blank" rel="noreferrer" style={{
+                  fontSize:12, color:"#94A3B8", textDecoration:"none", fontWeight:500 }}>
+                  Open in new tab ↗
+                </a>
+                <button onClick={onClose} style={{
+                  background:"#1E293B", border:"none", color:"#94A3B8",
+                  width:30, height:30, borderRadius:6, cursor:"pointer",
+                  fontSize:15, display:"flex", alignItems:"center",
+                  justifyContent:"center", fontFamily:"inherit" }}>✕</button>
+              </div>
+            </div>
+            <iframe src={url} title={`Week ${week.week} Report`}
+              style={{ flex:1, border:"none", width:"100%", height:"100%" }} />
+          </div>
+        </div>
+      );
+    }
+
+    // ── Week Card ──────────────────────────────────────────────────
+    function WeekCard({ w, onViewReport }) {
+      return (
+        <div style={{ background:"white", border:"1px solid #E2E8F0",
+          borderRadius:12, overflow:"hidden", marginBottom:16 }}>
+          {/* ── Dark header strip ── */}
+          <div style={{ background:"#0F172A", padding:"22px 26px",
+            display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+            <div>
+              <div style={{ display:"flex", alignItems:"baseline", gap:12 }}>
+                <span style={{ fontSize:24, fontWeight:700, color:"white", letterSpacing:"-0.02em" }}>
+                  Week {w.week}
+                </span>
+                <span style={{ fontSize:13, color:"#64748B", fontWeight:400 }}>{w.dateRange}</span>
+              </div>
+              <div style={{ marginTop:12, display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ width:180, height:5, background:"#1E293B",
+                  borderRadius:3, overflow:"hidden" }}>
+                  <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB",
+                    borderRadius:3, transition:"width .6s ease" }} />
+                </div>
+                <span style={{ fontSize:12, color:"#2563EB", fontWeight:700 }}>{w.pct}% overall</span>
+              </div>
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:24 }}>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:28, fontWeight:700, color:"#4ADE80", lineHeight:1 }}>{w.done}</div>
+                <div style={{ fontSize:10, color:"#475569", marginTop:4,
+                  textTransform:"uppercase", letterSpacing:"0.06em", fontWeight:600 }}>Done</div>
+              </div>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:28, fontWeight:700,
+                  color: w.blockers > 0 ? "#F87171" : "#475569", lineHeight:1 }}>
+                  {w.blockers}
+                </div>
+                <div style={{ fontSize:10, color:"#475569", marginTop:4,
+                  textTransform:"uppercase", letterSpacing:"0.06em", fontWeight:600 }}>Blocked</div>
+              </div>
+              {w.snapshotUrl && (
+                <button onClick={() => onViewReport(w.snapshotUrl, w)} style={{
+                  background:"#2563EB", border:"none", color:"white",
+                  padding:"9px 20px", borderRadius:8, fontSize:13, fontWeight:600,
+                  cursor:"pointer", fontFamily:"inherit", letterSpacing:"-0.01em",
+                  whiteSpace:"nowrap", boxShadow:"0 2px 8px rgba(37,99,235,0.35)" }}>
+                  View Full Report ↗
+                </button>
+              )}
+            </div>
+          </div>
+          {/* ── Body: two columns ── */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr" }}>
+            {/* This Week */}
+            <div style={{ padding:"22px 26px", borderRight:"1px solid #F1F5F9" }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#059669",
+                textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:16,
+                display:"flex", alignItems:"center", gap:7 }}>
+                <span style={{ width:6, height:6, background:"#059669",
+                  borderRadius:"50%", display:"inline-block" }} />
+                This Week
+              </div>
+              {(w.wins || []).map((win, i) => (
+                <div key={i} style={{ display:"flex", gap:10,
+                  marginBottom:10, alignItems:"flex-start" }}>
+                  <div style={{ width:18, height:18, borderRadius:4, background:"#DCFCE7",
+                    flexShrink:0, display:"flex", alignItems:"center",
+                    justifyContent:"center", marginTop:2 }}>
+                    <span style={{ fontSize:10, color:"#059669", fontWeight:700 }}>✓</span>
+                  </div>
+                  <span style={{ fontSize:13, color:"#1E293B", lineHeight:1.55 }}>{win}</span>
+                </div>
+              ))}
+            </div>
+            {/* Up Next */}
+            <div style={{ padding:"22px 26px" }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#2563EB",
+                textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:16,
+                display:"flex", alignItems:"center", gap:7 }}>
+                <span style={{ width:6, height:6, background:"#2563EB",
+                  borderRadius:"50%", display:"inline-block" }} />
+                Starting Next
+              </div>
+              {(w.nextUp || []).map((next, i) => (
+                <div key={i} style={{ display:"flex", gap:10,
+                  marginBottom:10, alignItems:"flex-start" }}>
+                  <div style={{ width:18, height:18, borderRadius:4, background:"#EFF6FF",
+                    flexShrink:0, display:"flex", alignItems:"center",
+                    justifyContent:"center", marginTop:2 }}>
+                    <span style={{ fontSize:10, color:"#2563EB", fontWeight:700 }}>→</span>
+                  </div>
+                  <span style={{ fontSize:13, color:"#374151", lineHeight:1.55 }}>{next}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── App ────────────────────────────────────────────────────────
     function App() {
-      const [sel, setSel]           = useState("product");
-      const [tab, setTab]           = useState("overview");
-      const [comments, setComments] = useState({});
+      const [sel, setSel]             = useState("product");
+      const [tab, setTab]             = useState("overview");
+      const [comments, setComments]   = useState({});
+      const [reportModal, setReportModal] = useState(null);
 
       useEffect(() => {
         async function fetchComments() {
@@ -985,99 +1134,34 @@
             {/* ── WEEKLY UPDATES ── */}
             {tab==="updates" && (
               <div>
-                {/* Header */}
-                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                  overflow:"hidden", marginBottom:16 }}>
-                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                    display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                    <div>
-                      <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Weekly Snapshots</span>
-                      <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                        {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
-                      </span>
-                    </div>
-                    <span style={{ fontSize:11, color:"#94A3B8" }}>Updated every Friday at 6:45am</span>
+                {/* Section header */}
+                <div style={{ display:"flex", justifyContent:"space-between",
+                  alignItems:"center", marginBottom:18 }}>
+                  <div>
+                    <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>Weekly Snapshots</span>
+                    <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
+                      {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
+                    </span>
                   </div>
-
-                  {d.weeklyUpdates.length === 0 ? (
-                    <div style={{ padding:"40px 24px", textAlign:"center", color:"#94A3B8" }}>
-                      <div style={{ fontSize:32, marginBottom:10 }}>📊</div>
-                      <div style={{ fontSize:13, fontWeight:500, color:"#64748B", marginBottom:6 }}>
-                        First snapshot posts this Friday
-                      </div>
-                      <div style={{ fontSize:12 }}>
-                        Weekly progress summaries will appear here automatically — week over week.
-                      </div>
-                    </div>
-                  ) : (
-                    d.weeklyUpdates.slice().reverse().map((w, i) => (
-                      <div key={i} style={{ display:"grid", gridTemplateColumns:"140px 1fr",
-                        padding:"18px 18px", borderBottom:"1px solid #F8FAFC", gap:16, alignItems:"start" }}>
-                        {/* Left — week label + date */}
-                        <div>
-                          <div style={{ fontSize:12, fontWeight:700, color:"#0F172A" }}>Week {w.week}</div>
-                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{w.dateRange}</div>
-                          {/* Progress pill */}
-                          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
-                            <div style={{ width:48, height:4, background:"#E2E8F0", borderRadius:2, overflow:"hidden" }}>
-                              <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB", borderRadius:2 }} />
-                            </div>
-                            <span style={{ fontSize:11, color:"#2563EB", fontWeight:600 }}>{w.pct}%</span>
-                          </div>
-                          {/* Stats */}
-                          <div style={{ marginTop:8, display:"flex", gap:8, flexWrap:"wrap" }}>
-                            <span style={{ fontSize:11, color:"#059669", fontWeight:600 }}>✓ {w.done} done</span>
-                            {w.blockers > 0 && (
-                              <span style={{ fontSize:11, color:"#DC2626", fontWeight:600 }}>⚠ {w.blockers} blocked</span>
-                            )}
-                          </div>
-                          {/* Snapshot link */}
-                          {w.snapshotUrl && (
-                            <a href={w.snapshotUrl} target="_blank" rel="noreferrer" style={{
-                              display:"inline-block", marginTop:10, fontSize:11,
-                              color:"#2563EB", textDecoration:"none", fontWeight:500 }}>
-                              View full report →
-                            </a>
-                          )}
-                        </div>
-
-                        {/* Right — wins + next up */}
-                        <div>
-                          {w.wins && w.wins.length > 0 && (
-                            <div style={{ marginBottom:10 }}>
-                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
-                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
-                                This Week
-                              </div>
-                              {w.wins.map((win, wi) => (
-                                <div key={wi} style={{ fontSize:12, color:"#1E293B",
-                                  marginBottom:4, display:"flex", gap:6 }}>
-                                  <span style={{ color:"#059669", flexShrink:0 }}>✓</span>
-                                  <span>{win}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          {w.nextUp && w.nextUp.length > 0 && (
-                            <div>
-                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
-                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
-                                Next Week
-                              </div>
-                              {w.nextUp.map((next, ni) => (
-                                <div key={ni} style={{ fontSize:12, color:"#64748B",
-                                  marginBottom:4, display:"flex", gap:6 }}>
-                                  <span style={{ color:"#94A3B8", flexShrink:0 }}>→</span>
-                                  <span>{next}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
+                  <span style={{ fontSize:11, color:"#94A3B8" }}>Auto-posted every Friday</span>
                 </div>
+                {d.weeklyUpdates.length === 0 ? (
+                  <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:12,
+                    padding:"48px 24px", textAlign:"center" }}>
+                    <div style={{ fontSize:36, marginBottom:12 }}>📊</div>
+                    <div style={{ fontSize:14, fontWeight:600, color:"#64748B", marginBottom:6 }}>
+                      First snapshot posts this Friday
+                    </div>
+                    <div style={{ fontSize:13, color:"#94A3B8" }}>
+                      Weekly progress summaries will appear here automatically.
+                    </div>
+                  </div>
+                ) : (
+                  d.weeklyUpdates.slice().reverse().map((w, i) => (
+                    <WeekCard key={i} w={w}
+                      onViewReport={(url, week) => setReportModal({ url, week })} />
+                  ))
+                )}
               </div>
             )}
 
@@ -1097,6 +1181,15 @@
             )}
 
           </div>
+
+          {/* ── Report Modal ── */}
+          {reportModal && (
+            <ReportModal
+              url={reportModal.url}
+              week={reportModal.week}
+              onClose={() => setReportModal(null)}
+            />
+          )}
 
         </div>
       );
