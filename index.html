@@ -790,46 +790,44 @@
     function WeekCard({ w, onViewReport }) {
       return (
         <div style={{ background:"white", border:"1px solid #E2E8F0",
-          borderRadius:12, overflow:"hidden", marginBottom:16 }}>
-          {/* ── Dark header strip ── */}
-          <div style={{ background:"#0F172A", padding:"22px 26px",
-            display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+          borderRadius:10, overflow:"hidden", marginBottom:16 }}>
+          {/* ── Header strip ── */}
+          <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"18px 22px",
+            display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:14 }}>
             <div>
-              <div style={{ display:"flex", alignItems:"baseline", gap:12 }}>
-                <span style={{ fontSize:24, fontWeight:700, color:"white", letterSpacing:"-0.02em" }}>
+              <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
+                <span style={{ fontSize:16, fontWeight:700, color:"#0F172A" }}>
                   Week {w.week}
                 </span>
-                <span style={{ fontSize:13, color:"#64748B", fontWeight:400 }}>{w.dateRange}</span>
+                <span style={{ fontSize:12, color:"#94A3B8", fontWeight:400 }}>{w.dateRange}</span>
               </div>
-              <div style={{ marginTop:12, display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:180, height:5, background:"#1E293B",
-                  borderRadius:3, overflow:"hidden" }}>
+              <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ width:160, height:4, background:"#E2E8F0",
+                  borderRadius:2, overflow:"hidden" }}>
                   <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB",
-                    borderRadius:3, transition:"width .6s ease" }} />
+                    borderRadius:2, transition:"width .6s ease" }} />
                 </div>
-                <span style={{ fontSize:12, color:"#2563EB", fontWeight:700 }}>{w.pct}% overall</span>
+                <span style={{ fontSize:12, color:"#2563EB", fontWeight:600 }}>{w.pct}% overall</span>
               </div>
             </div>
-            <div style={{ display:"flex", alignItems:"center", gap:24 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:28, fontWeight:700, color:"#4ADE80", lineHeight:1 }}>{w.done}</div>
-                <div style={{ fontSize:10, color:"#475569", marginTop:4,
-                  textTransform:"uppercase", letterSpacing:"0.06em", fontWeight:600 }}>Done</div>
+                <div style={{ fontSize:22, fontWeight:700, color:"#059669", lineHeight:1 }}>{w.done}</div>
+                <div style={{ fontSize:10, color:"#94A3B8", marginTop:3, fontWeight:500 }}>Done</div>
               </div>
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:28, fontWeight:700,
-                  color: w.blockers > 0 ? "#F87171" : "#475569", lineHeight:1 }}>
+                <div style={{ fontSize:22, fontWeight:700,
+                  color: w.blockers > 0 ? "#DC2626" : "#94A3B8", lineHeight:1 }}>
                   {w.blockers}
                 </div>
-                <div style={{ fontSize:10, color:"#475569", marginTop:4,
-                  textTransform:"uppercase", letterSpacing:"0.06em", fontWeight:600 }}>Blocked</div>
+                <div style={{ fontSize:10, color:"#94A3B8", marginTop:3, fontWeight:500 }}>Blocked</div>
               </div>
               {w.snapshotUrl && (
                 <button onClick={() => onViewReport(w.snapshotUrl, w)} style={{
                   background:"#2563EB", border:"none", color:"white",
-                  padding:"9px 20px", borderRadius:8, fontSize:13, fontWeight:600,
-                  cursor:"pointer", fontFamily:"inherit", letterSpacing:"-0.01em",
-                  whiteSpace:"nowrap", boxShadow:"0 2px 8px rgba(37,99,235,0.35)" }}>
+                  padding:"8px 16px", borderRadius:6, fontSize:12, fontWeight:600,
+                  cursor:"pointer", fontFamily:"inherit",
+                  whiteSpace:"nowrap" }}>
                   View Full Report ↗
                 </button>
               )}
@@ -1157,25 +1155,23 @@
                 {/* Velocity summary strip */}
                 {d.weeklyUpdates.length > 0 && (() => {
                   const latest = d.weeklyUpdates[d.weeklyUpdates.length - 1];
-                  const totalDone = d.weeklyUpdates.reduce((a, w) => a + (w.done || 0), 0);
                   return (
-                    <div style={{ background:"#0F172A", borderRadius:12, padding:"22px 28px",
+                    <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
                       marginBottom:20, display:"grid",
-                      gridTemplateColumns:"repeat(4,1fr)", gap:0 }}>
+                      gridTemplateColumns:"repeat(4,1fr)", gap:0, overflow:"hidden" }}>
                       {[
-                        { num: d.weeklyUpdates.length, label:"Weeks tracked", color:"white" },
-                        { num: totalDone, label:"Tasks completed total", color:"#4ADE80" },
-                        { num: latest.done, label:"Completed this week", color:"#60A5FA" },
-                        { num: `${latest.pct}%`, label:"Overall progress", color:"#A78BFA" },
+                        { num: d.weeklyUpdates.length, label:"Weeks tracked",       color:"#1E293B", bg:"white",   border:"#E2E8F0" },
+                        { num: d.summary.done,          label:"Tasks done total",    color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
+                        { num: latest.done,             label:"Completed this week", color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
+                        { num: `${latest.pct}%`,        label:"Overall progress",    color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
                       ].map((s, i) => (
-                        <div key={i} style={{ textAlign:"center",
-                          borderRight: i < 3 ? "1px solid #1E293B" : "none",
-                          padding:"0 20px" }}>
-                          <div style={{ fontSize:30, fontWeight:800, color:s.color,
-                            lineHeight:1, letterSpacing:"-0.02em" }}>{s.num}</div>
-                          <div style={{ fontSize:11, color:"#475569", marginTop:6,
-                            textTransform:"uppercase", letterSpacing:"0.07em",
-                            fontWeight:600 }}>{s.label}</div>
+                        <div key={i} style={{ textAlign:"center", background:s.bg,
+                          borderRight: i < 3 ? `1px solid ${s.border}` : "none",
+                          padding:"18px 20px" }}>
+                          <div style={{ fontSize:26, fontWeight:700, color:s.color,
+                            lineHeight:1 }}>{s.num}</div>
+                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:5,
+                            fontWeight:500 }}>{s.label}</div>
                         </div>
                       ))}
                     </div>
