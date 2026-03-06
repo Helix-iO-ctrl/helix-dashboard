@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helix — Visual Identity Exploration v1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            color: #E2E8F0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 80px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.1);
+            padding-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #14B8A6 0%, #E2E8F0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #CBD5E1;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+
+        /* Brand Territory Section */
+        .brand-territory {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(226, 232, 240, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-territory h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #14B8A6;
+        }
+
+        .brand-territory p {
+            font-size: 16px;
+            color: #CBD5E1;
+            line-height: 1.8;
+            max-width: 900px;
+        }
+
+        /* Palette Grid */
+        .palettes-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            margin-top: 60px;
+            color: #E2E8F0;
+        }
+
+        .palettes-section p {
+            font-size: 16px;
+            color: #CBD5E1;
+            margin-bottom: 40px;
+        }
+
+        .palettes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* Palette Card */
+        .palette-card {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(226, 232, 240, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .palette-card:hover {
+            border-color: rgba(226, 232, 240, 0.25);
+            background: rgba(30, 41, 59, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .palette-card-header {
+            padding: 32px 32px 24px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.1);
+        }
+
+        .palette-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #E2E8F0;
+        }
+
+        .palette-mood {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94A3B8;
+        }
+
+        .palette-mood strong {
+            color: #CBD5E1;
+            font-weight: 600;
+        }
+
+        /* Color Swatches */
+        .swatches {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.1);
+        }
+
+        .swatch {
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .swatch:hover {
+            transform: scale(1.05);
+        }
+
+        .swatch-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #E2E8F0;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mini Mockup */
+        .mini-mockup {
+            padding: 24px 32px 32px;
+        }
+
+        .mini-mockup-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94A3B8;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .session-card {
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .session-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .session-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .session-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .session-details {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .session-detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .session-detail-icon {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        /* Option A: Midnight Performance */
+        .option-a-primary {
+            background-color: #0F172A;
+            border: 1px solid #14B8A6;
+        }
+
+        .option-a-accent {
+            background-color: #14B8A6;
+        }
+
+        .option-a-surface {
+            background-color: #1E293B;
+        }
+
+        .option-a-text {
+            background-color: #E2E8F0;
+        }
+
+        .option-a-session {
+            background-color: #1A2844;
+            border-color: #14B8A6;
+            color: #E2E8F0;
+        }
+
+        .option-a-session::before {
+            background-color: #14B8A6;
+        }
+
+        .option-a-session .session-label {
+            color: #14B8A6;
+        }
+
+        .option-a-session .session-title {
+            color: #E2E8F0;
+        }
+
+        .option-a-session .session-detail {
+            color: #CBD5E1;
+        }
+
+        /* Option B: Obsidian Edge */
+        .option-b-primary {
+            background-color: #1A1A2E;
+            border: 1px solid #10B981;
+        }
+
+        .option-b-accent {
+            background-color: #10B981;
+        }
+
+        .option-b-surface {
+            background-color: #2A2A3E;
+        }
+
+        .option-b-text {
+            background-color: #F0F9FF;
+        }
+
+        .option-b-session {
+            background-color: #242A42;
+            border-color: #10B981;
+            color: #F0F9FF;
+        }
+
+        .option-b-session::before {
+            background-color: #10B981;
+        }
+
+        .option-b-session .session-label {
+            color: #10B981;
+        }
+
+        .option-b-session .session-title {
+            color: #F0F9FF;
+        }
+
+        .option-b-session .session-detail {
+            color: #CBD5E1;
+        }
+
+        /* Option C: Carbon Precision */
+        .option-c-primary {
+            background-color: #1E293B;
+            border: 1px solid #F59E0B;
+        }
+
+        .option-c-accent {
+            background-color: #F59E0B;
+        }
+
+        .option-c-surface {
+            background-color: #334155;
+        }
+
+        .option-c-text {
+            background-color: #F8FAFC;
+        }
+
+        .option-c-session {
+            background-color: #2D3748;
+            border-color: #F59E0B;
+            color: #F8FAFC;
+        }
+
+        .option-c-session::before {
+            background-color: #F59E0B;
+        }
+
+        .option-c-session .session-label {
+            color: #F59E0B;
+        }
+
+        .option-c-session .session-title {
+            color: #F8FAFC;
+        }
+
+        .option-c-session .session-detail {
+            color: #CBD5E1;
+        }
+
+        /* Typography Section */
+        .typography-section {
+            margin-bottom: 80px;
+        }
+
+        .typography-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #E2E8F0;
+        }
+
+        .typography-section > p {
+            font-size: 16px;
+            color: #CBD5E1;
+            margin-bottom: 40px;
+        }
+
+        .typography-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .type-sample {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(226, 232, 240, 0.1);
+            border-radius: 12px;
+            padding: 32px;
+        }
+
+        .type-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94A3B8;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .type-display {
+            font-size: 36px;
+            font-weight: 800;
+            color: #E2E8F0;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .type-body {
+            font-size: 15px;
+            color: #CBD5E1;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .type-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #10B981;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 12px 16px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Next Steps Section */
+        .next-steps {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(30, 41, 59, 0.4) 100%);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            margin-top: 100px;
+            margin-bottom: 40px;
+        }
+
+        .next-steps h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #E2E8F0;
+        }
+
+        .next-steps p {
+            font-size: 16px;
+            color: #CBD5E1;
+            max-width: 600px;
+            margin: 0 auto 24px;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+            color: #0F172A;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(20, 184, 166, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(226, 232, 240, 0.1);
+            color: #64748B;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 24px;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .palettes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .swatches {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .next-steps {
+                padding: 32px 24px;
+            }
+
+            .next-steps h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header {
+                margin-bottom: 40px;
+                padding-bottom: 32px;
+            }
+
+            .session-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Helix — Visual Identity Exploration v1</h1>
+            <p>Performance-focused, coach-respecting, intelligent but not clinical. Positioned between premium sport tech and high-performance medical.</p>
+        </div>
+
+        <!-- Brand Territory -->
+        <div class="brand-territory">
+            <h2>Brand Territory</h2>
+            <p>Helix is built for elite coaching businesses that demand precision, scalability, and intelligence. The visual identity should reflect three core values: <strong>authority through data</strong>, <strong>respect for human expertise</strong>, and <strong>premium engineering</strong>. Every pixel serves the coach and client experience—nothing feels clinical or corporate. The design sits confidently between high-performance sport tech and intelligent medical-grade systems.</p>
+        </div>
+
+        <!-- Palettes Section -->
+        <div class="palettes-section">
+            <h2>Color Palettes</h2>
+            <p>Three directions for your visual foundation. Each has distinct personality while maintaining professional authority.</p>
+
+            <div class="palettes-grid">
+                <!-- Option A: Midnight Performance -->
+                <div class="palette-card">
+                    <div class="palette-card-header">
+                        <div class="palette-name">Option A: Midnight Performance</div>
+                        <div class="palette-mood"><strong>Mood:</strong> Professional, tech-forward, authority</div>
+                    </div>
+
+                    <div class="swatches">
+                        <div class="swatch option-a-primary">
+                            <div class="swatch-label">Primary<br>#0F172A</div>
+                        </div>
+                        <div class="swatch option-a-accent">
+                            <div class="swatch-label">Accent<br>#14B8A6</div>
+                        </div>
+                        <div class="swatch option-a-surface">
+                            <div class="swatch-label">Surface<br>#1E293B</div>
+                        </div>
+                        <div class="swatch option-a-text">
+                            <div class="swatch-label">Text<br>#E2E8F0</div>
+                        </div>
+                    </div>
+
+                    <div class="mini-mockup">
+                        <div class="mini-mockup-label">Sample: Today's Session</div>
+                        <div class="session-card option-a-session">
+                            <div class="session-card-content">
+                                <div class="session-label">Strength Block 3</div>
+                                <div class="session-title">Lower Power Day</div>
+                                <div class="session-details">
+                                    <div class="session-detail"><span class="session-detail-icon">⏱</span> 52 min</div>
+                                    <div class="session-detail"><span class="session-detail-icon">📍</span> 6 exercises</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option B: Obsidian Edge -->
+                <div class="palette-card">
+                    <div class="palette-card-header">
+                        <div class="palette-name">Option B: Obsidian Edge</div>
+                        <div class="palette-mood"><strong>Mood:</strong> Bold, modern, high-energy</div>
+                    </div>
+
+                    <div class="swatches">
+                        <div class="swatch option-b-primary">
+                            <div class="swatch-label">Primary<br>#1A1A2E</div>
+                        </div>
+                        <div class="swatch option-b-accent">
+                            <div class="swatch-label">Accent<br>#10B981</div>
+                        </div>
+                        <div class="swatch option-b-surface">
+                            <div class="swatch-label">Surface<br>#2A2A3E</div>
+                        </div>
+                        <div class="swatch option-b-text">
+                            <div class="swatch-label">Text<br>#F0F9FF</div>
+                        </div>
+                    </div>
+
+                    <div class="mini-mockup">
+                        <div class="mini-mockup-label">Sample: Today's Session</div>
+                        <div class="session-card option-b-session">
+                            <div class="session-card-content">
+                                <div class="session-label">Strength Block 3</div>
+                                <div class="session-title">Lower Power Day</div>
+                                <div class="session-details">
+                                    <div class="session-detail"><span class="session-detail-icon">⏱</span> 52 min</div>
+                                    <div class="session-detail"><span class="session-detail-icon">📍</span> 6 exercises</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option C: Carbon Precision -->
+                <div class="palette-card">
+                    <div class="palette-card-header">
+                        <div class="palette-name">Option C: Carbon Precision</div>
+                        <div class="palette-mood"><strong>Mood:</strong> Warm, approachable, premium</div>
+                    </div>
+
+                    <div class="swatches">
+                        <div class="swatch option-c-primary">
+                            <div class="swatch-label">Primary<br>#1E293B</div>
+                        </div>
+                        <div class="swatch option-c-accent">
+                            <div class="swatch-label">Accent<br>#F59E0B</div>
+                        </div>
+                        <div class="swatch option-c-surface">
+                            <div class="swatch-label">Surface<br>#334155</div>
+                        </div>
+                        <div class="swatch option-c-text">
+                            <div class="swatch-label">Text<br>#F8FAFC</div>
+                        </div>
+                    </div>
+
+                    <div class="mini-mockup">
+                        <div class="mini-mockup-label">Sample: Today's Session</div>
+                        <div class="session-card option-c-session">
+                            <div class="session-card-content">
+                                <div class="session-label">Strength Block 3</div>
+                                <div class="session-title">Lower Power Day</div>
+                                <div class="session-details">
+                                    <div class="session-detail"><span class="session-detail-icon">⏱</span> 52 min</div>
+                                    <div class="session-detail"><span class="session-detail-icon">📍</span> 6 exercises</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography Section -->
+        <div class="typography-section">
+            <h2>Typography Direction</h2>
+            <p>Three typefaces working in harmony to create a clear, premium visual hierarchy.</p>
+
+            <div class="typography-grid">
+                <!-- Display -->
+                <div class="type-sample">
+                    <div class="type-label">Display Font</div>
+                    <div class="type-display">Inter Bold</div>
+                    <div class="type-body">Used for headings, titles, and prominent labels. Geometric sans-serif for a modern, authoritative presence.</div>
+                </div>
+
+                <!-- Body -->
+                <div class="type-sample">
+                    <div class="type-label">Body Font</div>
+                    <div class="type-body">The quick brown fox jumps over the lazy dog. Inter at 15px/24px baseline is the standard for readable body copy, UI labels, and interface text.</div>
+                    <div class="type-body">Perfect balance of legibility and premium feel across mobile and desktop.</div>
+                </div>
+
+                <!-- Monospace -->
+                <div class="type-sample">
+                    <div class="type-label">Monospace Font</div>
+                    <div class="type-mono">var metrics = { rpe: 8, volume: 245 };</div>
+                    <div class="type-body">JetBrains Mono for data points, code snippets, and technical metrics. Ensures clarity in performance numbers.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <h2>What's Next</h2>
+            <p>Pick your preferred palette direction, and we'll build a comprehensive style guide including component states, spacing grid, shadows, animations, and full mobile + desktop kit.</p>
+            <button class="cta-button">Discuss Palette Direction</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Helix Visual Identity Exploration • Version 1.0 • March 2026</p>
+        </div>
+    </div>
+</body>
+</html>

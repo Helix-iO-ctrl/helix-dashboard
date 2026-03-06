@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helix.io — UX Wireframes v1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0F172A;
+            color: #F8FAFC;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-accent {
+            color: #06B6D4;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #94A3B8;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: #475569;
+            color: #E2E8F0;
+        }
+
+        .tab-btn.active {
+            background: #06B6D4;
+            border-color: #06B6D4;
+            color: #0F172A;
+        }
+
+        /* Wireframe Container */
+        .wireframes-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Phone Frame */
+        .phone-frame {
+            background: #1E293B;
+            border: 12px solid #334155;
+            border-radius: 48px;
+            width: 375px;
+            height: 812px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #0F172A;
+            border-radius: 0 0 24px 24px;
+            z-index: 10;
+        }
+
+        .phone-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 40px;
+            background: #0F172A;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .phone-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .phone-content::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 2px;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94A3B8;
+            border-bottom: 1px solid #1E293B;
+        }
+
+        /* Screen Content */
+        .screen-content {
+            padding: 0 16px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen-header {
+            margin-bottom: 24px;
+        }
+
+        .screen-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #F8FAFC;
+            margin-bottom: 4px;
+        }
+
+        .screen-subtitle {
+            font-size: 14px;
+            color: #94A3B8;
+        }
+
+        .screen-date {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 4px;
+        }
+
+        /* Cards */
+        .card {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #475569;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .slider-options {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .slider-option {
+            flex: 1;
+            aspect-ratio: 1;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94A3B8;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .slider-option:hover {
+            border-color: #475569;
+        }
+
+        .slider-option.selected {
+            border-color: #06B6D4;
+            background: rgba(6, 182, 212, 0.1);
+            color: #06B6D4;
+        }
+
+        .slider-option.level-1 { background: rgba(16, 185, 129, 0.05); }
+        .slider-option.level-1.selected { background: rgba(16, 185, 129, 0.15); border-color: #10B981; color: #10B981; }
+
+        .slider-option.level-3 { background: rgba(245, 158, 11, 0.05); }
+        .slider-option.level-3.selected { background: rgba(245, 158, 11, 0.15); border-color: #F59E0B; color: #F59E0B; }
+
+        .slider-option.level-4 { background: rgba(245, 158, 11, 0.05); }
+        .slider-option.level-4.selected { background: rgba(245, 158, 11, 0.15); border-color: #F59E0B; color: #F59E0B; }
+
+        .slider-option.level-5 { background: rgba(239, 68, 68, 0.05); }
+        .slider-option.level-5.selected { background: rgba(239, 68, 68, 0.15); border-color: #EF4444; color: #EF4444; }
+
+        .slider-value {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .slider-label-small {
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        /* Session Adjustment Preview */
+        .adjustment-card {
+            border-left: 4px solid #06B6D4;
+            background: rgba(6, 182, 212, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .adjustment-card.success {
+            border-left-color: #10B981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .adjustment-card.warning {
+            border-left-color: #F59E0B;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .adjustment-card.error {
+            border-left-color: #EF4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .adjustment-card-title {
+            font-weight: 600;
+            color: #F8FAFC;
+            margin-bottom: 4px;
+        }
+
+        .adjustment-card-text {
+            color: #CBD5E1;
+            font-size: 12px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            width: 100%;
+            padding: 14px 16px;
+            background: #06B6D4;
+            border: none;
+            border-radius: 8px;
+            color: #0F172A;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: auto;
+        }
+
+        .cta-button:hover {
+            background: #00A3B4;
+        }
+
+        /* Screen 2: Exercise View */
+        .session-timer {
+            display: inline-block;
+            background: #1E293B;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #94A3B8;
+            margin-left: 8px;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0 16px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: #1E293B;
+            border: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #64748B;
+        }
+
+        .progress-dot.current {
+            background: #06B6D4;
+            border-color: #06B6D4;
+            color: #0F172A;
+        }
+
+        .progress-dot.completed {
+            background: #10B981;
+            border-color: #10B981;
+            color: #0F172A;
+        }
+
+        .exercise-card {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .exercise-slot-badge {
+            background: #06B6D4;
+            color: #0F172A;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .exercise-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #F8FAFC;
+            margin-bottom: 8px;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .zone-badge {
+            background: #1E293B;
+            border: 1px solid #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #06B6D4;
+        }
+
+        .video-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #06B6D4;
+            border: none;
+            color: #0F172A;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .video-icon:hover {
+            background: #00A3B4;
+        }
+
+        .prescription {
+            font-size: 13px;
+            color: #CBD5E1;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .rpe-target {
+            display: inline-block;
+            background: rgba(6, 182, 212, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #06B6D4;
+            margin-left: 8px;
+        }
+
+        /* Set Logging Grid */
+        .set-grid {
+            margin-top: 16px;
+        }
+
+        .set-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .set-row-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94A3B8;
+            grid-column: 1 / -1;
+            margin-bottom: 8px;
+        }
+
+        .set-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #CBD5E1;
+            padding: 8px;
+            background: #0F172A;
+            border-radius: 6px;
+        }
+
+        .set-input {
+            background: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px;
+            color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .set-input:focus {
+            outline: none;
+            border-color: #06B6D4;
+        }
+
+        .set-rpe-selector {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .rpe-btn {
+            flex: 1;
+            min-width: 24px;
+            padding: 6px;
+            background: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            color: #94A3B8;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rpe-btn:hover {
+            border-color: #475569;
+        }
+
+        .rpe-btn.selected {
+            background: #06B6D4;
+            border-color: #06B6D4;
+            color: #0F172A;
+        }
+
+        .regulatory-label {
+            font-size: 10px;
+            color: #F59E0B;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .intra-alert {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid #10B981;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #10B981;
+        }
+
+        .intra-alert.warn {
+            background: rgba(245, 158, 11, 0.05);
+            border-color: #F59E0B;
+            color: #F59E0B;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .nav-btn {
+            padding: 12px;
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #06B6D4;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: #475569;
+            background: #334155;
+        }
+
+        /* Screen 3: Coach Dashboard */
+        .dashboard-frame {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .coach-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .coach-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #F8FAFC;
+        }
+
+        .client-count {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+
+        .alert-banner {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #F59E0B;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #F59E0B;
+            font-weight: 600;
+        }
+
+        .alert-banner-arrow {
+            color: #F59E0B;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #F8FAFC;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+
+        .stat-color-success { color: #10B981; }
+        .stat-color-warning { color: #F59E0B; }
+        .stat-color-error { color: #EF4444; }
+        .stat-color-info { color: #06B6D4; }
+
+        /* Client List */
+        .client-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .client-row {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .client-row:hover {
+            border-color: #475569;
+            background: #334155;
+        }
+
+        .client-row.caution {
+            border-left: 4px solid #F59E0B;
+        }
+
+        .client-row.deload {
+            border-left: 4px solid #EF4444;
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .avatar-1 { background: #06B6D4; }
+        .avatar-2 { background: #10B981; }
+        .avatar-3 { background: #8B5CF6; }
+        .avatar-4 { background: #EC4899; }
+        .avatar-5 { background: #F59E0B; }
+
+        .client-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .client-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #F8FAFC;
+        }
+
+        .client-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .status-completed { background: #10B981; }
+        .status-pending { background: #F59E0B; }
+        .status-caution { background: #EF4444; }
+
+        .compliance-bar {
+            width: 60px;
+            height: 6px;
+            background: #0F172A;
+            border-radius: 3px;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .compliance-fill {
+            height: 100%;
+            background: #06B6D4;
+            border-radius: 3px;
+        }
+
+        .client-meta-label {
+            font-weight: 600;
+        }
+
+        .client-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .caution-flag {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #F59E0B;
+        }
+
+        .view-all-link {
+            text-align: center;
+            padding: 12px;
+            color: #06B6D4;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-all-link:hover {
+            color: #00A3B4;
+        }
+
+        /* Annotations */
+        .annotations-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            max-width: 900px;
+        }
+
+        .annotation-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #06B6D4;
+            margin-bottom: 12px;
+        }
+
+        .annotation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .annotation-item {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+            color: #CBD5E1;
+            line-height: 1.4;
+        }
+
+        .annotation-item::before {
+            content: '•';
+            color: #06B6D4;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Screen Container */
+        .screen-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .screen-label {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #94A3B8;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wireframes-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .phone-frame {
+                width: 100%;
+                max-width: 375px;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function HelixWireframes() {
+            const [activeScreen, setActiveScreen] = useState('readiness');
+
+            const handleScreenChange = (screen) => {
+                setActiveScreen(screen);
+            };
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>
+                            <span>Helix</span>
+                            <span className="header-accent">—</span>
+                            <span>UX Wireframes v1</span>
+                        </h1>
+                        <div className="tab-nav">
+                            <button
+                                className={`tab-btn ${activeScreen === 'readiness' ? 'active' : ''}`}
+                                onClick={() => handleScreenChange('readiness')}
+                            >
+                                Screen 1: Daily Readiness
+                            </button>
+                            <button
+                                className={`tab-btn ${activeScreen === 'exercise' ? 'active' : ''}`}
+                                onClick={() => handleScreenChange('exercise')}
+                            >
+                                Screen 2: In-Session Exercise
+                            </button>
+                            <button
+                                className={`tab-btn ${activeScreen === 'dashboard' ? 'active' : ''}`}
+                                onClick={() => handleScreenChange('dashboard')}
+                            >
+                                Screen 3: Coach Dashboard
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="wireframes-container">
+                        {activeScreen === 'readiness' && <ReadinessCheckIn />}
+                        {activeScreen === 'exercise' && <InSessionExercise />}
+                        {activeScreen === 'dashboard' && <CoachDashboard />}
+                    </div>
+                </div>
+            );
+        }
+
+        function ReadinessCheckIn() {
+            const [fatigue, setFatigue] = useState(null);
+            const [soreness, setSoreness] = useState(null);
+            const [stress, setStress] = useState(null);
+
+            const getFatigueColor = (level) => {
+                if (level === 1) return '#10B981';
+                if (level === 2) return '#06B6D4';
+                if (level === 3) return '#F59E0B';
+                if (level === 4) return '#F59E0B';
+                if (level === 5) return '#EF4444';
+                return '#94A3B8';
+            };
+
+            const getAdjustmentMessage = () => {
+                const values = [fatigue, soreness, stress];
+                const hasValues = values.some(v => v !== null);
+
+                if (!hasValues) {
+                    return { text: 'Complete the check-in to see session adjustment', type: 'neutral' };
+                }
+
+                const maxValue = Math.max(...values.filter(v => v !== null));
+
+                if (maxValue >= 5) {
+                    return {
+                        title: 'Deload suggested',
+                        text: 'Coach has been notified. Recovery prioritized today.',
+                        type: 'error'
+                    };
+                } else if (maxValue >= 3) {
+                    return {
+                        title: 'Extended warmup recommended',
+                        text: 'Extra prep time to dial in today\'s session.',
+                        type: 'warning'
+                    };
+                } else {
+                    return {
+                        title: 'Your session is ready as planned',
+                        text: 'You\'re in great shape. Go strong.',
+                        type: 'success'
+                    };
+                }
+            };
+
+            const adjustment = getAdjustmentMessage();
+
+            return (
+                <div className="screen-wrapper">
+                    <div className="phone-frame">
+                        <div className="phone-content">
+                            <div className="status-bar">
+                                <span>9:41</span>
+                                <span>● ● ●</span>
+                            </div>
+
+                            <div className="screen-content">
+                                <div className="screen-header">
+                                    <div>
+                                        <div className="screen-title">Good morning, Josh</div>
+                                        <div className="screen-subtitle">How are you feeling today?</div>
+                                        <div className="screen-date">Thursday, March 6</div>
+                                    </div>
+                                </div>
+
+                                <div className="slider-group">
+                                    <label className="slider-label">Fatigue Level</label>
+                                    <div className="slider-options">
+                                        {[1, 2, 3, 4, 5].map(level => (
+                                            <div
+                                                key={`fatigue-${level}`}
+                                                className={`slider-option level-${level} ${fatigue === level ? 'selected' : ''}`}
+                                                onClick={() => setFatigue(level)}
+                                            >
+                                                <div className="slider-value">{level}</div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    {level === 1 && '🟢'}
+                                                    {level === 2 && '🔵'}
+                                                    {level === 3 && '🟡'}
+                                                    {level === 4 && '🟠'}
+                                                    {level === 5 && '🔴'}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="slider-options" style={{ fontSize: '10px', color: '#94A3B8', marginTop: '8px', justifyContent: 'space-around', textAlign: 'center' }}>
+                                        <div>Fresh</div>
+                                        <div>Normal</div>
+                                        <div>Moderate</div>
+                                        <div>Tired</div>
+                                        <div>Exhausted</div>
+                                    </div>
+                                </div>
+
+                                <div className="slider-group">
+                                    <label className="slider-label">Soreness Level</label>
+                                    <div className="slider-options">
+                                        {[1, 2, 3, 4, 5].map(level => (
+                                            <div
+                                                key={`soreness-${level}`}
+                                                className={`slider-option ${soreness === level ? 'selected' : ''}`}
+                                                onClick={() => setSoreness(level)}
+                                            >
+                                                <div className="slider-value">{level}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="slider-options" style={{ fontSize: '10px', color: '#94A3B8', marginTop: '8px', justifyContent: 'space-around', textAlign: 'center' }}>
+                                        <div>None</div>
+                                        <div>Mild</div>
+                                        <div>Moderate</div>
+                                        <div>Significant</div>
+                                        <div>Severe</div>
+                                    </div>
+                                </div>
+
+                                <div className="slider-group">
+                                    <label className="slider-label">Stress Level</label>
+                                    <div className="slider-options">
+                                        {[1, 2, 3, 4, 5].map(level => (
+                                            <div
+                                                key={`stress-${level}`}
+                                                className={`slider-option ${stress === level ? 'selected' : ''}`}
+                                                onClick={() => setStress(level)}
+                                            >
+                                                <div className="slider-value">{level}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="slider-options" style={{ fontSize: '10px', color: '#94A3B8', marginTop: '8px', justifyContent: 'space-around', textAlign: 'center' }}>
+                                        <div>Low</div>
+                                        <div>Mild</div>
+                                        <div>Moderate</div>
+                                        <div>High</div>
+                                        <div>Very High</div>
+                                    </div>
+                                </div>
+
+                                <div className={`adjustment-card ${adjustment.type === 'success' ? 'success' : adjustment.type === 'warning' ? 'warning' : adjustment.type === 'error' ? 'error' : ''}`}>
+                                    {adjustment.title && (
+                                        <div className="adjustment-card-title">{adjustment.title}</div>
+                                    )}
+                                    <div className="adjustment-card-text">{adjustment.text}</div>
+                                </div>
+
+                                <button className="cta-button">Start Session →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="annotations-section">
+                        <div className="annotation-title">Key UX Decisions</div>
+                        <div className="annotation-list">
+                            <div className="annotation-item">
+                                60-second target: three sliders + one tap = done. No scrolling, no optional fields.
+                            </div>
+                            <div className="annotation-item">
+                                Session adjustment preview gives immediate feedback on their inputs — no guessing what "Exhausted" means.
+                            </div>
+                            <div className="annotation-item">
+                                Fatigue = 5 triggers deload suggestion AND notifies coach in real-time. Coach sees flag on dashboard.
+                            </div>
+                            <div className="annotation-item">
+                                Colors are semantic: green (good) → red (action needed). Accessible without relying on color alone.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function InSessionExercise() {
+            const [sets, setSets] = useState([
+                { reps: 3, weight: 135, rpe: 7 },
+                { reps: null, weight: null, rpe: null },
+                { reps: null, weight: null, rpe: null },
+                { reps: null, weight: null, rpe: null },
+            ]);
+
+            const [activeRPE, setActiveRPE] = useState([7, null, null, null]);
+
+            const handleWeightChange = (index, value) => {
+                const newSets = [...sets];
+                newSets[index].weight = value ? parseFloat(value) : null;
+                setSets(newSets);
+            };
+
+            const handleRepsChange = (index, value) => {
+                const newSets = [...sets];
+                newSets[index].reps = value ? parseInt(value) : null;
+                setSets(newSets);
+            };
+
+            const handleRPESelect = (setIndex, rpeValue) => {
+                const newRPE = [...activeRPE];
+                newRPE[setIndex] = rpeValue;
+                setActiveRPE(newRPE);
+                const newSets = [...sets];
+                newSets[setIndex].rpe = rpeValue;
+                setSets(newSets);
+            };
+
+            const currentRPE = sets[0].rpe || 0;
+            const rpeDeviation = currentRPE > 8 ? (currentRPE - 8) : (currentRPE < 7 ? (7 - currentRPE) : 0);
+            const intraAlert = rpeDeviation === 0 ?
+                { text: 'RPE on track — maintain load', type: 'success' } :
+                rpeDeviation <= 1 ?
+                { text: 'RPE slightly high — monitor next set', type: 'warn' } :
+                { text: 'RPE high (+2) — reduce next set by 5%', type: 'warn' };
+
+            return (
+                <div className="screen-wrapper">
+                    <div className="phone-frame">
+                        <div className="phone-content">
+                            <div className="status-bar">
+                                <span>9:52</span>
+                                <span>● ● ●</span>
+                            </div>
+
+                            <div className="screen-content">
+                                <div className="screen-header">
+                                    <div>
+                                        <div className="screen-title">
+                                            Upper Body
+                                            <span className="session-timer">18:32</span>
+                                        </div>
+                                        <div className="screen-subtitle">Strength</div>
+                                    </div>
+                                </div>
+
+                                <div className="progress-dots">
+                                    {['P1', 'P2', 'A1', 'A2', 'B1', 'B2'].map((label, idx) => (
+                                        <div
+                                            key={label}
+                                            className={`progress-dot ${label === 'A1' ? 'current' : idx < 2 ? 'completed' : ''}`}
+                                        >
+                                            {label}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="exercise-card">
+                                    <div className="exercise-header">
+                                        <div>
+                                            <div className="exercise-slot-badge">A1</div>
+                                        </div>
+                                        <button className="video-icon" title="Play video">▶</button>
+                                    </div>
+
+                                    <div className="exercise-name">Barbell Back Squat</div>
+
+                                    <div className="exercise-meta">
+                                        <div className="zone-badge">Strength</div>
+                                    </div>
+
+                                    <div className="prescription">
+                                        4 sets × 3 reps @ 80% 1RM
+                                        <div className="rpe-target">RPE 7–8</div>
+                                    </div>
+
+                                    <div className="set-grid">
+                                        <div className="set-row-header">Set Logging</div>
+                                        {sets.map((set, idx) => (
+                                            <div key={`set-${idx}`}>
+                                                <div className="set-row">
+                                                    <div className="set-label">Set {idx + 1}</div>
+                                                    <input
+                                                        type="number"
+                                                        className="set-input"
+                                                        placeholder="kg"
+                                                        value={set.weight || ''}
+                                                        onChange={(e) => handleWeightChange(idx, e.target.value)}
+                                                    />
+                                                    <input
+                                                        type="number"
+                                                        className="set-input"
+                                                        placeholder="reps"
+                                                        value={set.reps || ''}
+                                                        onChange={(e) => handleRepsChange(idx, e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="set-row" style={{ marginBottom: '12px', marginTop: '-8px' }}>
+                                                    <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '600' }}>RPE</div>
+                                                    <div className="set-rpe-selector" style={{ gridColumn: '2 / -1' }}>
+                                                        {[7, 8, 9, 10].map(rpe => (
+                                                            <button
+                                                                key={`rpe-${idx}-${rpe}`}
+                                                                className={`rpe-btn ${activeRPE[idx] === rpe ? 'selected' : ''}`}
+                                                                onClick={() => handleRPESelect(idx, rpe)}
+                                                            >
+                                                                {rpe}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                {idx === 3 && (
+                                                    <div className="regulatory-label">⚡ Regulatory set — drives next week's prescription</div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className={`intra-alert ${intraAlert.type}`}>
+                                        ✓ {intraAlert.text}
+                                    </div>
+                                </div>
+
+                                <div className="nav-buttons">
+                                    <button className="nav-btn">← Previous</button>
+                                    <button className="nav-btn">Next →</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="annotations-section">
+                        <div className="annotation-title">Key UX Decisions</div>
+                        <div className="annotation-list">
+                            <div className="annotation-item">
+                                Regulatory set (final set) drives next-week prescription via FSS formula. Highlighted with lightning icon to signal importance.
+                            </div>
+                            <div className="annotation-item">
+                                Intra-session adjustment: if RPE deviates ±2 from target (7–8), load adjusts automatically with visual feedback.
+                            </div>
+                            <div className="annotation-item">
+                                Video icon opens exercise demo — reduces form questions to coach and keeps client focused on execution.
+                            </div>
+                            <div className="annotation-item">
+                                Set 1 pre-filled with example data (135kg, 3 reps, RPE 7) to establish the pattern and reduce decision friction.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function CoachDashboard() {
+            const clients = [
+                {
+                    id: 1,
+                    name: 'Josh Kim',
+                    initials: 'JK',
+                    status: 'completed',
+                    compliance: 95,
+                    phase: 'Strength Block 2',
+                    avatar: 'avatar-1'
+                },
+                {
+                    id: 2,
+                    name: 'Sarah Martinez',
+                    initials: 'SM',
+                    status: 'pending',
+                    compliance: 78,
+                    phase: 'Hypertrophy',
+                    avatar: 'avatar-2',
+                    caution: true
+                },
+                {
+                    id: 3,
+                    name: 'Mike Thompson',
+                    initials: 'MT',
+                    status: 'deload',
+                    compliance: 89,
+                    phase: 'Deload Week',
+                    avatar: 'avatar-3',
+                    deload: true
+                },
+                {
+                    id: 4,
+                    name: 'Emma Wilson',
+                    initials: 'EW',
+                    status: 'completed',
+                    compliance: 92,
+                    phase: 'Power Block',
+                    avatar: 'avatar-4'
+                },
+                {
+                    id: 5,
+                    name: 'Alex Chen',
+                    initials: 'AC',
+                    status: 'completed',
+                    compliance: 88,
+                    phase: 'Upper/Lower',
+                    avatar: 'avatar-5'
+                },
+            ];
+
+            const getStatusLabel = (status) => {
+                if (status === 'completed') return 'Session completed';
+                if (status === 'pending') return 'Check-in pending';
+                if (status === 'deload') return 'Deload suggested';
+                return status;
+            };
+
+            const getStatusDot = (status) => {
+                if (status === 'completed') return 'status-completed';
+                if (status === 'pending') return 'status-pending';
+                if (status === 'deload') return 'status-caution';
+                return '';
+            };
+
+            return (
+                <div className="screen-wrapper">
+                    <div className="phone-frame dashboard-frame" style={{ height: 'auto', minHeight: '600px' }}>
+                        <div className="phone-content" style={{ overflow: 'visible' }}>
+                            <div className="status-bar">
+                                <span>9:45</span>
+                                <span>● ● ●</span>
+                            </div>
+
+                            <div className="screen-content" style={{ paddingBottom: '40px' }}>
+                                <div className="screen-header">
+                                    <div className="coach-header">
+                                        <div>
+                                            <div className="screen-title">Dashboard</div>
+                                            <div className="coach-name">Jason Bombard</div>
+                                        </div>
+                                        <div className="client-count">
+                                            {clients.length} active clients
+                                        </div>
+                                    </div>
+                                    <div className="screen-date">Thursday, March 6</div>
+                                </div>
+
+                                <div className="alert-banner">
+                                    <span>⚠ 2 clients flagged for deload review</span>
+                                    <span className="alert-banner-arrow">→</span>
+                                </div>
+
+                                <div className="quick-stats">
+                                    <div className="stat-card">
+                                        <div className="stat-value stat-color-success">89%</div>
+                                        <div className="stat-label">Avg Compliance</div>
+                                    </div>
+                                    <div className="stat-card">
+                                        <div className="stat-value stat-color-warning">2</div>
+                                        <div className="stat-label">Deload Flags</div>
+                                    </div>
+                                    <div className="stat-card">
+                                        <div className="stat-value stat-color-error">1</div>
+                                        <div className="stat-label">Caution Flag</div>
+                                    </div>
+                                    <div className="stat-card">
+                                        <div className="stat-value stat-color-info">8</div>
+                                        <div className="stat-label">Sessions Today</div>
+                                    </div>
+                                </div>
+
+                                <div className="client-list">
+                                    {clients.map((client) => (
+                                        <div
+                                            key={client.id}
+                                            className={`client-row ${client.caution ? 'caution' : ''} ${client.deload ? 'deload' : ''}`}
+                                        >
+                                            <div className={`client-avatar ${client.avatar}`}>
+                                                {client.initials}
+                                            </div>
+
+                                            <div className="client-info">
+                                                <div className="client-name">{client.name}</div>
+                                                <div className="client-meta">
+                                                    <span>
+                                                        <span className={`status-dot ${getStatusDot(client.status)}`}></span>
+                                                        {getStatusLabel(client.status)}
+                                                    </span>
+                                                    <span>
+                                                        <div className="compliance-bar">
+                                                            <div
+                                                                className="compliance-fill"
+                                                                style={{ width: `${client.compliance}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        {client.compliance}%
+                                                    </span>
+                                                    <span style={{ fontSize: '10px' }}>{client.phase}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="client-actions">
+                                                {(client.caution || client.deload) && (
+                                                    <div className="caution-flag" title="Flagged for review">
+                                                        🚩
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="view-all-link">
+                                    View All Clients →
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="annotations-section">
+                        <div className="annotation-title">Key UX Decisions</div>
+                        <div className="annotation-list">
+                            <div className="annotation-item">
+                                Coach sees everything at a glance — compliance bars, readiness status, caution flags — in one unified view. No secondary dashboard.
+                            </div>
+                            <div className="annotation-item">
+                                Flagged clients (caution, deload) have a yellow or red left border and float to top of list via sort logic for immediate attention.
+                            </div>
+                            <div className="annotation-item">
+                                Quick stats row (89% compliance, 2 deload flags, etc.) gives coach real-time pulse on entire roster without opening individual profiles.
+                            </div>
+                            <div className="annotation-item">
+                                Override entry point: coach taps any client row to open profile → review flagged items → override recommendations. Override is logged for audit.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<HelixWireframes />);
+    </script>
+</body>
+</html>

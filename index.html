@@ -32,7 +32,7 @@
       currentPhase: 1,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
 
       // ── SUMMARY (keep in sync with tasks below) ──
-      summary: { total: 51, done: 19, inProgress: 2, blocked: 0, todo: 30 },
+      summary: { total: 51, done: 22, inProgress: 1, blocked: 0, todo: 28 },
 
       // ── DISCIPLINES & TASKS ──
       // status options: "todo" | "in-progress" | "blocked" | "done"
@@ -73,8 +73,8 @@
           tasks: [
             { id: 6,  text: "Map full programming intake flow as UX user flow",           status: "todo", priority: "high" },
             { id: 7,  text: "Design self-guided → coaching conversion moment",             status: "todo", priority: "high" },
-            { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "todo", priority: "high" },
-            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "todo", priority: "high" },
+            { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "done", priority: "high", assetPath: "https://helix-io-ctrl.github.io/helix-dashboard/assets/ux/helix-wireframes-v1.html" },
+            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "done", priority: "high", assetPath: "https://helix-io-ctrl.github.io/helix-dashboard/assets/ux/helix-wireframes-v1.html" },
             { id: 26, text: "Design RPE per-set logging screen",                           status: "todo", priority: "medium" },
             { id: 27, text: "Design self-guided onboarding for travel kit users (QR → first workout)", status: "todo", priority: "medium" },
           ],
@@ -115,7 +115,7 @@
           color: "#D97706", lightColor: "#FFFBEB", borderColor: "#FDE68A",
           owner: "Cowork",
           tasks: [
-            { id: 17, text: "Begin visual identity exploration for Helix — mood board, palette, type", status: "in-progress", priority: "medium" },
+            { id: 17, text: "Begin visual identity exploration for Helix — mood board, palette, type", status: "done", priority: "medium", assetPath: "https://helix-io-ctrl.github.io/helix-dashboard/assets/creative/helix-visual-identity-v1.html" },
             { id: 18, text: "Design travel kit branding concept (embroidered bag, QR card)",          status: "todo",        priority: "medium" },
             { id: 30, text: "Formalize app name as Helix — reserve brand assets, confirm domain",    status: "todo",        priority: "high" },
           ],
@@ -928,7 +928,7 @@
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
                 padding:"16px 20px", marginBottom:20,
                 display:"flex", alignItems:"center", gap:20 }}>
-                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>ENGAGEMENT PHASE</span>
+                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>
                 <div style={{ display:"flex", flex:1, gap:8 }}>
                   {d.phases.map((p,i)=>(
                     <div key={p} style={{ flex:1 }}>
@@ -965,13 +965,13 @@
                 overflow:"hidden", marginBottom:20 }}>
                 <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
                   display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Work Areas</span>
+                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Disciplines</span>
                   <span style={{ fontSize:11, color:"#94A3B8" }}>Click a row to see tasks ↓</span>
                 </div>
                 <table>
                   <thead>
                     <tr style={{ background:"#F8FAFC" }}>
-                      {["Area","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
+                      {["Discipline","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
                         <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
                           fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
                           letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
