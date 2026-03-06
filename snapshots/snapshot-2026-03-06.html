@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helix — Week 2 Snapshot | Mar 2–6, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #FFFFFF;
+      color: #0F1923;
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
+
+    /* ── HEADER STRIP ── */
+    .header-strip {
+      background: #0F1923;
+      color: #FFFFFF;
+      padding: 36px 48px;
+    }
+    .header-strip .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .header-strip .project-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #64748B;
+    }
+    .header-strip .divider { color: #334155; }
+    .header-strip h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      margin-bottom: 24px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .stat-block { }
+    .stat-block .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #64748B;
+      margin-bottom: 4px;
+    }
+    .stat-block .stat-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1;
+    }
+    .stat-block .stat-sub {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-top: 4px;
+    }
+    .stat-block .stat-value.accent { color: #1D6AFF; }
+    .stat-block .stat-value.green { color: #34D399; }
+    .stat-block .stat-value.amber { color: #FBBF24; }
+
+    /* ── PHASE PILL ── */
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(29, 106, 255, 0.15);
+      border: 1px solid rgba(29, 106, 255, 0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #60A5FA;
+      margin-bottom: 20px;
+    }
+    .phase-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #60A5FA;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 48px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .section-number {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1D6AFF;
+      letter-spacing: 0.06em;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F1923;
+    }
+
+    /* ── COMPLETED ITEMS ── */
+    .done-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .done-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 16px;
+      background: #F8FAFC;
+      border-radius: 8px;
+      border-left: 3px solid #059669;
+    }
+    .done-check {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #DCFCE7;
+      color: #059669;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .done-text { font-size: 14px; color: #1E293B; }
+    .discipline-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+
+    /* ── VELOCITY ── */
+    .velocity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .velocity-card {
+      padding: 16px 20px;
+      background: #F8FAFC;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+    }
+    .velocity-card .v-label { font-size: 11px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+    .velocity-card .v-value { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: #0F1923; }
+    .velocity-card .v-note { font-size: 12px; color: #64748B; margin-top: 4px; }
+
+    /* ── PROBLEM CARDS ── */
+    .problem-list { display: flex; flex-direction: column; gap: 16px; }
+    .problem-card {
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+    }
+    .problem-card.red { border-left: 4px solid #DC2626; }
+    .problem-card.amber { border-left: 4px solid #D97706; }
+    .problem-card.blue { border-left: 4px solid #1D6AFF; }
+    .problem-card-inner { padding: 16px 20px; }
+    .problem-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .response-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .response-badge.decision { background: #FEE2E2; color: #DC2626; }
+    .response-badge.input { background: #FEF3C7; color: #D97706; }
+    .response-badge.fyi { background: #DBEAFE; color: #1D6AFF; }
+    .problem-label { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: #0F1923; }
+    .problem-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .problem-col-label { font-size: 10px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+    .problem-col-text { font-size: 13px; color: #334155; }
+
+    /* ── NEXT WEEK ── */
+    .next-list { display: flex; flex-direction: column; gap: 10px; }
+    .next-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 16px;
+      background: #F8FAFC;
+      border-radius: 8px;
+      border-left: 3px solid #1D6AFF;
+    }
+    .next-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1D6AFF;
+      min-width: 20px;
+      margin-top: 1px;
+    }
+    .next-text { font-size: 14px; color: #1E293B; }
+
+    /* ── DECISIONS NEEDED ── */
+    .decision-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .decision-table th {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #64748B;
+      text-align: left;
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .decision-table td {
+      padding: 12px 12px;
+      vertical-align: top;
+      border-bottom: 1px solid #F1F5F9;
+      color: #334155;
+    }
+    .decision-table td:first-child { width: 36px; }
+    .checkbox-circle {
+      width: 20px; height: 20px;
+      border: 2px solid #CBD5E1;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .decision-owner {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      background: #F1F5F9;
+      border-radius: 4px;
+      padding: 2px 7px;
+      white-space: nowrap;
+    }
+
+    /* ── OPEN QUESTIONS ── */
+    .oq-list { display: flex; flex-direction: column; gap: 10px; }
+    .oq-item {
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+    .oq-urgency {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .oq-urgency.high { background: #FEE2E2; color: #DC2626; }
+    .oq-urgency.medium { background: #FEF3C7; color: #D97706; }
+    .oq-q { font-size: 13px; font-weight: 600; color: #0F1923; margin-bottom: 4px; }
+    .oq-note { font-size: 12px; color: #64748B; }
+    .oq-stakes {
+      font-size: 11px;
+      font-weight: 600;
+      color: #DC2626;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid #E2E8F0;
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #94A3B8;
+    }
+    footer strong { color: #64748B; }
+
+    @media print {
+      body { background: white; }
+      .header-strip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER STRIP ── -->
+  <div class="header-strip">
+    <div class="project-meta">
+      <span class="project-label">Helix — Fitness Coaching App</span>
+      <span class="divider">·</span>
+      <span class="project-label">Weekly Snapshot</span>
+    </div>
+    <h1>Week 2 · Mar 2 – Mar 6, 2026</h1>
+
+    <div class="phase-pill">
+      <div class="phase-dot"></div>
+      Discovery Phase — Transitioning to Pre-Build
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-label">Overall Progress</div>
+        <div class="stat-value accent">35%</div>
+        <div class="stat-sub">19 of 54 tasks complete</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Done This Week</div>
+        <div class="stat-value green">8</div>
+        <div class="stat-sub">tasks completed</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Active Blockers</div>
+        <div class="stat-value green">0</div>
+        <div class="stat-sub">Q4 &amp; Q5 resolved ✓</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Open Questions</div>
+        <div class="stat-value amber">3</div>
+        <div class="stat-sub">high-urgency items</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main">
+
+    <!-- ── SECTION 1: THIS WEEK ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <span class="section-title">This Week — What Got Done</span>
+      </div>
+      <ul class="done-list">
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Processed Session 1.1 transcript + Jason's full Q&amp;A doc — complete periodization methodology extracted and structured across 5 critical questions.
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#ECFDF5;color:#059669;">Engineering</span>
+            Created adaptive-engine-spec.md — full spec covering FSS formula, RPE ladders, 6-zone system, cumulative fatigue model, 5-condition deload trigger, and block construction rules.
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#ECFDF5;color:#059669;">Engineering</span>
+            Updated data model with Session 1.1 entities: set_performance_logs (FSS tracking), block_fatigue_logs, performance_assessments, performance_assessment_results; updated readiness_logs to 1–5 scale.
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Q4 RESOLVED — A1 exercise selection filter order confirmed: Zone → Training Focus → Equipment Availability → Injury Conflict → Duplication Control → Order Validation (6-step deterministic algorithm, unblocks exercise selection build).
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Q5 RESOLVED — Barbell override rules confirmed (7 categories: zone, folder conflicts, genre rules, equipment, fatigue, Helix Rank, neural stacking) + Helix Rank 5-level progression system (Foundation → Apex) documented.
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Pre-session readiness check-in upgraded: Stress confirmed as 3rd input alongside Fatigue + Soreness — all three feed deload/scaling suggestions.
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Nutrition module formally scoped to V2 — full spec substantially defined (3 delivery options, performance dashboard, grocery automation, recipe database, Instacart integration potential).
+          </div>
+        </li>
+        <li class="done-item">
+          <div class="done-check">✓</div>
+          <div class="done-text">
+            <span class="discipline-tag" style="background:#F8FAFC;color:#334155;">All</span>
+            9 new decisions logged — total decisions on record: 19. Team sync cadence locked: Tuesdays (Jason + Keagan) + Fridays (full team with Hayden).
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── SECTION 2: VELOCITY ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <span class="section-title">Velocity</span>
+      </div>
+      <div class="velocity-grid">
+        <div class="velocity-card">
+          <div class="v-label">This Week</div>
+          <div class="v-value">8</div>
+          <div class="v-note">tasks completed</div>
+        </div>
+        <div class="velocity-card">
+          <div class="v-label">Last Week (Week 1)</div>
+          <div class="v-value">11</div>
+          <div class="v-note">tasks completed</div>
+        </div>
+        <div class="velocity-card">
+          <div class="v-label">Phase Estimate</div>
+          <div class="v-value">~2–3</div>
+          <div class="v-note">sessions to close Discovery</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#64748B;margin-top:12px;">
+        Trend: <strong style="color:#059669;">Healthy.</strong> Fewer tasks completed numerically, but this week's output was higher-leverage — two critical blockers cleared, full engine spec created. Remaining Discovery tasks are mostly feature specs and data-prep, well within current pace.
+      </p>
+    </div>
+
+    <!-- ── SECTION 3: PROBLEMS + PROPOSED PLANS ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <span class="section-title">Problems + Proposed Plans</span>
+      </div>
+      <div class="problem-list">
+
+        <div class="problem-card amber">
+          <div class="problem-card-inner">
+            <div class="problem-header">
+              <span class="response-badge input">Needs Input</span>
+              <span class="problem-label">Nutrition MVP terms still undefined</span>
+            </div>
+            <div class="problem-row">
+              <div>
+                <div class="problem-col-label">Problem</div>
+                <div class="problem-col-text">Jake + Keagan committed to defining the simplest nutrition MVP terms this week, but no document has been received yet. Nutrition is V2, but the spec definition should start now so Jake's templates can be mapped to the data model without rework.</div>
+              </div>
+              <div>
+                <div class="problem-col-label">Proposed Plan</div>
+                <div class="problem-col-text">Jake + Keagan to deliver a 1-page "simplest version" nutrition spec this week. Minimum viable: delivery format (custom / pre-made / hybrid), macro framework, and what Jake's existing templates cover. No build commitment needed — just enough to spec the V2 data model now.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem-card red">
+          <div class="problem-card-inner">
+            <div class="problem-header">
+              <span class="response-badge decision">Needs Decision</span>
+              <span class="problem-label">Equity and compensation structure undecided</span>
+            </div>
+            <div class="problem-row">
+              <div>
+                <div class="problem-col-label">Problem</div>
+                <div class="problem-col-text">Jake is now a confirmed full collaborator with ownership of V2 nutrition. Four parties are involved (Jason, Jake, Keagan, Hayden) with no formal equity or compensation structure in place. Jason has flagged he wants everyone to have a piece, but nothing is documented.</div>
+              </div>
+              <div>
+                <div class="problem-col-label">Proposed Plan</div>
+                <div class="problem-col-text">Jason to initiate a 4-way conversation this week to establish the structure — even a rough working agreement. Suggested options: revenue share per tier (coaching, app subscription, travel kit) or equity split. Hayden can prepare a simple one-page framework if helpful. This should not wait until the product ships.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem-card amber">
+          <div class="problem-card-inner">
+            <div class="problem-header">
+              <span class="response-badge input">Needs Input</span>
+              <span class="problem-label">Travel kit startup costs unknown</span>
+            </div>
+            <div class="problem-row">
+              <div>
+                <div class="problem-col-label">Problem</div>
+                <div class="problem-col-text">The pre-sale validation strategy (20-unit batch) is approved but no one has researched per-unit COGS, Amazon FBA fees, or packaging costs. Without this data, the pre-sale price point and profitability are unvalidated.</div>
+              </div>
+              <div>
+                <div class="problem-col-label">Proposed Plan</div>
+                <div class="problem-col-text">Keagan to research Amazon sourcing costs for initial kit items (resistance bands, lacrosse ball, bag), FBA storage + fulfillment fees, and estimated packaging. Deliver a simple cost table. Hayden can then set the pre-sale price and margin model. Target: by next Friday.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: NEXT WEEK ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <span class="section-title">Next Week — What's Planned</span>
+      </div>
+      <div class="next-list">
+        <div class="next-item">
+          <div class="next-num">1</div>
+          <div class="next-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Write feature specs for performance assessments (intake-selectable, calendar-schedulable, repeat frequency), coach dashboard (compliance, readiness flags, override flow), and Google Calendar integration.
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-num">2</div>
+          <div class="next-text">
+            <span class="discipline-tag" style="background:#ECFDF5;color:#059669;">Engineering</span>
+            Begin Supabase schema implementation using the updated data-model.md — set up tables, relationships, and RLS policies for the adaptive engine data layer.
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-num">3</div>
+          <div class="next-text">
+            <span class="discipline-tag" style="background:#ECFDF5;color:#059669;">Engineering</span>
+            Begin FSS adaptive engine logic implementation — FSS formula, intra-session RPE adjustment rules, and week-to-week progressive overload decision tree.
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-num">4</div>
+          <div class="next-text">
+            <span class="discipline-tag" style="background:#ECFDF5;color:#059669;">Engineering</span>
+            Implement exercise selection filter logic (now fully unblocked by Q4/Q5 answers) — 6-step A1 filter order + 7-category barbell override rules.
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-num">5</div>
+          <div class="next-text">
+            <span class="discipline-tag" style="background:#EFF6FF;color:#2563EB;">Product</span>
+            Define gamification feature: 1RM tracker — user stories, acceptance criteria, and Helix Rank integration points.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: DECISIONS NEEDED ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <span class="section-title">Decisions Needed</span>
+      </div>
+      <table class="decision-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Decision</th>
+            <th>Why It's Blocking</th>
+            <th>Options</th>
+            <th>Recommendation</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="checkbox-circle"></div></td>
+            <td><strong>Equity + compensation structure</strong></td>
+            <td>Four contributors, no formal agreement. Risk increases as product value grows.</td>
+            <td>Revenue share per product tier vs. equity split vs. contractor model</td>
+            <td>Start with revenue share discussion — simpler than equity, adjustable as contributions evolve</td>
+            <td><span class="decision-owner">Jason</span></td>
+          </tr>
+          <tr>
+            <td><div class="checkbox-circle"></div></td>
+            <td><strong>Jason's timeline for leaving Superhuman</strong></td>
+            <td>Timeline pressure affects build sequencing — if Jason plans to leave in 4 weeks, V1 must be scoped tightly. If 12+ weeks, more room for quality.</td>
+            <td>4-week aggressive scope vs. 8–12 week full V1</td>
+            <td>Confirm timeline with Jason, then lock V1 scope accordingly — better to know now than discover mid-build</td>
+            <td><span class="decision-owner">Jason</span></td>
+          </tr>
+          <tr>
+            <td><div class="checkbox-circle"></div></td>
+            <td><strong>Hotel Travel mode architecture</strong></td>
+            <td>Engineering needs to know before building the exercise selection layer — standalone mode or filtered subset of main DB?</td>
+            <td>Standalone table of bodyweight exercises vs. main DB filtered by equipment: none</td>
+            <td>Filter main DB (equipment: none / bodyweight) — simpler, avoids maintaining a separate exercise set</td>
+            <td><span class="decision-owner">Jason</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── SECTION 6: OPEN QUESTIONS ── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <span class="section-title">Open Questions — Need Answers from Team</span>
+      </div>
+      <div class="oq-list">
+
+        <div class="oq-item">
+          <div class="oq-urgency high">High</div>
+          <div>
+            <div class="oq-q">What are the simplest MVP terms for the nutrition piece?</div>
+            <div class="oq-note">Jake + Keagan committed to defining this. Nutrition is V2 build, but the spec definition should start now. Jake's existing templates may already cover most of the data layer.</div>
+          </div>
+          <div class="oq-stakes">Blocks V2 planning</div>
+        </div>
+
+        <div class="oq-item">
+          <div class="oq-urgency high">High</div>
+          <div>
+            <div class="oq-q">What are the startup costs for the travel kit — per-unit COGS, packaging, shipping?</div>
+            <div class="oq-note">Keagan to research. Needed to validate pre-sale pricing model and confirm the 20-unit batch unit economics before committing inventory spend.</div>
+          </div>
+          <div class="oq-stakes">Blocks pre-sale launch</div>
+        </div>
+
+        <div class="oq-item">
+          <div class="oq-urgency high">High</div>
+          <div>
+            <div class="oq-q">What is the equity / compensation structure between Jason, Jake, Keagan, and Hayden?</div>
+            <div class="oq-note">Four-way conversation needed now that Jake is confirmed as a full collaborator. Jason has flagged he wants everyone to have a piece. Should be established before the product has material value.</div>
+          </div>
+          <div class="oq-stakes">Blocks team alignment</div>
+        </div>
+
+        <div class="oq-item">
+          <div class="oq-urgency medium">Med</div>
+          <div>
+            <div class="oq-q">What is the repeat frequency for each performance test category (Balance, Power, COD, Strength)?</div>
+            <div class="oq-note">Needed to finalize the performance assessment feature spec and calendar scheduling logic. Jason to confirm.</div>
+          </div>
+          <div class="oq-stakes">Blocks feature spec</div>
+        </div>
+
+        <div class="oq-item">
+          <div class="oq-urgency medium">Med</div>
+          <div>
+            <div class="oq-q">Does vertical jump factor into pre-session readiness inputs alongside Fatigue, Soreness, and Stress?</div>
+            <div class="oq-note">Stress is now confirmed as a 3rd input. Vertical jump was mentioned early in discovery but not included in Q5 doc. Jason to confirm if it applies.</div>
+          </div>
+          <div class="oq-stakes">Affects check-in UX spec</div>
+        </div>
+
+        <div class="oq-item">
+          <div class="oq-urgency medium">Med</div>
+          <div>
+            <div class="oq-q">Is the 18-sheet Automation Matrix the complete set, or are Team Programming sheets still planned?</div>
+            <div class="oq-note">Engineering needs to know before building the data model — final category count affects schema design for the exercise database.</div>
+          </div>
+          <div class="oq-stakes">Affects schema design</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div><strong>Helix — Fitness Coaching App</strong> · Week 2 Snapshot · Generated Mar 6, 2026</div>
+    <div>Next snapshot: <strong>Mar 13, 2026</strong></div>
+  </footer>
+
+</body>
+</html>
