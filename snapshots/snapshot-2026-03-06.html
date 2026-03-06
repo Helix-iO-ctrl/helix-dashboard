@@ -1,1108 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fitness Coaching App — Project Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Week 2 Snapshot — Fitness Coaching App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --ink:        #0F1923;
+      --ink-mid:    #4A5568;
+      --ink-soft:   #8896A6;
+      --border:     #E4EAF0;
+      --surface:    #F7F9FC;
+      --white:      #FFFFFF;
+      --blue:       #1D6AFF;
+      --blue-soft:  #EBF1FF;
+      --green:      #0D9970;
+      --green-soft: #E6F7F2;
+      --amber:      #C46B00;
+      --amber-soft: #FFF4E0;
+      --red:        #D63E3E;
+      --red-soft:   #FEF0F0;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; }
-    table { border-collapse: collapse; width: 100%; }
-    button { font-family: inherit; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .eyebrow {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .subtitle { font-size: 13px; color: var(--ink-soft); }
+    .header-meta {
+      text-align: right;
+      flex-shrink: 0;
+      margin-left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+    .pill {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .pill-blue  { background: var(--blue-soft);  color: var(--blue); }
+    .pill-green { background: var(--green-soft); color: var(--green); }
+
+    /* STRIP */
+    .strip {
+      background: var(--ink);
+      border-radius: 10px;
+      padding: 20px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-bottom: 32px;
+    }
+    .strip-item {
+      padding: 0 20px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .strip-item:first-child { padding-left: 0; }
+    .strip-item:last-child  { border-right: none; }
+    .strip-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .strip-num.green { color: #4ade80; }
+    .strip-num.amber { color: #fbbf24; }
+    .strip-num.red   { color: #f87171; }
+    .strip-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; }
+
+    /* SECTION */
+    .section { margin-bottom: 32px; }
+    .section-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    /* DONE LIST */
+    .done-list { display: flex; flex-direction: column; gap: 7px; }
+    .done-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .check-icon {
+      width: 16px; height: 16px;
+      background: var(--green-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* VELOCITY */
+    .velocity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .vel-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .vel-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .vel-label { font-size: 11px; color: var(--ink-soft); }
+    .vel-trend {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .trend-up    { background: var(--green-soft); color: var(--green); }
+    .trend-same  { background: var(--blue-soft);  color: var(--blue); }
+
+    /* PROBLEM CARDS */
+    .problem-list { display: flex; flex-direction: column; gap: 12px; }
+    .problem-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      border-left: 4px solid transparent;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .problem-card.blocked  { border-left-color: var(--red);   background: #fffafa; }
+    .problem-card.at-risk  { border-left-color: var(--amber); background: #fffdf5; }
+    .problem-card.info     { border-left-color: var(--blue);  background: #f8faff; }
+    .problem-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .problem-card.blocked  .problem-label { color: var(--red); }
+    .problem-card.at-risk  .problem-label { color: var(--amber); }
+    .problem-card.info     .problem-label { color: var(--blue); }
+    .problem-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .problem-desc {
+      font-size: 12.5px;
+      color: var(--ink-mid);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .proposed-plan {
+      background: rgba(0,0,0,0.03);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .plan-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .plan-text {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .response-badge {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-decision { background: var(--red-soft);   color: var(--red); }
+    .badge-input    { background: var(--amber-soft); color: var(--amber); }
+    .badge-fyi      { background: var(--blue-soft);  color: var(--blue); }
+
+    /* DECISIONS TABLE */
+    .decisions-table {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .dt-row {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--surface);
+      align-items: start;
+    }
+    .dt-row:last-child { border-bottom: none; }
+    .dt-header {
+      background: var(--surface);
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--border) !important;
+    }
+    .dt-question { font-size: 13px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+    .dt-blocker  { font-size: 11.5px; color: var(--ink-soft); margin-top: 3px; }
+    .dt-options  { font-size: 12px; color: var(--ink-mid); line-height: 1.4; }
+    .dt-rec      { font-size: 12px; color: var(--green); font-weight: 600; line-height: 1.4; }
+
+    /* NEXT WEEK */
+    .next-list { display: flex; flex-direction: column; gap: 6px; }
+    .next-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .next-tag {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .next-text { font-size: 13px; color: var(--ink); }
+
+    @media print {
+      body { background: white; }
+      .page { padding: 20px; }
+    }
+    @media (max-width: 640px) {
+      .two-col, .velocity-grid { grid-template-columns: 1fr; }
+      .strip { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .strip-item { border-right: none; padding: 0; }
+      .problem-card { grid-template-columns: 1fr; }
+      .dt-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+<div class="page">
 
-  <!-- ============================================================
-    ✏️  EDIT YOUR PROJECT DATA HERE
-    This is the only section you need to update as work progresses.
-    ============================================================ -->
-  <script>
-    window.PROJECT_DATA = {
-      name: "Helix — Fitness Coaching App",
-      client: "Jason",
-      lastUpdated: "Mar 6, 2026",     // ← update this each time you edit
-      phases: ["Discovery", "Design", "Build V1", "Launch"],
-      currentPhase: 0,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="eyebrow">Fitness Coaching App — Week 2</div>
+      <h1>Weekly Snapshot</h1>
+      <div class="subtitle">Mar 2 – Mar 6, 2026 &nbsp;·&nbsp; For review and decision</div>
+    </div>
+    <div class="header-meta">
+      <div class="pill pill-blue">Phase 1: Discovery</div>
+      <div class="pill pill-green">35% Complete</div>
+    </div>
+  </div>
 
-      // ── SUMMARY (keep in sync with tasks below) ──
-      summary: { total: 54, done: 19, inProgress: 0, blocked: 0, todo: 35 },
+  <!-- STRIP -->
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-num green">14</div>
+      <div class="strip-label">Tasks completed this week</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num green">0</div>
+      <div class="strip-label">Blocked</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num">9</div>
+      <div class="strip-label">New decisions logged</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num">3</div>
+      <div class="strip-label">Open questions</div>
+    </div>
+  </div>
 
-      // ── DISCIPLINES & TASKS ──
-      // status options: "todo" | "in-progress" | "blocked" | "done"
-      // priority options: "high" | "medium" | "low"
-      disciplines: [
-        {
-          id: "product", label: "Product",
-          color: "#2563EB", lightColor: "#EFF6FF", borderColor: "#BFDBFE",
-          owner: "Cowork",
-          tasks: [
-            { id: 1,  text: "Process discovery call transcript",                                      status: "done",    priority: "high" },
-            { id: 2,  text: "Update product brief with client inputs",                                status: "done",    priority: "high" },
-            { id: 3,  text: "Validate assumptions from tracker",                                      status: "done",    priority: "high" },
-            { id: 4,  text: "Confirm V1 vs V2 scope with client",                                     status: "done",    priority: "high" },
-            { id: 5,  text: "Document full periodization methodology — extract sticky logic pieces",  status: "done",    priority: "high" },
-            { id: 23, text: "Write feature spec: programming intake flow (sequence → phases → blocks → weeks → sessions)", status: "done", priority: "high" },
-            { id: 24, text: "Write feature spec: pre-session readiness check-in and session adjustment logic", status: "done", priority: "high" },
-            { id: 25, text: "Write feature spec: RPE-per-set logging and progressive overload decisions", status: "done", priority: "high" },
-            { id: 33, text: "Scope Nutrition module — complete spec or formally defer to Phase 2",    status: "done",    priority: "high" },
-            { id: 42, text: "✅ Q4 ANSWERED — Exercise selection filter order (A1): Zone → Focus → Equipment → Injury → Duplication → Order Validation", status: "done", priority: "high" },
-            { id: 43, text: "✅ Q5 ANSWERED — Barbell override: 7 rule categories (zone, folder conflicts, genre rules, equipment conflicts, fatigue, Helix Rank, neural stacking)", status: "done", priority: "high" },
-            { id: 44, text: "Write feature spec: performance assessments (intake-selectable, calendar-schedulable, repeat frequency)", status: "todo", priority: "high" },
-            { id: 45, text: "Write feature spec: coach dashboard (compliance, readiness flags, fatigue trend, override flow)", status: "todo", priority: "high" },
-            { id: 46, text: "Write feature spec: Google Calendar integration",                        status: "todo", priority: "high" },
-            { id: 47, text: "Define gamification feature: 1RM tracker — user stories and acceptance criteria", status: "todo", priority: "high" },
-            { id: 22, text: "Review Jason's exercise database spreadsheet and finalize filter tag structure", status: "todo", priority: "high" },
-            { id: 32, text: "Define Phase 1 vs Phase 2 feature designations for Product Outline",     status: "todo", priority: "high" },
-            { id: 34, text: "Clarify Hotel Travel programming mode integration with main automation logic", status: "todo", priority: "medium" },
-            { id: 35, text: "Define Ethnicity and Gender question downstream logic for programming engine", status: "todo", priority: "medium" },
-            { id: 36, text: "Confirm whether Assessment sheet feeds directly into Synopsis by Joint Data", status: "todo", priority: "medium" },
-            { id: 37, text: "Audit blank filter cells in Exercise Database (Single or Pair, Loading Position columns)", status: "todo", priority: "medium" },
-          ],
-        },
-        {
-          id: "ux", label: "UX",
-          color: "#7C3AED", lightColor: "#F5F3FF", borderColor: "#DDD6FE",
-          owner: "Cowork",
-          tasks: [
-            { id: 6,  text: "Map full programming intake flow as UX user flow",           status: "todo", priority: "high" },
-            { id: 7,  text: "Design self-guided → coaching conversion moment",             status: "todo", priority: "high" },
-            { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "todo", priority: "high" },
-            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "todo", priority: "high" },
-            { id: 26, text: "Design RPE per-set logging screen",                           status: "todo", priority: "medium" },
-            { id: 27, text: "Design self-guided onboarding for travel kit users (QR → first workout)", status: "todo", priority: "medium" },
-          ],
-        },
-        {
-          id: "engineering", label: "Engineering",
-          color: "#059669", lightColor: "#ECFDF5", borderColor: "#A7F3D0",
-          owner: "Cowork",
-          tasks: [
-            { id: 10, text: "Decide tech stack (mobile framework, backend, DB)",                  status: "done", priority: "high" },
-            { id: 11, text: "Design data model: exercise database (folders, filter tags, videos)", status: "done", priority: "high" },
-            { id: 12, text: "Design data model: adaptive programming engine (program hierarchy)",  status: "done", priority: "high" },
-            { id: 48, text: "Implement exercise selection filter logic (Q4/Q5 ANSWERED — now unblocked)", status: "todo", priority: "high" },
-            { id: 49, text: "Implement FSS formula and week-to-week progressive overload engine", status: "todo", priority: "high" },
-            { id: 50, text: "Implement cumulative fatigue model and 5-condition deload trigger system", status: "todo", priority: "high" },
-            { id: 51, text: "Implement performance assessment schema and scheduling logic",        status: "todo", priority: "high" },
-            { id: 13, text: "Set up repo and staging/production environment",                     status: "todo", priority: "medium" },
-            { id: 38, text: "Verify all AVERAGE formulas in Joint ROM sheet are live calculations, not text strings", status: "todo", priority: "high" },
-            { id: 39, text: "Client to QA 648 applied exercise name changes, then delete Name Changes tab", status: "todo", priority: "high" },
-            { id: 40, text: "Validate Stork Balance equation (AP Sway + ML Sway) against client's methodology", status: "todo", priority: "medium" },
-            { id: 41, text: "Confirm 18-sheet Automation Matrix is complete set — or identify missing Team Programming sheets", status: "todo", priority: "medium" },
-          ],
-        },
-        {
-          id: "marketing", label: "Marketing",
-          color: "#DC2626", lightColor: "#FEF2F2", borderColor: "#FECACA",
-          owner: "Cowork",
-          tasks: [
-            { id: 14, text: "Finalize coach-facing positioning ('Get a day back every week')",    status: "in-progress", priority: "medium" },
-            { id: 15, text: "Research helix.io domain + backup options (helix.app, gethelix.com)", status: "todo", priority: "high" },
-            { id: 16, text: "Draft travel kit landing page strategy (Shopify → Amazon FBA)",      status: "todo", priority: "high" },
-            { id: 28, text: "Define 4-layer business ecosystem funnel for marketing materials",   status: "todo", priority: "medium" },
-            { id: 29, text: "Develop pre-sale campaign concept for travel kit (20-unit batch)",   status: "todo", priority: "medium" },
-          ],
-        },
-        {
-          id: "creative", label: "Creative",
-          color: "#D97706", lightColor: "#FFFBEB", borderColor: "#FDE68A",
-          owner: "Cowork",
-          tasks: [
-            { id: 17, text: "Begin visual identity exploration for Helix — mood board, palette, type", status: "in-progress", priority: "medium" },
-            { id: 18, text: "Design travel kit branding concept (embroidered bag, QR card)",          status: "todo",        priority: "medium" },
-            { id: 30, text: "Formalize app name as Helix — reserve brand assets, confirm domain",    status: "todo",        priority: "high" },
-          ],
-        },
-        {
-          id: "data", label: "Data",
-          color: "#0891B2", lightColor: "#ECFEFF", borderColor: "#A5F3FC",
-          owner: "Cowork",
-          tasks: [
-            { id: 19, text: "Set up PostHog and instrument V1 events",              status: "todo", priority: "medium" },
-            { id: 20, text: "Define core event tracking plan",                      status: "done", priority: "high" },
-            { id: 21, text: "Define north star metrics",                            status: "done", priority: "high" },
-            { id: 31, text: "Define travel kit validation metrics (pre-sale KPIs)", status: "todo", priority: "high" },
-          ],
-        },
-      ],
-
-      // ── DECISIONS ──
-      decisions: [
-        { date: "Mar 5, 2026", title: "Build order: Training MVP before Nutrition",
-          detail: "Confirmed in Session 1.1 team sync. Training engine is built first; nutrition module is fully deferred to V2. Jake + Keagan defining nutrition MVP terms this week." },
-        { date: "Mar 5, 2026", title: "Jake Cannizzaro — confirmed full collaborator",
-          detail: "Jake is not just a nutrition consultant — he is a confirmed full collaborator with ownership of the V2 nutrition spec. His templates will be the data foundation for the nutrition module." },
-        { date: "Mar 5, 2026", title: "Target market: coach tool, not large platform",
-          detail: "Jason wants to market to individual PTs, performance coaches, and small coaching businesses (LA Fitness, coaching agencies). Not a consumer fitness marketplace." },
-        { date: "Mar 5, 2026", title: "MVP beta: 10–15 people",
-          detail: "First test cohort is 10-15 coached clients. Josh (USA Men's Sevens rugby S&C coach) flagged as a high-value potential beta user and advisor." },
-        { date: "Mar 5, 2026", title: "Weekly workflow updated: Tuesdays + Fridays",
-          detail: "Tuesdays: Jason + Keagan sync. Fridays: full team with Hayden. (Previously listed as Wednesday + Friday — corrected.)" },
-        { date: "Mar 5, 2026", title: "Performance testing: V1 feature (calendar-schedulable, intake-selectable)",
-          detail: "4 categories: Balance, Power, COD/Agility, Strength. ~43 tests total. Client selects relevant tests at intake; tests are scheduled to calendar with configurable repeat frequency." },
-        { date: "Mar 5, 2026", title: "Official training zones: 6 zones only (canonical set confirmed)",
-          detail: "Strength, Strength Endurance, Power, Power Endurance, Hypertrophy, Muscular Endurance. These are the only zones in V1 — no others. Prior docs listing 7 zones were incorrect." },
-        { date: "Mar 5, 2026", title: "Block transitions: default time-based, event-triggered for athletes",
-          detail: "Most demographics transition at end of block by week count. Athlete demographic uses event date for taper logic. Documented in adaptive-engine-spec.md Section XIV." },
-        { date: "Mar 6, 2026", title: "Q4 & Q5 ANSWERED — Adaptive engine fully unblocked",
-          detail: "Q4: A1 exercise selection filter order confirmed (6 steps). Q5: Barbell override rules confirmed (7 categories). Helix Rank system introduced (5 levels: Foundation → Apex). Stress added as 3rd readiness input. Folder conflict rules (33 folder system), movement genre rules, and equipment conflict rules all documented. See adaptive-engine-spec.md sections XXIII–XXV." },
-        { date: "Mar 5, 2026", title: "Adaptive engine: full spec documented in adaptive-engine-spec.md",
-          detail: "Q1–Q3 fully answered. FSS formula, RPE ladders, 6 zones, tier structures, cumulative fatigue model, 5 deload triggers, plateau detection, and block construction rules all captured." },
-        { date: "Mar 1, 2026", title: "Volleyball positions added to intake form",
-          detail: "Added Setter, Outside Hitter, Middle Blocker, Opposite Hitter, Libero, Defensive Specialist. Client to confirm these are correct for their athlete population." },
-        { date: "Mar 1, 2026", title: "Exercise name standardization applied",
-          detail: "648 renames applied across all 34 exercise sheets (wall ball → med ball, straight bar → small bar, pull down bar updates, banded body renames). Client QA required before Name Changes tab is deleted." },
-        { date: "Mar 1, 2026", title: "Fitness ranking field — data format corrected",
-          detail: "23 cells corrected from datetime objects (e.g., 2025-01-02) to proper text scale format (1 – 2, 3 – 4, etc.). Schema must enforce text type for this field." },
-        { date: "Feb 27, 2026", title: "App name: Helix",
-          detail: "AI-suggested name selected by Jason. Domain target: helix.io. Supports future voice feature ('Hey Helix...')." },
-        { date: "Feb 27, 2026", title: "V1 scope locked",
-          detail: "V1: adaptive engine, readiness check-ins, RPE logging, coach dashboard, client app (iOS + Android), messaging, Stripe. V2: motion capture, team management, nutrition, professional sports." },
-        { date: "Feb 27, 2026", title: "Business ecosystem: 4-layer model",
-          detail: "Kit (lead gen) → Helix app (delivery) → Coaching service (recurring) → School/education (content). Each layer feeds the next." },
-        { date: "Feb 27, 2026", title: "Travel kit near-term: Everfit + QR code",
-          detail: "Use Everfit for travel kit delivery while Helix is built. QR code on packaging → Everfit onboarding → migrate to Helix when ready." },
-        { date: "Feb 27, 2026", title: "Travel kit fulfillment: Amazon FBA",
-          detail: "Shopify landing page → Amazon checkout → FBA fulfillment. No warehouse needed. Source from Amazon initially, Alibaba at scale." },
-        { date: "Feb 27, 2026", title: "Nutrition is V2 — MyFitnessPal API",
-          detail: "MFP API is free and has the largest food database. Helix adds adaptive intelligence on top. Jake Cannizzaro owns the nutrition spec." },
-        { date: "Feb 27, 2026", title: "Meeting cadence established",
-          detail: "Updated in Session 1.1: Tuesdays — Keagan + Jason sync. Fridays — full team with Hayden." },
-        { date: "Feb 27, 2026", title: "Project folder structure finalized",
-          detail: "Using .skills/, docs/, tasks/, decisions/ architecture for Cowork and Claude Code." },
-        { date: "Feb 27, 2026", title: "Cowork selected as primary execution tool",
-          detail: "Paired with Claude Code for engineering tasks." },
-        { date: "Feb 27, 2026", title: "PostHog selected for analytics",
-          detail: "All-in-one: funnels, session replay, A/B testing." },
-      ],
-
-      // ── WEEKLY UPDATES ──
-      // Added automatically each Friday by the weekly snapshot scheduled task.
-      // Each entry: { week, dateRange, pct, done, blockers, wins, nextUp, snapshotUrl }
-      weeklyUpdates: [
-        {
-          week: 2,
-          dateRange: "Mar 2 – Mar 6",
-          pct: 35,
-          done: 19,
-          blockers: 0,
-          wins: [
-            "Processed Session 1.1 transcript + Jason's Q&A doc — complete periodization methodology extracted",
-            "Created adaptive-engine-spec.md covering FSS formula, RPE ladders, 6-zone system, and deload logic",
-            "Q4 RESOLVED: A1 exercise selection filter order confirmed (6-step deterministic algorithm)",
-            "Q5 RESOLVED: Barbell override rules + Helix Rank 5-level system fully documented",
-            "Updated data model with Session 1.1 entities and 9 new decisions logged",
-          ],
-          nextUp: [
-            "Write feature specs: performance assessments, coach dashboard, Google Calendar integration",
-            "Begin Supabase schema implementation using updated data-model.md",
-            "Implement exercise selection filter logic (now unblocked by Q4/Q5)",
-          ],
-          snapshotUrl: "https://helix-io-ctrl.github.io/helix-dashboard/snapshots/snapshot-2026-03-06.html"
-        },
-      ],
-
-      // ── OPEN QUESTIONS ──
-      // urgency options: "critical" | "high" | "medium"
-      openQuestions: [
-        { q: "What are the simplest MVP terms for the nutrition piece?",
-          urgency: "high", note: "Jake + Keagan to define this week. Nutrition module is V2 build but spec definition should start now." },
-        { q: "What is the equity/compensation structure between Jason, Jake, Keagan, and Hayden?",
-          urgency: "high", note: "Four-way conversation needed now that Jake is confirmed as a full collaborator. Jason has flagged he wants everyone to have a piece." },
-        { q: "What are the startup costs for the travel kit (per-unit COGS, packaging, shipping)?",
-          urgency: "high", note: "Keagan to research. Needed to validate the pre-sale pricing model." },
-        { q: "What is the target coaching price point per client per month?",
-          urgency: "medium", note: "Informs positioning and feature prioritization." },
-        { q: "Does vertical jump factor into readiness inputs in addition to fatigue + soreness + stress?",
-          urgency: "medium", note: "Stress confirmed as 3rd readiness input (from Q5 doc). Vertical jump not mentioned. Jason to confirm if it applies at all." },
-        { q: "Does the 'Decline to Identify' gender selection bypass gender-based programming adjustments?",
-          urgency: "medium", note: "Intake form has this option — downstream logic is undefined. Clarify with Jason." },
-        { q: "Is the Ethnicity field optional or required, and does it affect downstream automation logic?",
-          urgency: "medium", note: "Must be defined before building intake form and programming engine." },
-        { q: "How does Hotel Travel programming mode integrate with the main engine — standalone mode or subset?",
-          urgency: "medium", note: "Architecture decision needed: does it filter the main exercise DB or pull from a separate table?" },
-        { q: "What is the repeat frequency for each performance test category (Balance, Power, COD, Strength)?",
-          urgency: "medium", note: "Needed to finalize performance assessment feature spec and scheduling logic." },
-        { q: "When does Jason plan to leave Superhuman, and how does that affect the 4-week timeline goal?",
-          urgency: "medium", note: "Timeline pressure from Session 1.1. Context on Jason's availability affects build sequencing." },
-        { q: "Are there additional exercise categories planned beyond the current 34 sheets?",
-          urgency: "medium", note: "Affects schema design for the exercise database — need final category count before building." },
-        { q: "Is the 18-sheet Automation Matrix the complete set, or are Team Programming sheets planned?",
-          urgency: "medium", note: "Engineering needs to know if the data model covers the full scope." },
-      ],
-    };
-  </script>
-
-  <!-- ============================================================
-    🔌 SUPABASE CONFIG
-    Update PROJECT_SLUG for each new client dashboard.
-    Do not change SUPABASE_URL or SUPABASE_ANON_KEY.
-    ============================================================ -->
-  <script>
-    window.SUPABASE_URL      = 'https://gzpuectetjatqbpcdgqt.supabase.co';
-    window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6cHVlY3RldGphdHFicGNkZ3F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MTc3MTMsImV4cCI6MjA4ODI5MzcxM30.KkIr6SSqQtO3aGDtCCxUIBOgbEgjtVeqExlW_Yv-QZ0';
-    window.PROJECT_SLUG      = 'helix-io'; // ← change this per client dashboard
-  </script>
-
-  <!-- ============================================================
-    🔧 APP CODE — no need to edit below this line
-    ============================================================ -->
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-    const d = window.PROJECT_DATA;
-
-    const STATUS = {
-      done:          { label: "Done",        dot: "#059669", badge: "#DCFCE7", badgeText: "#166534" },
-      "in-progress": { label: "In Progress", dot: "#2563EB", badge: "#DBEAFE", badgeText: "#1E40AF" },
-      blocked:       { label: "Blocked",     dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
-      todo:          { label: "To Do",       dot: "#9CA3AF", badge: "#F3F4F6", badgeText: "#6B7280" },
-    };
-    const PRIORITY = {
-      high:   { label: "High", color: "#DC2626", bg: "#FEE2E2" },
-      medium: { label: "Med",  color: "#D97706", bg: "#FEF3C7" },
-      low:    { label: "Low",  color: "#6B7280", bg: "#F3F4F6" },
-    };
-    const URGENCY = {
-      critical: { color: "#DC2626", bg: "#FEF2F2", label: "Critical" },
-      high:     { color: "#D97706", bg: "#FFFBEB", label: "High" },
-      medium:   { color: "#2563EB", bg: "#EFF6FF", label: "Medium" },
-    };
-
-    function formatDate(iso) {
-      const d = new Date(iso);
-      return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    }
-
-    function Badge({ color, bg, children }) {
-      return (
-        <span style={{ display:"inline-flex", alignItems:"center", background:bg, color,
-          fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:4, whiteSpace:"nowrap" }}>
-          {children}
-        </span>
-      );
-    }
-
-    function ProgressBar({ done, total, color }) {
-      const pct = total > 0 ? Math.round((done/total)*100) : 0;
-      return (
-        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <div style={{ flex:1, height:4, background:"#F1F5F9", borderRadius:2, overflow:"hidden" }}>
-            <div style={{ width:`${pct}%`, height:"100%", background:color, borderRadius:2, transition:"width .5s ease" }} />
-          </div>
-          <span style={{ fontSize:11, color:"#94A3B8", minWidth:28, textAlign:"right" }}>{pct}%</span>
+  <!-- THIS WEEK -->
+  <div class="section">
+    <div class="section-label">This week — what got done</div>
+    <div class="card">
+      <div class="done-list">
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Processed Session 1.1 transcript and Jason's Q&amp;A doc — complete periodization methodology extracted and documented
         </div>
-      );
-    }
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Created adaptive-engine-spec.md — covers FSS formula, RPE ladders, 6-zone training system, cumulative fatigue model, and 5-condition deload trigger logic
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Q4 RESOLVED: A1 exercise selection filter order confirmed — 6-step deterministic algorithm (Zone → Focus → Equipment → Injury → Duplication → Order Validation)
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Q5 RESOLVED: Barbell override rules confirmed — 7 rule categories documented, Helix Rank 5-level system (Foundation → Apex) fully specified
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Data model updated with Session 1.1 entities — 9 new decisions logged, adaptive engine spec is now complete and unblocked
+        </div>
+      </div>
+    </div>
+  </div>
 
-    function TaskTable({ tasks, comments = {}, onCommentAdded }) {
-      const [hoveredTask, setHoveredTask]   = useState(null);
-      const [openPanel, setOpenPanel]       = useState(null);
-      const [panelName, setPanelName]       = useState('');
-      const [panelBody, setPanelBody]       = useState('');
-      const [panelError, setPanelError]     = useState('');
-      const [panelLoading, setPanelLoading] = useState(false);
+  <!-- VELOCITY -->
+  <div class="section">
+    <div class="section-label">Velocity</div>
+    <div class="velocity-grid">
+      <div class="vel-card">
+        <div class="vel-num">14</div>
+        <div class="vel-label">Tasks completed this week</div>
+        <div class="vel-trend trend-up">↑ 9 more than Week 1</div>
+      </div>
+      <div class="vel-card">
+        <div class="vel-num">35</div>
+        <div class="vel-label">Tasks remaining in Discovery</div>
+      </div>
+      <div class="vel-card">
+        <div class="vel-num">~3 wks</div>
+        <div class="vel-label">Est. to complete Discovery</div>
+        <div class="vel-trend trend-up">↑ Ahead of Week 1 estimate</div>
+      </div>
+    </div>
+  </div>
 
-      function openComment(taskId) {
-        setOpenPanel(taskId);
-        setPanelName(''); setPanelBody(''); setPanelError('');
-      }
-      function closePanel() {
-        setOpenPanel(null);
-        setPanelName(''); setPanelBody(''); setPanelError('');
-      }
-      async function submitComment(t) {
-        setPanelLoading(true); setPanelError('');
-        try {
-          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
-            method: 'POST',
-            headers: {
-              'apikey': window.SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation',
-            },
-            body: JSON.stringify({
-              project_slug: window.PROJECT_SLUG,
-              item_type: 'task',
-              item_id: String(t.id),
-              item_text: t.text,
-              commenter_name: panelName.trim(),
-              body: panelBody.trim(),
-            }),
-          });
-          if (!res.ok) throw new Error(`Error ${res.status}`);
-          const [newComment] = await res.json();
-          onCommentAdded(newComment);
-          closePanel();
-        } catch(e) {
-          setPanelError('Something went wrong — please try again.');
-          console.error('Comment submit failed:', e);
-        } finally {
-          setPanelLoading(false);
-        }
-      }
+  <!-- PROBLEMS + PROPOSED PLANS -->
+  <div class="section">
+    <div class="section-label">Problems + proposed plans</div>
+    <div class="problem-list">
 
-      const canSend = panelName.trim() && panelBody.trim() && !panelLoading;
-
-      return (
-        <table>
-          <thead>
-            <tr style={{ background:"#F8FAFC" }}>
-              {["Task","Priority","Status"].map(h => (
-                <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
-                  fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
-                  letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map(t => {
-              const s = STATUS[t.status]; const p = PRIORITY[t.priority];
-              const taskComments  = comments[`task-${t.id}`] || [];
-              const isPanelOpen   = openPanel === t.id;
-              const hasBelowContent = taskComments.length > 0 || isPanelOpen;
-              return (
-                <React.Fragment key={t.id}>
-                  {/* ── Task row ── */}
-                  <tr
-                    onMouseEnter={() => setHoveredTask(t.id)}
-                    onMouseLeave={() => setHoveredTask(null)}
-                    style={{ background: hoveredTask === t.id ? '#FAFBFF' : 'white' }}
-                  >
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9" }}>
-                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
-                        <div style={{ display:"flex", alignItems:"flex-start", gap:9, flex:1 }}>
-                          <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                            background:s.dot, marginTop:4, flexShrink:0 }} />
-                          <div>
-                            <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
-                              textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
-                              {t.text}
-                            </div>
-                            {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
-                          </div>
-                        </div>
-                        {hoveredTask === t.id && !isPanelOpen && (
-                          <button onClick={() => openComment(t.id)} style={{
-                            background:"none", border:"1px solid #E2E8F0", borderRadius:4,
-                            padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
-                            display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
-                            fontFamily:"inherit" }}>
-                            💬 Note
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                      <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
-                    </td>
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                      <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
-                    </td>
-                  </tr>
-
-                  {/* ── Inline comment panel ── */}
-                  {isPanelOpen && (
-                    <tr>
-                      <td colSpan={3} style={{
-                        padding:"0 16px 12px 44px",
-                        borderBottom: taskComments.length > 0 ? "none" : "1px solid #F1F5F9",
-                        background:"#F8FAFC" }}>
-                        <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"14px 16px" }}>
-                          <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
-                            Leave a note on: <strong style={{ color:"#374151" }}>"{t.text}"</strong>
-                          </div>
-                          <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
-                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
-                            <input
-                              value={panelName}
-                              onChange={e => setPanelName(e.target.value)}
-                              placeholder="e.g. Jason"
-                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
-                            />
-                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
-                            <textarea
-                              value={panelBody}
-                              onChange={e => setPanelBody(e.target.value)}
-                              placeholder="Type your note here..."
-                              rows={2}
-                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }}
-                            />
-                          </div>
-                          {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
-                          <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
-                            <button onClick={closePanel} style={{
-                              fontSize:12, padding:"6px 14px", border:"1px solid #E2E8F0",
-                              borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
-                              Cancel
-                            </button>
-                            <button onClick={() => submitComment(t)} disabled={!canSend} style={{
-                              fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
-                              fontFamily:"inherit", fontWeight:600,
-                              cursor: canSend ? "pointer" : "not-allowed",
-                              background: canSend ? "#2563EB" : "#E2E8F0",
-                              color: canSend ? "white" : "#94A3B8" }}>
-                              {panelLoading ? 'Sending...' : 'Send →'}
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-
-                  {/* ── Existing comments ── */}
-                  {taskComments.map((c, ci) => (
-                    <tr key={`c-${ci}`}>
-                      <td colSpan={3} style={{
-                        padding: ci === taskComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
-                        borderBottom: ci === taskComments.length - 1 ? "1px solid #F1F5F9" : "none",
-                        background:"#F8FAFC" }}>
-                        <span style={{ fontSize:12, color:"#64748B" }}>
-                          💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
-                          , {formatDate(c.created_at)} · "{c.body}"
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      );
-    }
-
-    const REACTIONS = [
-      { key:'agree',    emoji:'👍', label:'Agreed',   defaultBody:'Agreed'   },
-      { key:'question', emoji:'❓', label:'Question',  defaultBody:'Question' },
-      { key:'concern',  emoji:'⚠️', label:'Concern',  defaultBody:'Concern'  },
-    ];
-
-    function DecisionRow({ dec, index, comments, onCommentAdded }) {
-      const [selected, setSelected] = useState(null);
-      const [name, setName]         = useState('');
-      const [note, setNote]         = useState('');
-      const [error, setError]       = useState('');
-      const [loading, setLoading]   = useState(false);
-
-      const decComments = comments[`decision-${index}`] || [];
-      const counts = { agree:0, question:0, concern:0 };
-      decComments.forEach(c => { if (c.reaction) counts[c.reaction]++; });
-      const notes = decComments.filter(c => !REACTIONS.map(r=>r.defaultBody).includes(c.body));
-
-      function pickReaction(key) {
-        setSelected(key === selected ? null : key);
-        setName(''); setNote(''); setError('');
-      }
-
-      async function submitReaction() {
-        setLoading(true); setError('');
-        const r = REACTIONS.find(r => r.key === selected);
-        try {
-          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
-            method: 'POST',
-            headers: {
-              'apikey': window.SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation',
-            },
-            body: JSON.stringify({
-              project_slug: window.PROJECT_SLUG,
-              item_type: 'decision',
-              item_id: String(index),
-              item_text: dec.title,
-              commenter_name: name.trim(),
-              body: note.trim() || r.defaultBody,
-              reaction: selected,
-            }),
-          });
-          if (!res.ok) throw new Error(`Error ${res.status}`);
-          const [newComment] = await res.json();
-          onCommentAdded(newComment);
-          setSelected(null); setName(''); setNote('');
-        } catch(e) {
-          setError('Something went wrong — please try again.');
-          console.error('Reaction submit failed:', e);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      const canConfirm = name.trim() && !loading;
-
-      return (
-        <div style={{ borderBottom:"1px solid #F1F5F9" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"130px 1fr", padding:"16px 18px", gap:16 }}>
-            <span style={{ fontSize:12, color:"#94A3B8", paddingTop:1 }}>{dec.date}</span>
-            <div>
-              <div style={{ fontSize:13, fontWeight:600, color:"#0F172A", marginBottom:4 }}>{dec.title}</div>
-              <div style={{ fontSize:12, color:"#64748B", lineHeight:1.6, marginBottom:12 }}>{dec.detail}</div>
-
-              {/* Notes from reactions that included custom text */}
-              {notes.map((c, ci) => (
-                <div key={ci} style={{ fontSize:12, color:"#64748B", marginBottom:6 }}>
-                  {REACTIONS.find(r=>r.key===c.reaction)?.emoji || '💬'}{' '}
-                  <strong style={{ color:"#374151" }}>{c.commenter_name}</strong>
-                  , {formatDate(c.created_at)} · "{c.body}"
-                </div>
-              ))}
-
-              {/* Reaction buttons */}
-              <div style={{ display:"flex", gap:8, marginTop: notes.length ? 10 : 0 }}>
-                {REACTIONS.map(r => {
-                  const isActive = selected === r.key;
-                  return (
-                    <button key={r.key} onClick={() => pickReaction(r.key)} style={{
-                      fontSize:12, padding:"5px 12px", borderRadius:6, fontFamily:"inherit",
-                      border: isActive ? '1px solid #2563EB' : '1px solid #E2E8F0',
-                      background: isActive ? '#EFF6FF' : 'white',
-                      color: isActive ? '#2563EB' : '#374151',
-                      fontWeight: isActive ? 600 : 400,
-                      cursor:"pointer", transition:"all .1s" }}>
-                      {r.emoji} {r.label}{counts[r.key] > 0 ? ` (${counts[r.key]})` : ''}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Confirm form — appears when a reaction is selected */}
-              {selected && (
-                <div style={{ marginTop:10, padding:"12px 14px", background:"#F8FAFC",
-                  borderRadius:8, border:"1px solid #E2E8F0" }}>
-                  <div style={{ fontSize:12, color:"#64748B", marginBottom:8 }}>
-                    {REACTIONS.find(r=>r.key===selected).emoji} {REACTIONS.find(r=>r.key===selected).label} — confirm your name and add an optional note
-                  </div>
-                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                    <input
-                      value={name}
-                      onChange={e => setName(e.target.value)}
-                      placeholder="Your name"
-                      style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                        borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", width:160 }}
-                    />
-                    <input
-                      value={note}
-                      onChange={e => setNote(e.target.value)}
-                      placeholder="Add a note (optional)"
-                      style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                        borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", flex:1, minWidth:160 }}
-                    />
-                  </div>
-                  {error && <div style={{ fontSize:12, color:"#DC2626", marginTop:6 }}>⚠ {error}</div>}
-                  <div style={{ display:"flex", gap:8, marginTop:8 }}>
-                    <button onClick={() => { setSelected(null); setName(''); setNote(''); }} style={{
-                      fontSize:12, padding:"5px 12px", border:"1px solid #E2E8F0",
-                      borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
-                      Cancel
-                    </button>
-                    <button onClick={submitReaction} disabled={!canConfirm} style={{
-                      fontSize:12, padding:"5px 12px", border:"none", borderRadius:6,
-                      fontFamily:"inherit", fontWeight:600,
-                      cursor: canConfirm ? "pointer" : "not-allowed",
-                      background: canConfirm ? "#2563EB" : "#E2E8F0",
-                      color: canConfirm ? "white" : "#94A3B8" }}>
-                      {loading ? 'Submitting...' : 'Confirm →'}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+      <div class="problem-card at-risk">
+        <div>
+          <div class="problem-label">🟡 At Risk — Spec definition needed</div>
+          <div class="problem-title">Nutrition MVP terms still undefined — blocks V2 spec start</div>
+          <div class="problem-desc">Jake and Keagan are confirmed collaborators on the nutrition module, but the MVP scope has not been defined. Without agreeing on terms — what's in V2 vs later, what templates Jake provides, how the MFP API integration works — the nutrition spec cannot begin. This is not blocking V1 training build, but should not slip further.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Jake + Keagan to define nutrition MVP terms this week. Hayden to facilitate a 30-minute scope session. Output: a one-page spec covering V2 nutrition scope, Jake's template format, and MFP integration expectations. This unblocks the nutrition spec and Jake's contribution path.</div>
           </div>
         </div>
-      );
-    }
+        <div class="response-badge badge-input">Needs Input</div>
+      </div>
 
-    function QuestionRow({ item, index, comments, onCommentAdded }) {
-      const [name, setName]       = useState('');
-      const [answer, setAnswer]   = useState('');
-      const [error, setError]     = useState('');
-      const [loading, setLoading] = useState(false);
-
-      const u = URGENCY[item.urgency];
-      const qComments = comments[`question-${index}`] || [];
-      const canSubmit = name.trim() && answer.trim() && !loading;
-
-      async function submitAnswer() {
-        setLoading(true); setError('');
-        try {
-          const res = await fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
-            method: 'POST',
-            headers: {
-              'apikey': window.SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation',
-            },
-            body: JSON.stringify({
-              project_slug: window.PROJECT_SLUG,
-              item_type: 'question',
-              item_id: String(index),
-              item_text: item.q,
-              commenter_name: name.trim(),
-              body: answer.trim(),
-            }),
-          });
-          if (!res.ok) throw new Error(`Error ${res.status}`);
-          const [newComment] = await res.json();
-          onCommentAdded(newComment);
-          setName(''); setAnswer('');
-        } catch(e) {
-          setError('Something went wrong — please try again.');
-          console.error('Answer submit failed:', e);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      return (
-        <div style={{ borderBottom:"1px solid #F1F5F9" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", padding:"16px 18px", gap:14, alignItems:"start" }}>
-            <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
-            <div>
-              <div style={{ fontSize:13, color:"#0F172A", fontWeight:500, marginBottom:4 }}>{item.q}</div>
-              <div style={{ fontSize:12, color:"#64748B", lineHeight:1.5, marginBottom:12 }}>{item.note}</div>
-
-              {/* Existing answers */}
-              {qComments.map((c, ci) => (
-                <div key={ci} style={{ fontSize:12, marginBottom:10, padding:"10px 12px",
-                  background:"#F8FAFC", borderRadius:6, borderLeft:"2px solid #E2E8F0" }}>
-                  <span style={{ color:"#94A3B8" }}>
-                    <strong style={{ color:"#374151" }}>{c.commenter_name}</strong>, {formatDate(c.created_at)}
-                  </span>
-                  <div style={{ marginTop:4, color:"#1E293B", lineHeight:1.6, fontSize:13 }}>{c.body}</div>
-                </div>
-              ))}
-
-              {/* Answer form */}
-              <textarea
-                value={answer}
-                onChange={e => setAnswer(e.target.value)}
-                placeholder="Type your answer here..."
-                rows={2}
-                style={{ width:"100%", fontSize:13, padding:"8px 10px", border:"1px solid #E2E8F0",
-                  borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical",
-                  color:"#1E293B", marginBottom:8, display:"block" }}
-              />
-              <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
-                <input
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Your name"
-                  style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                    borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B", width:160 }}
-                />
-                <button onClick={submitAnswer} disabled={!canSubmit} style={{
-                  fontSize:12, padding:"6px 16px", border:"none", borderRadius:6,
-                  fontFamily:"inherit", fontWeight:600,
-                  cursor: canSubmit ? "pointer" : "not-allowed",
-                  background: canSubmit ? "#2563EB" : "#E2E8F0",
-                  color: canSubmit ? "white" : "#94A3B8" }}>
-                  {loading ? 'Submitting...' : 'Submit Answer →'}
-                </button>
-                {error && <span style={{ fontSize:12, color:"#DC2626" }}>⚠ {error}</span>}
-              </div>
-            </div>
+      <div class="problem-card at-risk">
+        <div>
+          <div class="problem-label">🟡 At Risk — Governance gap</div>
+          <div class="problem-title">Equity and compensation structure undefined for 4-person team</div>
+          <div class="problem-desc">Jason, Jake, Keagan, and Hayden are now all confirmed contributors with meaningful roles. Jason has flagged that he wants everyone to have a stake. No structure has been proposed or agreed. As the build accelerates, misalignment on ownership becomes increasingly expensive to resolve.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Jason to initiate a conversation with all four parties — or delegate to one person to draft proposal options. Recommend addressing this in the next full Friday team call before engineering spend increases. Options: equity split, revenue share, or hybrid. Legal docs needed once agreed.</div>
           </div>
         </div>
-      );
-    }
+        <div class="response-badge badge-decision">Needs Decision</div>
+      </div>
 
-    function App() {
-      const [sel, setSel]           = useState("product");
-      const [tab, setTab]           = useState("overview");
-      const [comments, setComments] = useState({});
-
-      useEffect(() => {
-        async function fetchComments() {
-          try {
-            const res = await fetch(
-              `${window.SUPABASE_URL}/rest/v1/comments` +
-              `?project_slug=eq.${window.PROJECT_SLUG}&order=created_at.asc`,
-              { headers: {
-                  'apikey': window.SUPABASE_ANON_KEY,
-                  'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-              }}
-            );
-            if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
-            const data = await res.json();
-            const grouped = {};
-            data.forEach(c => {
-              const key = `${c.item_type}-${c.item_id}`;
-              if (!grouped[key]) grouped[key] = [];
-              grouped[key].push(c);
-            });
-            setComments(grouped);
-          } catch (e) {
-            console.error('Comments fetch failed:', e);
-          }
-        }
-        fetchComments();
-      }, []);
-
-      function onCommentAdded(newComment) {
-        setComments(prev => {
-          const key = `${newComment.item_type}-${newComment.item_id}`;
-          return { ...prev, [key]: [...(prev[key] || []), newComment] };
-        });
-      }
-
-      const selected        = d.disciplines.find(x => x.id === sel);
-      const total           = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
-      const done            = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
-      const inProg          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
-      const blocked         = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
-      const pct             = total > 0 ? Math.round((done/total)*100) : 0;
-
-      return (
-        <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter',system-ui,sans-serif" }}>
-
-          {/* ── TOP BAR ── */}
-          <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
-            display:"flex", alignItems:"center", justifyContent:"space-between",
-            height:56, position:"sticky", top:0, zIndex:10 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:9 }}>
-                <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB",
-                  display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-                    <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-                    <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
-                    <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
-                  </svg>
-                </div>
-                <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
-              </div>
-              <span style={{ color:"#E2E8F0" }}>|</span>
-              <div style={{ display:"flex", gap:2 }}>
-                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"],["updates","Weekly Updates"]].map(([id,label])=>(
-                  <button key={id} onClick={()=>setTab(id)} style={{
-                    background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
-                    padding:"6px 12px", borderRadius:6, fontSize:13,
-                    fontWeight: tab===id?600:400,
-                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-              <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
-              <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
-                border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6 }}>
-                <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
-                <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
-                  Phase {d.currentPhase+1}: {d.phases[d.currentPhase]}
-                </span>
-              </div>
-            </div>
+      <div class="problem-card info">
+        <div>
+          <div class="problem-label">🔵 FYI — Engineering dependency</div>
+          <div class="problem-title">3 open questions must be answered before engineering can fully start</div>
+          <div class="problem-desc">The adaptive engine spec is now complete, but three questions are still blocking specific engineering work: (1) performance test repeat frequency per category, (2) Hotel Travel mode architecture (standalone vs. subset of main engine), and (3) whether gender "Decline to Identify" bypasses programming adjustments. None are urgent this week, but all three need answers before the relevant feature specs can be finalized.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Add these to the Friday team call agenda. They are quick clarifications — 10–15 minutes total. Jason to answer directly or flag who decides each. Answers will be logged in the decision log and unblock the corresponding feature specs.</div>
           </div>
-
-          <div style={{ maxWidth:1100, margin:"0 auto", padding:"28px" }}>
-
-            {/* ── OVERVIEW ── */}
-            {tab==="overview" && <>
-
-              {/* Phase bar */}
-              <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                padding:"16px 20px", marginBottom:20,
-                display:"flex", alignItems:"center", gap:20 }}>
-                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>
-                <div style={{ display:"flex", flex:1, gap:8 }}>
-                  {d.phases.map((p,i)=>(
-                    <div key={p} style={{ flex:1 }}>
-                      <div style={{ height:5, borderRadius:3,
-                        background: i<=d.currentPhase?"#2563EB":"#E2E8F0",
-                        opacity: i<d.currentPhase?0.4:1 }} />
-                      <div style={{ fontSize:11, marginTop:5,
-                        color:i===d.currentPhase?"#2563EB":"#94A3B8",
-                        fontWeight:i===d.currentPhase?600:400 }}>{p}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Stat cards */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12, marginBottom:20 }}>
-                {[
-                  { label:"Total Tasks",  value:total,     color:"#1E293B", bg:"white",   border:"#E2E8F0" },
-                  { label:"Done",         value:done,      color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
-                  { label:"In Progress",  value:inProg,    color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
-                  { label:"Blocked",      value:blocked,   color:"#DC2626", bg:"#FEF2F2", border:"#FECACA" },
-                  { label:"Overall",      value:`${pct}%`, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
-                ].map(s=>(
-                  <div key={s.label} style={{ background:s.bg, border:`1px solid ${s.border}`,
-                    borderRadius:10, padding:"16px 18px" }}>
-                    <div style={{ fontSize:26, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
-                    <div style={{ fontSize:11, color:"#94A3B8", marginTop:5, fontWeight:500 }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Disciplines table */}
-              <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                overflow:"hidden", marginBottom:20 }}>
-                <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                  display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Disciplines</span>
-                  <span style={{ fontSize:11, color:"#94A3B8" }}>Click a row to see tasks ↓</span>
-                </div>
-                <table>
-                  <thead>
-                    <tr style={{ background:"#F8FAFC" }}>
-                      {["Discipline","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
-                        <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
-                          fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
-                          letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {d.disciplines.map(disc=>{
-                      const dDone  = disc.tasks.filter(t=>t.status==="done").length;
-                      const dProg  = disc.tasks.filter(t=>t.status==="in-progress").length;
-                      const dBlock = disc.tasks.filter(t=>t.status==="blocked").length;
-                      const isSel  = sel===disc.id;
-                      return (
-                        <tr key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                          cursor:"pointer", background:isSel?disc.lightColor:"white",
-                          borderLeft:`3px solid ${isSel?disc.color:"transparent"}`,
-                          transition:"background .15s" }}>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                              <div style={{ width:28, height:28, borderRadius:6,
-                                background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
-                                display:"flex", alignItems:"center", justifyContent:"center",
-                                fontSize:12, fontWeight:700, color:disc.color }}>
-                                {disc.label[0]}
-                              </div>
-                              <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
-                            </div>
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
-                            <ProgressBar done={dDone} total={disc.tasks.length} color={disc.color} />
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", textAlign:"center" }}>
-                            <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.tasks.length}</span>
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            {dProg>0 && <Badge color={STATUS["in-progress"].badgeText} bg={STATUS["in-progress"].badge}>{dProg} active</Badge>}
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            {dBlock>0
-                              ? <Badge color={STATUS.blocked.badgeText} bg={STATUS.blocked.badge}>{dBlock} blocked</Badge>
-                              : <span style={{ fontSize:11, color:"#CBD5E1" }}>—</span>}
-                          </td>
-                          <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9" }}>
-                            <span style={{ fontSize:12, color:"#94A3B8" }}>{disc.owner}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Task detail */}
-              {selected && (
-                <div style={{ background:"white", border:`1px solid ${selected.borderColor}`,
-                  borderRadius:10, overflow:"hidden" }}>
-                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                    background:selected.lightColor, display:"flex", alignItems:"center", gap:10 }}>
-                    <div style={{ width:28, height:28, borderRadius:6, background:"white",
-                      border:`1px solid ${selected.borderColor}`,
-                      display:"flex", alignItems:"center", justifyContent:"center",
-                      fontSize:12, fontWeight:700, color:selected.color }}>{selected.label[0]}</div>
-                    <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>{selected.label} Tasks</span>
-                    <span style={{ fontSize:11, color:"#94A3B8" }}>{selected.tasks.length} total</span>
-                  </div>
-                  <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
-                </div>
-              )}
-            </>}
-
-            {/* ── TASKS ── */}
-            {tab==="tasks" && (
-              <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:16 }}>
-                <div style={{ background:"white", border:"1px solid #E2E8F0",
-                  borderRadius:10, overflow:"hidden", alignSelf:"start" }}>
-                  {d.disciplines.map(disc=>{
-                    const dDone = disc.tasks.filter(t=>t.status==="done").length;
-                    return (
-                      <div key={disc.id} onClick={()=>setSel(disc.id)} style={{
-                        padding:"10px 14px", cursor:"pointer",
-                        display:"flex", justifyContent:"space-between", alignItems:"center",
-                        background:sel===disc.id?disc.lightColor:"white",
-                        borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
-                        borderBottom:"1px solid #F1F5F9" }}>
-                        <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
-                          color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
-                        <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                {selected && (
-                  <div style={{ background:"white", border:"1px solid #E2E8F0",
-                    borderRadius:10, overflow:"hidden" }}>
-                    <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                      background:selected.lightColor }}>
-                      <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
-                    </div>
-                    <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ── DECISIONS ── */}
-            {tab==="decisions" && (
-              <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10, overflow:"hidden" }}>
-                <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9" }}>
-                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Decision Log</span>
-                  <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>{d.decisions.length} recorded</span>
-                </div>
-                {d.decisions.map((dec, i) => (
-                  <DecisionRow key={i} dec={dec} index={i} comments={comments} onCommentAdded={onCommentAdded} />
-                ))}
-                <div style={{ padding:"12px 18px", background:"#F8FAFC",
-                  borderTop:"1px solid #E2E8F0", fontSize:12, color:"#94A3B8" }}>
-                  💡 After each client call, Cowork will automatically log new decisions here from the transcript.
-                </div>
-              </div>
-            )}
-
-            {/* ── WEEKLY UPDATES ── */}
-            {tab==="updates" && (
-              <div>
-                {/* Header */}
-                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                  overflow:"hidden", marginBottom:16 }}>
-                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
-                    display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                    <div>
-                      <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Weekly Snapshots</span>
-                      <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                        {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
-                      </span>
-                    </div>
-                    <span style={{ fontSize:11, color:"#94A3B8" }}>Updated every Friday at 6:45am</span>
-                  </div>
-
-                  {d.weeklyUpdates.length === 0 ? (
-                    <div style={{ padding:"40px 24px", textAlign:"center", color:"#94A3B8" }}>
-                      <div style={{ fontSize:32, marginBottom:10 }}>📊</div>
-                      <div style={{ fontSize:13, fontWeight:500, color:"#64748B", marginBottom:6 }}>
-                        First snapshot posts this Friday
-                      </div>
-                      <div style={{ fontSize:12 }}>
-                        Weekly progress summaries will appear here automatically — week over week.
-                      </div>
-                    </div>
-                  ) : (
-                    d.weeklyUpdates.slice().reverse().map((w, i) => (
-                      <div key={i} style={{ display:"grid", gridTemplateColumns:"140px 1fr",
-                        padding:"18px 18px", borderBottom:"1px solid #F8FAFC", gap:16, alignItems:"start" }}>
-                        {/* Left — week label + date */}
-                        <div>
-                          <div style={{ fontSize:12, fontWeight:700, color:"#0F172A" }}>Week {w.week}</div>
-                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{w.dateRange}</div>
-                          {/* Progress pill */}
-                          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
-                            <div style={{ width:48, height:4, background:"#E2E8F0", borderRadius:2, overflow:"hidden" }}>
-                              <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB", borderRadius:2 }} />
-                            </div>
-                            <span style={{ fontSize:11, color:"#2563EB", fontWeight:600 }}>{w.pct}%</span>
-                          </div>
-                          {/* Stats */}
-                          <div style={{ marginTop:8, display:"flex", gap:8, flexWrap:"wrap" }}>
-                            <span style={{ fontSize:11, color:"#059669", fontWeight:600 }}>✓ {w.done} done</span>
-                            {w.blockers > 0 && (
-                              <span style={{ fontSize:11, color:"#DC2626", fontWeight:600 }}>⚠ {w.blockers} blocked</span>
-                            )}
-                          </div>
-                          {/* Snapshot link */}
-                          {w.snapshotUrl && (
-                            <a href={w.snapshotUrl} target="_blank" rel="noreferrer" style={{
-                              display:"inline-block", marginTop:10, fontSize:11,
-                              color:"#2563EB", textDecoration:"none", fontWeight:500 }}>
-                              View full report →
-                            </a>
-                          )}
-                        </div>
-
-                        {/* Right — wins + next up */}
-                        <div>
-                          {w.wins && w.wins.length > 0 && (
-                            <div style={{ marginBottom:10 }}>
-                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
-                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
-                                This Week
-                              </div>
-                              {w.wins.map((win, wi) => (
-                                <div key={wi} style={{ fontSize:12, color:"#1E293B",
-                                  marginBottom:4, display:"flex", gap:6 }}>
-                                  <span style={{ color:"#059669", flexShrink:0 }}>✓</span>
-                                  <span>{win}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          {w.nextUp && w.nextUp.length > 0 && (
-                            <div>
-                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
-                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
-                                Next Week
-                              </div>
-                              {w.nextUp.map((next, ni) => (
-                                <div key={ni} style={{ fontSize:12, color:"#64748B",
-                                  marginBottom:4, display:"flex", gap:6 }}>
-                                  <span style={{ color:"#94A3B8", flexShrink:0 }}>→</span>
-                                  <span>{next}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* ── OPEN QUESTIONS ── */}
-            {tab==="questions" && (
-              <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10, overflow:"hidden" }}>
-                <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9" }}>
-                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Open Questions</span>
-                  <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                    {d.openQuestions.length} need answers before engineering begins
-                  </span>
-                </div>
-                {d.openQuestions.map((item, i) => (
-                  <QuestionRow key={i} item={item} index={i} comments={comments} onCommentAdded={onCommentAdded} />
-                ))}
-              </div>
-            )}
-
-          </div>
-
         </div>
-      );
-    }
+        <div class="response-badge badge-fyi">FYI</div>
+      </div>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
+    </div>
+  </div>
+
+  <!-- DECISIONS NEEDED -->
+  <div class="section">
+    <div class="section-label">Decisions needed from client</div>
+    <div class="decisions-table">
+      <div class="dt-row dt-header">
+        <div>Decision</div>
+        <div>Options</div>
+        <div>Recommendation</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">What are the simplest MVP terms for the nutrition module?</div>
+          <div class="dt-blocker">Blocking: V2 nutrition spec cannot start without defined scope</div>
+        </div>
+        <div class="dt-options">A) Jake's templates + MFP API<br>B) Manual logging only in V2<br>C) Full adaptive nutrition</div>
+        <div class="dt-rec">→ Option A. Jake + Keagan to confirm this week.</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">What is the equity and compensation structure for Jason, Jake, Keagan, and Hayden?</div>
+          <div class="dt-blocker">Blocking: team alignment and legal setup before engineering ramps</div>
+        </div>
+        <div class="dt-options">A) Equity split<br>B) Revenue share<br>C) Hybrid model</div>
+        <div class="dt-rec">→ Jason to propose structure at Friday call</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">What is the repeat frequency for each performance test category (Balance, Power, COD, Strength)?</div>
+          <div class="dt-blocker">Blocking: performance assessment feature spec cannot be finalized</div>
+        </div>
+        <div class="dt-options">A) Fixed per category (e.g., monthly)<br>B) Configurable per coach</div>
+        <div class="dt-rec">→ Jason to confirm defaults at next call</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT WEEK -->
+  <div class="section">
+    <div class="section-label">Next week — what's planned</div>
+    <div class="next-list">
+      <div class="next-item">
+        <div class="next-tag" style="background:#EBF1FF;color:#1D6AFF;">Product</div>
+        <div class="next-text">Write feature spec: performance assessments (intake-selectable, calendar-schedulable, repeat frequency)</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#EBF1FF;color:#1D6AFF;">Product</div>
+        <div class="next-text">Write feature spec: coach dashboard — compliance view, readiness flags, fatigue trend, override flow</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#E6F7F2;color:#0D9970;">Engineering</div>
+        <div class="next-text">Begin Supabase schema implementation using updated data-model.md</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#E6F7F2;color:#0D9970;">Engineering</div>
+        <div class="next-text">Implement exercise selection filter logic — now fully unblocked by Q4 and Q5 answers</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#EBF1FF;color:#1D6AFF;">Product</div>
+        <div class="next-text">Review Jason's exercise database spreadsheet and finalize filter tag structure</div>
+      </div>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
