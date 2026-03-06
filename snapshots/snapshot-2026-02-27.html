@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Week 1 Snapshot — Fitness Coaching App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:        #0F1923;
+      --ink-mid:    #4A5568;
+      --ink-soft:   #8896A6;
+      --border:     #E4EAF0;
+      --surface:    #F7F9FC;
+      --white:      #FFFFFF;
+      --blue:       #1D6AFF;
+      --blue-soft:  #EBF1FF;
+      --green:      #0D9970;
+      --green-soft: #E6F7F2;
+      --amber:      #C46B00;
+      --amber-soft: #FFF4E0;
+      --red:        #D63E3E;
+      --red-soft:   #FEF0F0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .eyebrow {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .subtitle { font-size: 13px; color: var(--ink-soft); }
+    .header-meta {
+      text-align: right;
+      flex-shrink: 0;
+      margin-left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+    .pill {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .pill-blue  { background: var(--blue-soft);  color: var(--blue); }
+    .pill-green { background: var(--green-soft); color: var(--green); }
+
+    /* STRIP */
+    .strip {
+      background: var(--ink);
+      border-radius: 10px;
+      padding: 20px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-bottom: 32px;
+    }
+    .strip-item {
+      padding: 0 20px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .strip-item:first-child { padding-left: 0; }
+    .strip-item:last-child  { border-right: none; }
+    .strip-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .strip-num.green { color: #4ade80; }
+    .strip-num.amber { color: #fbbf24; }
+    .strip-num.red   { color: #f87171; }
+    .strip-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; }
+
+    /* SECTION */
+    .section { margin-bottom: 32px; }
+    .section-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    /* DONE LIST */
+    .done-list { display: flex; flex-direction: column; gap: 7px; }
+    .done-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .check-icon {
+      width: 16px; height: 16px;
+      background: var(--green-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* VELOCITY */
+    .velocity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .vel-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .vel-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .vel-label { font-size: 11px; color: var(--ink-soft); }
+    .vel-trend {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .trend-up    { background: var(--green-soft); color: var(--green); }
+    .trend-same  { background: var(--blue-soft);  color: var(--blue); }
+
+    /* PROBLEM CARDS */
+    .problem-list { display: flex; flex-direction: column; gap: 12px; }
+    .problem-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      border-left: 4px solid transparent;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .problem-card.blocked  { border-left-color: var(--red);   background: #fffafa; }
+    .problem-card.at-risk  { border-left-color: var(--amber); background: #fffdf5; }
+    .problem-card.info     { border-left-color: var(--blue);  background: #f8faff; }
+    .problem-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .problem-card.blocked  .problem-label { color: var(--red); }
+    .problem-card.at-risk  .problem-label { color: var(--amber); }
+    .problem-card.info     .problem-label { color: var(--blue); }
+    .problem-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .problem-desc {
+      font-size: 12.5px;
+      color: var(--ink-mid);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .proposed-plan {
+      background: rgba(0,0,0,0.03);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .plan-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .plan-text {
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .response-badge {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-decision { background: var(--red-soft);   color: var(--red); }
+    .badge-input    { background: var(--amber-soft); color: var(--amber); }
+    .badge-fyi      { background: var(--blue-soft);  color: var(--blue); }
+
+    /* DECISIONS TABLE */
+    .decisions-table {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .dt-row {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--surface);
+      align-items: start;
+    }
+    .dt-row:last-child { border-bottom: none; }
+    .dt-header {
+      background: var(--surface);
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--border) !important;
+    }
+    .dt-question { font-size: 13px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+    .dt-blocker  { font-size: 11.5px; color: var(--ink-soft); margin-top: 3px; }
+    .dt-options  { font-size: 12px; color: var(--ink-mid); line-height: 1.4; }
+    .dt-rec      { font-size: 12px; color: var(--green); font-weight: 600; line-height: 1.4; }
+
+    /* NEXT WEEK */
+    .next-list { display: flex; flex-direction: column; gap: 6px; }
+    .next-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .next-tag {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .next-text { font-size: 13px; color: var(--ink); }
+
+    /* CHECKBOX ROW */
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .checkbox-item input[type=checkbox] {
+      width: 16px; height: 16px;
+      margin-top: 2px; flex-shrink: 0;
+      accent-color: var(--blue);
+    }
+    .checkbox-label { font-size: 13px; color: var(--ink); line-height: 1.4; }
+    .checkbox-label strong { display: block; font-weight: 600; margin-bottom: 1px; }
+    .checkbox-label span { font-size: 11.5px; color: var(--ink-soft); }
+
+    @media print {
+      body { background: white; }
+      .page { padding: 20px; }
+    }
+    @media (max-width: 640px) {
+      .two-col, .velocity-grid { grid-template-columns: 1fr; }
+      .strip { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .strip-item { border-right: none; padding: 0; }
+      .problem-card { grid-template-columns: 1fr; }
+      .dt-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="eyebrow">Fitness Coaching App — Week 1</div>
+      <h1>Weekly Snapshot</h1>
+      <div class="subtitle">Feb 24 – Feb 27, 2026 &nbsp;·&nbsp; For review and decision</div>
+    </div>
+    <div class="header-meta">
+      <div class="pill pill-blue">Phase 1: Discovery</div>
+      <div class="pill pill-green">10% Complete</div>
+    </div>
+  </div>
+
+  <!-- STRIP -->
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-num green">2</div>
+      <div class="strip-label">Tasks completed</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num amber">1</div>
+      <div class="strip-label">Blocked</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num">5</div>
+      <div class="strip-label">Decisions needed</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-num">~8</div>
+      <div class="strip-label">Sessions est. to V1 scope</div>
+    </div>
+  </div>
+
+  <!-- THIS WEEK -->
+  <div class="section">
+    <div class="section-label">This week — what got done</div>
+    <div class="card">
+      <div class="done-list">
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Full competitive analysis completed across 7 platforms — clear differentiation confirmed, no direct competitor combines adaptive engine + biomechanics + consumer funnel
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          North star metrics defined — weekly active clients completing check-in + workout (platform), self-guided to coached conversion within 30 days (funnel)
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Full project management system built — Cowork-ready folder structure with 7 skill files, task tracking, decision log, session summaries, and live dashboard
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          26 assumptions documented and prioritized — ready to validate on discovery call
+        </div>
+        <div class="done-item">
+          <div class="check-icon">✓</div>
+          Discovery call prep completed — focused question guide with must-answers identified
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VELOCITY -->
+  <div class="section">
+    <div class="section-label">Velocity</div>
+    <div class="velocity-grid">
+      <div class="vel-card">
+        <div class="vel-num">5</div>
+        <div class="vel-label">Tasks this week</div>
+        <div class="vel-trend trend-up">↑ First week baseline</div>
+      </div>
+      <div class="vel-card">
+        <div class="vel-num">19</div>
+        <div class="vel-label">Tasks remaining in Discovery</div>
+      </div>
+      <div class="vel-card">
+        <div class="vel-num">~4 wks</div>
+        <div class="vel-label">Est. to complete Discovery</div>
+        <div class="vel-trend trend-same">At current pace</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEMS + PROPOSED PLANS -->
+  <div class="section">
+    <div class="section-label">Problems + proposed plans</div>
+    <div class="problem-list">
+
+      <div class="problem-card blocked">
+        <div>
+          <div class="problem-label">🔴 Blocked — Engineering cannot start</div>
+          <div class="problem-title">Periodization methodology is not yet documented</div>
+          <div class="problem-desc">The adaptive engine — the core differentiator of this product — runs on the client's periodization rules. Zone prescriptions, readiness adjustment logic, and RPE-driven overload calculations must be extracted and documented before any engineering work can begin. Currently, this exists only in the client's head.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Schedule a 90-minute methodology extraction session immediately after the discovery call. Use a structured interview format to document: (1) zone prescription rules, (2) readiness scoring logic, (3) RPE-to-overload formulas. Output becomes the engineering spec for the adaptive engine. Without this session, V1 engineering cannot start.</div>
+          </div>
+        </div>
+        <div class="response-badge badge-decision">Needs Decision</div>
+      </div>
+
+      <div class="problem-card at-risk">
+        <div>
+          <div class="problem-label">🟡 At Risk — Scope clarity needed</div>
+          <div class="problem-title">Four major features competing for V1 — all four is 12–18 months</div>
+          <div class="problem-desc">The current vision includes: (1) adaptive coaching platform, (2) motion capture / biomechanics layer, (3) travel kit consumer funnel, and (4) team/group coaching. Each is a meaningful build on its own. Attempting all four in V1 creates a timeline the business cannot support.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Recommend V1 = adaptive coaching platform only (check-ins, RPE, coach dashboard, client app, billing). Motion capture → V2. Travel kit funnel → V2 or parallel lightweight build. Team coaching → V2. This gets a working, differentiated product to real clients in 90–120 days instead of 18 months.</div>
+          </div>
+        </div>
+        <div class="response-badge badge-decision">Needs Decision</div>
+      </div>
+
+      <div class="problem-card at-risk">
+        <div>
+          <div class="problem-label">🟡 At Risk — Expectation gap</div>
+          <div class="problem-title">Motion capture on a phone camera may not meet accuracy expectations</div>
+          <div class="problem-desc">Phone-based pose estimation is technically feasible but clinical-grade biomechanical accuracy is not achievable on standard hardware. If the client's expectation is VALD-level precision from a phone, this needs to be addressed before it becomes a scope dispute mid-build.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">On the discovery call, clarify the accuracy bar explicitly. Present two options: (A) phone-based, catches obvious form breakdowns, not clinical-grade — ships in V2 at lower cost, or (B) hardware-assisted, clinical accuracy — significantly higher cost and complexity. Get a clear choice on record.</div>
+          </div>
+        </div>
+        <div class="response-badge badge-input">Needs Input</div>
+      </div>
+
+      <div class="problem-card info">
+        <div>
+          <div class="problem-label">🔵 FYI — No action needed yet</div>
+          <div class="problem-title">Travel kit funnel timing is unknown — may force V1 scope change</div>
+          <div class="problem-desc">If the travel kit is already in market and customers are downloading the app expecting a self-guided experience, the consumer funnel moves from "future phase" to "V1 requirement." We don't yet know the kit's market status.</div>
+          <div class="proposed-plan">
+            <div class="plan-label">Proposed Plan</div>
+            <div class="plan-text">Discovery call will answer this. If kit is already in market, self-guided mode gets added to V1 scope and timeline adjusts accordingly. If kit is not yet launched, consumer funnel stays in V2 and we proceed with coaching platform only.</div>
+          </div>
+        </div>
+        <div class="response-badge badge-fyi">FYI</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DECISIONS NEEDED -->
+  <div class="section">
+    <div class="section-label">Decisions needed from client</div>
+    <div class="decisions-table">
+      <div class="dt-row dt-header">
+        <div>Decision</div>
+        <div>Options</div>
+        <div>Recommendation</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">Is V1 the coaching platform only, or does it include the travel kit funnel?</div>
+          <div class="dt-blocker">Blocking: engineering architecture, timeline, and budget estimate</div>
+        </div>
+        <div class="dt-options">A) Coaching platform only<br>B) Platform + funnel together</div>
+        <div class="dt-rec">→ Option A. Funnel in V2.</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">When can we schedule the methodology extraction session?</div>
+          <div class="dt-blocker">Blocking: adaptive engine engineering cannot start without it</div>
+        </div>
+        <div class="dt-options">A) Right after discovery call<br>B) Separate session this week</div>
+        <div class="dt-rec">→ This week, ASAP</div>
+      </div>
+      <div class="dt-row">
+        <div>
+          <div class="dt-question">Motion capture: phone-based or hardware-assisted?</div>
+          <div class="dt-blocker">Affects V2 architecture and cost significantly</div>
+        </div>
+        <div class="dt-options">A) Phone (lower cost, less accurate)<br>B) Hardware (clinical grade)</div>
+        <div class="dt-rec">→ Clarify on discovery call</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT WEEK -->
+  <div class="section">
+    <div class="section-label">Next week — what's planned</div>
+    <div class="next-list">
+      <div class="next-item">
+        <div class="next-tag" style="background:#EBF1FF;color:#1D6AFF;">Product</div>
+        <div class="next-text">Process discovery call transcript — update product brief, kill/validate assumptions, log decisions</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#EBF1FF;color:#1D6AFF;">Product</div>
+        <div class="next-text">Confirm V1 scope — what's in, what's explicitly out, timeline estimate</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#E6F7F2;color:#0D9970;">Engineering</div>
+        <div class="next-text">Begin methodology extraction session — document periodization rules into engineering spec</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#F5F3FF;color:#6D28D9;">UX</div>
+        <div class="next-text">Start mapping daily readiness check-in flow (target: under 60 seconds)</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag" style="background:#E6F7F2;color:#0D9970;">Engineering</div>
+        <div class="next-text">Decide tech stack — mobile framework, backend, database (pending scope confirmation)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
