@@ -27,12 +27,12 @@
     window.PROJECT_DATA = {
       name: "Helix — Fitness Coaching App",
       client: "Jason",
-      lastUpdated: "Mar 6, 2026",     // ← update this each time you edit
+      lastUpdated: "March 6, 2026",     // ← update this each time you edit
       phases: ["Discovery", "Design", "Build V1", "Launch"],
-      currentPhase: 0,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
+      currentPhase: 1,               // ← 0=Discovery, 1=Design, 2=Build, 3=Launch
 
       // ── SUMMARY (keep in sync with tasks below) ──
-      summary: { total: 51, done: 16, inProgress: 2, blocked: 0, todo: 33 },
+      summary: { total: 51, done: 19, inProgress: 2, blocked: 0, todo: 30 },
 
       // ── DISCIPLINES & TASKS ──
       // status options: "todo" | "in-progress" | "blocked" | "done"
@@ -60,8 +60,8 @@
             { id: 47, text: "Define gamification feature: 1RM tracker — user stories and acceptance criteria", status: "todo", priority: "high" },
             { id: 22, text: "Review Jason's exercise database spreadsheet and finalize filter tag structure", status: "todo", priority: "high" },
             { id: 32, text: "Define Phase 1 vs Phase 2 feature designations for Product Outline",     status: "todo", priority: "high" },
-            { id: 34, text: "Clarify Hotel Travel programming mode integration with main automation logic", status: "todo", priority: "medium" },
-            { id: 35, text: "Define Ethnicity and Gender question downstream logic for programming engine", status: "todo", priority: "medium" },
+            { id: 34, text: "Clarify Hotel Travel programming mode integration with main automation logic", status: "done", detail: "✅ RESOLVED: Travel mode is a subset of the main engine, lives as folder within engine", priority: "medium" },
+            { id: 35, text: "Define Ethnicity and Gender question downstream logic for programming engine", status: "done", detail: "✅ RESOLVED: Gender is tracking-only (case studies, research) — no programming impact", priority: "medium" },
             { id: 36, text: "Confirm whether Assessment sheet feeds directly into Synopsis by Joint Data", status: "todo", priority: "medium" },
             { id: 37, text: "Audit blank filter cells in Exercise Database (Single or Pair, Loading Position columns)", status: "todo", priority: "medium" },
           ],
@@ -91,7 +91,7 @@
             { id: 49, text: "Implement FSS formula and week-to-week progressive overload engine", status: "todo", priority: "high" },
             { id: 50, text: "Implement cumulative fatigue model and 5-condition deload trigger system", status: "todo", priority: "high" },
             { id: 51, text: "Implement performance assessment schema and scheduling logic",        status: "todo", priority: "high" },
-            { id: 13, text: "Set up repo and staging/production environment",                     status: "todo", priority: "medium" },
+            { id: 13, text: "Set up repo and staging/production environment",                     status: "done", detail: "✅ Repo scaffolded: github.com/Helix-iO-ctrl/helix-app — monorepo with Expo mobile, Node API, adaptive engine, Supabase schema", priority: "medium" },
             { id: 38, text: "Verify all AVERAGE formulas in Joint ROM sheet are live calculations, not text strings", status: "todo", priority: "high" },
             { id: 39, text: "Client to QA 648 applied exercise name changes, then delete Name Changes tab", status: "todo", priority: "high" },
             { id: 40, text: "Validate Stork Balance equation (AP Sway + ML Sway) against client's methodology", status: "todo", priority: "medium" },
@@ -135,6 +135,14 @@
 
       // ── DECISIONS ──
       decisions: [
+        { date: "Mar 6, 2026", title: "Performance test frequency: coach's discretion",
+          detail: "No system-enforced repeat interval. Coaches schedule performance tests on each client's calendar at their discretion. No default cadence in V1." },
+        { date: "Mar 6, 2026", title: "Hotel Travel mode: subset of main engine",
+          detail: "Travel programming is not a standalone mode — it's a subset of the main engine with constrained equipment filters. Lives as a folder within the engine architecture." },
+        { date: "Mar 6, 2026", title: "Gender field: tracking only, no programming impact",
+          detail: "Gender (including 'Decline to Identify') is collected for case studies and research only. It does not influence programming adjustments. No bypass logic needed." },
+        { date: "Mar 6, 2026", title: "GitHub repo created: Helix-iO-ctrl/helix-app",
+          detail: "Monorepo scaffolded with Expo mobile app, Node.js TypeScript API, shared types package, and Supabase initial migration. Full adaptive engine module structure maps 1:1 to spec sections." },
         { date: "Mar 5, 2026", title: "Build order: Training MVP before Nutrition",
           detail: "Confirmed in Session 1.1 team sync. Training engine is built first; nutrition module is fully deferred to V2. Jake + Keagan defining nutrition MVP terms this week." },
         { date: "Mar 5, 2026", title: "Jake Cannizzaro — confirmed full collaborator",
@@ -242,14 +250,8 @@
           urgency: "medium", note: "Informs positioning and feature prioritization." },
         { q: "Does vertical jump factor into readiness inputs in addition to fatigue + soreness + stress?",
           urgency: "medium", note: "Stress confirmed as 3rd readiness input (from Q5 doc). Vertical jump not mentioned. Jason to confirm if it applies at all." },
-        { q: "Does the 'Decline to Identify' gender selection bypass gender-based programming adjustments?",
-          urgency: "medium", note: "Intake form has this option — downstream logic is undefined. Clarify with Jason." },
         { q: "Is the Ethnicity field optional or required, and does it affect downstream automation logic?",
           urgency: "medium", note: "Must be defined before building intake form and programming engine." },
-        { q: "How does Hotel Travel programming mode integrate with the main engine — standalone mode or subset?",
-          urgency: "medium", note: "Architecture decision needed: does it filter the main exercise DB or pull from a separate table?" },
-        { q: "What is the repeat frequency for each performance test category (Balance, Power, COD, Strength)?",
-          urgency: "medium", note: "Needed to finalize performance assessment feature spec and scheduling logic." },
         { q: "When does Jason plan to leave Superhuman, and how does that affect the 4-week timeline goal?",
           urgency: "medium", note: "Timeline pressure from Session 1.1. Context on Jason's availability affects build sequencing." },
         { q: "Are there additional exercise categories planned beyond the current 34 sheets?",
@@ -274,7 +276,7 @@
   <!-- ============================================================
     🔧 APP CODE — no need to edit below this line
     ============================================================ -->
-  <script type="text/babel">
+    <script type="text/babel">
     const { useState, useEffect } = React;
     const d = window.PROJECT_DATA;
 
@@ -294,6 +296,8 @@
       high:     { color: "#D97706", bg: "#FFFBEB", label: "High" },
       medium:   { color: "#2563EB", bg: "#EFF6FF", label: "Medium" },
     };
+
+    const BRAND = "#2563EB"; // Helix blue accent
 
     function formatDate(iso) {
       const d = new Date(iso);
@@ -321,13 +325,19 @@
       );
     }
 
-    function TaskTable({ tasks, comments = {}, onCommentAdded }) {
+    function TaskTable({ tasks, comments = {}, onCommentAdded, viewedAssets = new Set(), onAssetViewed = () => {} }) {
       const [hoveredTask, setHoveredTask]   = useState(null);
       const [openPanel, setOpenPanel]       = useState(null);
       const [panelName, setPanelName]       = useState('');
       const [panelBody, setPanelBody]       = useState('');
       const [panelError, setPanelError]     = useState('');
       const [panelLoading, setPanelLoading] = useState(false);
+      const [assetModal, setAssetModal]     = useState(null); // assetPath string or null
+
+      function openAsset(assetPath) {
+        setAssetModal(assetPath);
+        onAssetViewed(assetPath);
+      }
 
       function openComment(taskId) {
         setOpenPanel(taskId);
@@ -372,6 +382,43 @@
       const canSend = panelName.trim() && panelBody.trim() && !panelLoading;
 
       return (
+        <>
+        {/* ── Asset preview modal ── */}
+        {assetModal && (
+          <div onClick={() => setAssetModal(null)} style={{
+            position:"fixed", inset:0, background:"rgba(15,23,42,0.65)",
+            zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center",
+            padding:24 }}>
+            <div onClick={e => e.stopPropagation()} style={{
+              background:"white", borderRadius:14, width:"90vw", height:"86vh",
+              maxWidth:1100, display:"flex", flexDirection:"column", overflow:"hidden",
+              boxShadow:"0 32px 80px rgba(0,0,0,0.35)" }}>
+              {/* Modal header */}
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+                padding:"12px 20px", borderBottom:"1px solid #E2E8F0", flexShrink:0 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:BRAND }} />
+                  <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>Asset Preview</span>
+                  <span style={{ fontSize:11, color:"#94A3B8", fontFamily:"'SF Mono',monospace" }}>
+                    {assetModal}
+                  </span>
+                </div>
+                <button onClick={() => setAssetModal(null)} style={{
+                  background:"#F1F5F9", border:"none", borderRadius:6,
+                  width:28, height:28, fontSize:14, cursor:"pointer",
+                  color:"#64748B", display:"flex", alignItems:"center", justifyContent:"center",
+                  fontFamily:"inherit", lineHeight:1 }}>✕</button>
+              </div>
+              {/* iframe — no download controls */}
+              <iframe
+                src={assetModal}
+                title="Asset Preview"
+                sandbox="allow-scripts allow-same-origin"
+                style={{ flex:1, border:"none", width:"100%", display:"block" }}
+              />
+            </div>
+          </div>
+        )}
         <table>
           <thead>
             <tr style={{ background:"#F8FAFC" }}>
@@ -406,6 +453,21 @@
                               textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
                               {t.text}
                             </div>
+                            {t.assetPath && (
+                              <button onClick={() => openAsset(t.assetPath)} style={{
+                                marginTop:5, background:"none", border:`1px solid ${BRAND}`,
+                                borderRadius:5, padding:"2px 9px", fontSize:11, color:BRAND,
+                                cursor:"pointer", fontFamily:"inherit",
+                                display:"inline-flex", alignItems:"center", gap:5,
+                                textDecoration:"none" }}>
+                                {!viewedAssets.has(t.assetPath) && (
+                                  <span style={{ background:BRAND, color:"white", fontSize:9,
+                                    fontWeight:700, borderRadius:3, padding:"1px 5px",
+                                    letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                                )}
+                                View asset →
+                              </button>
+                            )}
                             {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
                           </div>
                         </div>
@@ -444,7 +506,7 @@
                             <input
                               value={panelName}
                               onChange={e => setPanelName(e.target.value)}
-                              placeholder="e.g. Jason"
+                              placeholder="e.g. Hayden"
                               style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
                                 borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
                             />
@@ -469,7 +531,7 @@
                               fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
                               fontFamily:"inherit", fontWeight:600,
                               cursor: canSend ? "pointer" : "not-allowed",
-                              background: canSend ? "#2563EB" : "#E2E8F0",
+                              background: canSend ? BRAND : "#E2E8F0",
                               color: canSend ? "white" : "#94A3B8" }}>
                               {panelLoading ? 'Sending...' : 'Send →'}
                             </button>
@@ -498,6 +560,7 @@
             })}
           </tbody>
         </table>
+        </>
       );
     }
 
@@ -584,9 +647,9 @@
                   return (
                     <button key={r.key} onClick={() => pickReaction(r.key)} style={{
                       fontSize:12, padding:"5px 12px", borderRadius:6, fontFamily:"inherit",
-                      border: isActive ? '1px solid #2563EB' : '1px solid #E2E8F0',
-                      background: isActive ? '#EFF6FF' : 'white',
-                      color: isActive ? '#2563EB' : '#374151',
+                      border: isActive ? `1px solid ${BRAND}` : '1px solid #E2E8F0',
+                      background: isActive ? '#ECFDF5' : 'white',
+                      color: isActive ? BRAND : '#374151',
                       fontWeight: isActive ? 600 : 400,
                       cursor:"pointer", transition:"all .1s" }}>
                       {r.emoji} {r.label}{counts[r.key] > 0 ? ` (${counts[r.key]})` : ''}
@@ -629,7 +692,7 @@
                       fontSize:12, padding:"5px 12px", border:"none", borderRadius:6,
                       fontFamily:"inherit", fontWeight:600,
                       cursor: canConfirm ? "pointer" : "not-allowed",
-                      background: canConfirm ? "#2563EB" : "#E2E8F0",
+                      background: canConfirm ? BRAND : "#E2E8F0",
                       color: canConfirm ? "white" : "#94A3B8" }}>
                       {loading ? 'Submitting...' : 'Confirm →'}
                     </button>
@@ -649,7 +712,8 @@
       const [loading, setLoading] = useState(false);
 
       const u = URGENCY[item.urgency];
-      const qComments = comments[`question-${index}`] || [];
+      const qKey = `question-${item.id || index}`;
+      const qComments = comments[qKey] || [];
       const canSubmit = name.trim() && answer.trim() && !loading;
 
       async function submitAnswer() {
@@ -666,7 +730,7 @@
             body: JSON.stringify({
               project_slug: window.PROJECT_SLUG,
               item_type: 'question',
-              item_id: String(index),
+              item_id: item.id || String(index),
               item_text: item.q,
               commenter_name: name.trim(),
               body: answer.trim(),
@@ -695,7 +759,7 @@
               {/* Existing answers */}
               {qComments.map((c, ci) => (
                 <div key={ci} style={{ fontSize:12, marginBottom:10, padding:"10px 12px",
-                  background:"#F8FAFC", borderRadius:6, borderLeft:"2px solid #E2E8F0" }}>
+                  background:"#F8FAFC", borderRadius:6, borderLeft:`2px solid ${BRAND}` }}>
                   <span style={{ color:"#94A3B8" }}>
                     <strong style={{ color:"#374151" }}>{c.commenter_name}</strong>, {formatDate(c.created_at)}
                   </span>
@@ -725,7 +789,7 @@
                   fontSize:12, padding:"6px 16px", border:"none", borderRadius:6,
                   fontFamily:"inherit", fontWeight:600,
                   cursor: canSubmit ? "pointer" : "not-allowed",
-                  background: canSubmit ? "#2563EB" : "#E2E8F0",
+                  background: canSubmit ? BRAND : "#E2E8F0",
                   color: canSubmit ? "white" : "#94A3B8" }}>
                   {loading ? 'Submitting...' : 'Submit Answer →'}
                 </button>
@@ -737,157 +801,27 @@
       );
     }
 
-    // ── Report Modal ──────────────────────────────────────────────
-    function ReportModal({ url, week, onClose }) {
-      useEffect(() => {
-        function onKey(e) { if (e.key === 'Escape') onClose(); }
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-      }, [onClose]);
-      return (
-        <div onClick={onClose} style={{
-          position:"fixed", top:0, left:0, right:0, bottom:0,
-          background:"rgba(0,0,0,0.7)", zIndex:1000,
-          display:"flex", alignItems:"center", justifyContent:"center",
-          backdropFilter:"blur(4px)" }}>
-          <div onClick={e => e.stopPropagation()} style={{
-            width:"90vw", height:"90vh", background:"white", borderRadius:14,
-            overflow:"hidden", display:"flex", flexDirection:"column",
-            boxShadow:"0 30px 80px rgba(0,0,0,0.5)" }}>
-            {/* Modal header */}
-            <div style={{ padding:"14px 20px", background:"#0F172A",
-              display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <div style={{ width:8, height:8, borderRadius:"50%", background:"#2563EB" }} />
-                  <span style={{ fontSize:14, fontWeight:600, color:"white" }}>
-                    Week {week.week} — {week.dateRange}
-                  </span>
-                </div>
-                <span style={{ fontSize:11, color:"#475569", background:"#1E293B",
-                  padding:"2px 8px", borderRadius:4 }}>Weekly Snapshot</span>
-              </div>
-              <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-                <a href={url} target="_blank" rel="noreferrer" style={{
-                  fontSize:12, color:"#94A3B8", textDecoration:"none", fontWeight:500 }}>
-                  Open in new tab ↗
-                </a>
-                <button onClick={onClose} style={{
-                  background:"#1E293B", border:"none", color:"#94A3B8",
-                  width:30, height:30, borderRadius:6, cursor:"pointer",
-                  fontSize:15, display:"flex", alignItems:"center",
-                  justifyContent:"center", fontFamily:"inherit" }}>✕</button>
-              </div>
-            </div>
-            <iframe src={url} title={`Week ${week.week} Report`}
-              style={{ flex:1, border:"none", width:"100%", height:"100%" }} />
-          </div>
-        </div>
-      );
-    }
-
-    // ── Week Card ──────────────────────────────────────────────────
-    function WeekCard({ w, onViewReport }) {
-      return (
-        <div style={{ background:"white", border:"1px solid #E2E8F0",
-          borderRadius:10, overflow:"hidden", marginBottom:16 }}>
-          {/* ── Header strip ── */}
-          <div style={{ background:"#F8FAFC", borderBottom:"1px solid #E2E8F0", padding:"18px 22px",
-            display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:14 }}>
-            <div>
-              <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
-                <span style={{ fontSize:16, fontWeight:700, color:"#0F172A" }}>
-                  Week {w.week}
-                </span>
-                <span style={{ fontSize:12, color:"#94A3B8", fontWeight:400 }}>{w.dateRange}</span>
-              </div>
-              <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:160, height:4, background:"#E2E8F0",
-                  borderRadius:2, overflow:"hidden" }}>
-                  <div style={{ width:`${w.pct}%`, height:"100%", background:"#2563EB",
-                    borderRadius:2, transition:"width .6s ease" }} />
-                </div>
-                <span style={{ fontSize:12, color:"#2563EB", fontWeight:600 }}>{w.pct}% overall</span>
-              </div>
-            </div>
-            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:22, fontWeight:700, color:"#059669", lineHeight:1 }}>{w.done}</div>
-                <div style={{ fontSize:10, color:"#94A3B8", marginTop:3, fontWeight:500 }}>Done</div>
-              </div>
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:22, fontWeight:700,
-                  color: w.blockers > 0 ? "#DC2626" : "#94A3B8", lineHeight:1 }}>
-                  {w.blockers}
-                </div>
-                <div style={{ fontSize:10, color:"#94A3B8", marginTop:3, fontWeight:500 }}>Blocked</div>
-              </div>
-              {w.snapshotUrl && (
-                <button onClick={() => onViewReport(w.snapshotUrl, w)} style={{
-                  background:"#2563EB", border:"none", color:"white",
-                  padding:"8px 16px", borderRadius:6, fontSize:12, fontWeight:600,
-                  cursor:"pointer", fontFamily:"inherit",
-                  whiteSpace:"nowrap" }}>
-                  View Full Report ↗
-                </button>
-              )}
-            </div>
-          </div>
-          {/* ── Body: two columns ── */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr" }}>
-            {/* This Week */}
-            <div style={{ padding:"22px 26px", borderRight:"1px solid #F1F5F9" }}>
-              <div style={{ fontSize:11, fontWeight:700, color:"#059669",
-                textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:16,
-                display:"flex", alignItems:"center", gap:7 }}>
-                <span style={{ width:6, height:6, background:"#059669",
-                  borderRadius:"50%", display:"inline-block" }} />
-                This Week
-              </div>
-              {(w.wins || []).map((win, i) => (
-                <div key={i} style={{ display:"flex", gap:10,
-                  marginBottom:10, alignItems:"flex-start" }}>
-                  <div style={{ width:18, height:18, borderRadius:4, background:"#DCFCE7",
-                    flexShrink:0, display:"flex", alignItems:"center",
-                    justifyContent:"center", marginTop:2 }}>
-                    <span style={{ fontSize:10, color:"#059669", fontWeight:700 }}>✓</span>
-                  </div>
-                  <span style={{ fontSize:13, color:"#1E293B", lineHeight:1.55 }}>{win}</span>
-                </div>
-              ))}
-            </div>
-            {/* Up Next */}
-            <div style={{ padding:"22px 26px" }}>
-              <div style={{ fontSize:11, fontWeight:700, color:"#2563EB",
-                textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:16,
-                display:"flex", alignItems:"center", gap:7 }}>
-                <span style={{ width:6, height:6, background:"#2563EB",
-                  borderRadius:"50%", display:"inline-block" }} />
-                Starting Next
-              </div>
-              {(w.nextUp || []).map((next, i) => (
-                <div key={i} style={{ display:"flex", gap:10,
-                  marginBottom:10, alignItems:"flex-start" }}>
-                  <div style={{ width:18, height:18, borderRadius:4, background:"#EFF6FF",
-                    flexShrink:0, display:"flex", alignItems:"center",
-                    justifyContent:"center", marginTop:2 }}>
-                    <span style={{ fontSize:10, color:"#2563EB", fontWeight:700 }}>→</span>
-                  </div>
-                  <span style={{ fontSize:13, color:"#374151", lineHeight:1.55 }}>{next}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // ── App ────────────────────────────────────────────────────────
     function App() {
-      const [sel, setSel]             = useState("product");
-      const [tab, setTab]             = useState("overview");
-      const [comments, setComments]   = useState({});
-      const [reportModal, setReportModal] = useState(null);
+      const [sel, setSel]           = useState("product");
+      const [tab, setTab]           = useState("overview");
+      const [comments, setComments] = useState({});
+
+      // Lifted from TaskTable so section headers can also read it
+      const [viewedAssets, setViewedAssets] = useState(() => {
+        try { return new Set(JSON.parse(localStorage.getItem('helix_viewed_assets_v1') || '[]')); }
+        catch { return new Set(); }
+      });
+      function onAssetViewed(assetPath) {
+        if (!viewedAssets.has(assetPath)) {
+          const updated = new Set([...viewedAssets, assetPath]);
+          setViewedAssets(updated);
+          localStorage.setItem('helix_viewed_assets_v1', JSON.stringify([...updated]));
+        }
+      }
+      // Returns true if a discipline has at least one unviewed asset
+      function discHasNew(disc) {
+        return disc.tasks.some(t => t.assetPath && !viewedAssets.has(t.assetPath));
+      }
 
       useEffect(() => {
         async function fetchComments() {
@@ -923,12 +857,12 @@
         });
       }
 
-      const selected        = d.disciplines.find(x => x.id === sel);
-      const total           = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
-      const done            = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
-      const inProg          = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
-      const blocked         = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
-      const pct             = total > 0 ? Math.round((done/total)*100) : 0;
+      const selected  = d.disciplines.find(x => x.id === sel);
+      const total     = d.disciplines.reduce((a,disc) => a + disc.tasks.length, 0);
+      const done      = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="done").length, 0);
+      const inProg    = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="in-progress").length, 0);
+      const blocked   = d.disciplines.reduce((a,disc) => a + disc.tasks.filter(t=>t.status==="blocked").length, 0);
+      const pct       = total > 0 ? Math.round((done/total)*100) : 0;
 
       return (
         <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter',system-ui,sans-serif" }}>
@@ -939,7 +873,7 @@
             height:56, position:"sticky", top:0, zIndex:10 }}>
             <div style={{ display:"flex", alignItems:"center", gap:20 }}>
               <div style={{ display:"flex", alignItems:"center", gap:9 }}>
-                <div style={{ width:28, height:28, borderRadius:6, background:"#2563EB",
+                <div style={{ width:28, height:28, borderRadius:6, background:BRAND,
                   display:"flex", alignItems:"center", justifyContent:"center" }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
@@ -952,13 +886,23 @@
               </div>
               <span style={{ color:"#E2E8F0" }}>|</span>
               <div style={{ display:"flex", gap:2 }}>
-                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["questions","Open Questions"],["updates","Weekly Updates"]].map(([id,label])=>(
+                {[["overview","Overview"],["tasks","Tasks"],["decisions","Decisions"],["updates","Weekly Updates"],["questions","Open Questions"]].map(([id,label])=>(
                   <button key={id} onClick={()=>setTab(id)} style={{
                     background: tab===id?"#F1F5F9":"transparent", border:"none", cursor:"pointer",
                     padding:"6px 12px", borderRadius:6, fontSize:13,
                     fontWeight: tab===id?600:400,
-                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit" }}>
+                    color: tab===id?"#0F172A":"#64748B", fontFamily:"inherit",
+                    display:"flex", alignItems:"center", gap:6 }}>
                     {label}
+                    {id==="questions" && d.openQuestions.length > 0 && (
+                      <span style={{
+                        background: BRAND, color:"white",
+                        fontSize:10, fontWeight:700, borderRadius:10,
+                        padding:"1px 6px", lineHeight:"16px", minWidth:16,
+                        textAlign:"center" }}>
+                        {d.openQuestions.length}
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -984,15 +928,15 @@
               <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
                 padding:"16px 20px", marginBottom:20,
                 display:"flex", alignItems:"center", gap:20 }}>
-                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>PROJECT PHASE</span>
+                <span style={{ fontSize:11, fontWeight:600, color:"#64748B", whiteSpace:"nowrap" }}>ENGAGEMENT PHASE</span>
                 <div style={{ display:"flex", flex:1, gap:8 }}>
                   {d.phases.map((p,i)=>(
                     <div key={p} style={{ flex:1 }}>
                       <div style={{ height:5, borderRadius:3,
-                        background: i<=d.currentPhase?"#2563EB":"#E2E8F0",
+                        background: i<=d.currentPhase ? BRAND : "#E2E8F0",
                         opacity: i<d.currentPhase?0.4:1 }} />
                       <div style={{ fontSize:11, marginTop:5,
-                        color:i===d.currentPhase?"#2563EB":"#94A3B8",
+                        color:i===d.currentPhase ? BRAND : "#94A3B8",
                         fontWeight:i===d.currentPhase?600:400 }}>{p}</div>
                     </div>
                   ))}
@@ -1021,13 +965,13 @@
                 overflow:"hidden", marginBottom:20 }}>
                 <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
                   display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Disciplines</span>
+                  <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Work Areas</span>
                   <span style={{ fontSize:11, color:"#94A3B8" }}>Click a row to see tasks ↓</span>
                 </div>
                 <table>
                   <thead>
                     <tr style={{ background:"#F8FAFC" }}>
-                      {["Discipline","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
+                      {["Area","Progress","Tasks","Active","Blockers","Owner"].map(h=>(
                         <th key={h} style={{ padding:"9px 16px", textAlign:"left", fontSize:11,
                           fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
                           letterSpacing:"0.06em", borderBottom:"1px solid #E2E8F0" }}>{h}</th>
@@ -1054,6 +998,11 @@
                                 {disc.label[0]}
                               </div>
                               <span style={{ fontSize:13, fontWeight:600, color:"#1E293B" }}>{disc.label}</span>
+                              {discHasNew(disc) && (
+                                <span style={{ background:BRAND, color:"white", fontSize:9,
+                                  fontWeight:700, borderRadius:3, padding:"1px 6px",
+                                  letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                              )}
                             </div>
                           </td>
                           <td style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", width:180 }}>
@@ -1093,7 +1042,39 @@
                     <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>{selected.label} Tasks</span>
                     <span style={{ fontSize:11, color:"#94A3B8" }}>{selected.tasks.length} total</span>
                   </div>
-                  <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
+                  <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} viewedAssets={viewedAssets} onAssetViewed={onAssetViewed} />
+                </div>
+              )}
+
+              {/* ── Open Questions callout ── */}
+              {d.openQuestions.length > 0 && (
+                <div style={{ background:"#FFFBEB", border:`1px solid #FDE68A`,
+                  borderRadius:10, padding:"16px 20px", marginTop:16 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <span style={{ fontSize:13, fontWeight:700, color:"#92400E" }}>
+                        ❓ {d.openQuestions.length} Open Question{d.openQuestions.length !== 1 ? "s" : ""} Need{d.openQuestions.length === 1 ? "s" : ""} Answering
+                      </span>
+                    </div>
+                    <button onClick={() => setTab("questions")} style={{
+                      background:BRAND, color:"white", border:"none", borderRadius:6,
+                      padding:"4px 12px", fontSize:12, fontWeight:600,
+                      cursor:"pointer", fontFamily:"inherit" }}>
+                      Answer →
+                    </button>
+                  </div>
+                  {d.openQuestions.map((q, i) => {
+                    const u = URGENCY[q.urgency];
+                    return (
+                      <div key={q.id || i} style={{
+                        display:"flex", alignItems:"flex-start", gap:10,
+                        padding:"8px 0",
+                        borderTop: i > 0 ? "1px solid #FDE68A" : "none" }}>
+                        <Badge color={u.color} bg={u.bg} style={{ flexShrink:0, marginTop:1 }}>{u.label}</Badge>
+                        <span style={{ fontSize:13, color:"#78350F" }}>{q.q}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>}
@@ -1112,8 +1093,15 @@
                         background:sel===disc.id?disc.lightColor:"white",
                         borderLeft:`3px solid ${sel===disc.id?disc.color:"transparent"}`,
                         borderBottom:"1px solid #F1F5F9" }}>
-                        <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
-                          color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
+                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          <span style={{ fontSize:13, fontWeight:sel===disc.id?600:400,
+                            color:sel===disc.id?disc.color:"#374151" }}>{disc.label}</span>
+                          {discHasNew(disc) && (
+                            <span style={{ background:BRAND, color:"white", fontSize:9,
+                              fontWeight:700, borderRadius:3, padding:"1px 5px",
+                              letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                          )}
+                        </div>
                         <span style={{ fontSize:11, color:"#94A3B8" }}>{dDone}/{disc.tasks.length}</span>
                       </div>
                     );
@@ -1126,7 +1114,7 @@
                       background:selected.lightColor }}>
                       <span style={{ fontSize:14, fontWeight:600, color:"#0F172A" }}>{selected.label}</span>
                     </div>
-                    <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} />
+                    <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} viewedAssets={viewedAssets} onAssetViewed={onAssetViewed} />
                   </div>
                 )}
               </div>
@@ -1144,7 +1132,7 @@
                 ))}
                 <div style={{ padding:"12px 18px", background:"#F8FAFC",
                   borderTop:"1px solid #E2E8F0", fontSize:12, color:"#94A3B8" }}>
-                  💡 After each client call, Cowork will automatically log new decisions here from the transcript.
+                  💡 After each Cowork session, new decisions will be automatically logged here.
                 </div>
               </div>
             )}
@@ -1152,61 +1140,95 @@
             {/* ── WEEKLY UPDATES ── */}
             {tab==="updates" && (
               <div>
-                {/* Velocity summary strip */}
-                {d.weeklyUpdates.length > 0 && (() => {
-                  const latest = d.weeklyUpdates[d.weeklyUpdates.length - 1];
-                  return (
-                    <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
-                      marginBottom:20, display:"grid",
-                      gridTemplateColumns:"repeat(4,1fr)", gap:0, overflow:"hidden" }}>
-                      {[
-                        { num: d.weeklyUpdates.length, label:"Weeks tracked",       color:"#1E293B", bg:"white",   border:"#E2E8F0" },
-                        { num: d.summary.done,          label:"Tasks done total",    color:"#059669", bg:"#F0FDF4", border:"#BBF7D0" },
-                        { num: latest.done,             label:"Completed this week", color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE" },
-                        { num: `${latest.pct}%`,        label:"Overall progress",    color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
-                      ].map((s, i) => (
-                        <div key={i} style={{ textAlign:"center", background:s.bg,
-                          borderRight: i < 3 ? `1px solid ${s.border}` : "none",
-                          padding:"18px 20px" }}>
-                          <div style={{ fontSize:26, fontWeight:700, color:s.color,
-                            lineHeight:1 }}>{s.num}</div>
-                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:5,
-                            fontWeight:500 }}>{s.label}</div>
+                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
+                  overflow:"hidden", marginBottom:16 }}>
+                  <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9",
+                    display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div>
+                      <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Weekly Snapshots</span>
+                      <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
+                        {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
+                      </span>
+                    </div>
+                    <span style={{ fontSize:11, color:"#94A3B8" }}>Updated every Friday at 6:45am</span>
+                  </div>
+
+                  {d.weeklyUpdates.length === 0 ? (
+                    <div style={{ padding:"40px 24px", textAlign:"center", color:"#94A3B8" }}>
+                      <div style={{ fontSize:32, marginBottom:10 }}>📊</div>
+                      <div style={{ fontSize:13, fontWeight:500, color:"#64748B", marginBottom:6 }}>
+                        First snapshot posts this Friday
+                      </div>
+                      <div style={{ fontSize:12 }}>
+                        Weekly progress summaries will appear here automatically — week over week.
+                      </div>
+                    </div>
+                  ) : (
+                    d.weeklyUpdates.slice().reverse().map((w, i) => (
+                      <div key={i} style={{ display:"grid", gridTemplateColumns:"140px 1fr",
+                        padding:"18px 18px", borderBottom:"1px solid #F8FAFC", gap:16, alignItems:"start" }}>
+                        {/* Left — week label + date */}
+                        <div>
+                          <div style={{ fontSize:12, fontWeight:700, color:"#0F172A" }}>Week {w.week}</div>
+                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{w.dateRange}</div>
+                          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:6 }}>
+                            <div style={{ width:48, height:4, background:"#E2E8F0", borderRadius:2, overflow:"hidden" }}>
+                              <div style={{ width:`${w.pct}%`, height:"100%", background:BRAND, borderRadius:2 }} />
+                            </div>
+                            <span style={{ fontSize:11, color:BRAND, fontWeight:600 }}>{w.pct}%</span>
+                          </div>
+                          <div style={{ marginTop:8, display:"flex", gap:8, flexWrap:"wrap" }}>
+                            <span style={{ fontSize:11, color:"#059669", fontWeight:600 }}>✓ {w.done} done</span>
+                            {w.blockers > 0 && (
+                              <span style={{ fontSize:11, color:"#DC2626", fontWeight:600 }}>⚠ {w.blockers} blocked</span>
+                            )}
+                          </div>
+                          {w.snapshotUrl && (
+                            <a href={w.snapshotUrl} target="_blank" rel="noreferrer" style={{
+                              display:"inline-block", marginTop:10, fontSize:11,
+                              color:BRAND, textDecoration:"none", fontWeight:500 }}>
+                              View full report →
+                            </a>
+                          )}
                         </div>
-                      ))}
-                    </div>
-                  );
-                })()}
 
-                {/* Section label */}
-                <div style={{ display:"flex", justifyContent:"space-between",
-                  alignItems:"center", marginBottom:16 }}>
-                  <div>
-                    <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>Weekly Snapshots</span>
-                    <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                      {d.weeklyUpdates.length} week{d.weeklyUpdates.length !== 1 ? "s" : ""} tracked
-                    </span>
-                  </div>
-                  <span style={{ fontSize:11, color:"#94A3B8" }}>Auto-posted every Friday · Click any card to view full report</span>
+                        {/* Right — wins + next up */}
+                        <div>
+                          {w.wins && w.wins.length > 0 && (
+                            <div style={{ marginBottom:10 }}>
+                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
+                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
+                                This Week
+                              </div>
+                              {w.wins.map((win, wi) => (
+                                <div key={wi} style={{ fontSize:12, color:"#1E293B",
+                                  marginBottom:4, display:"flex", gap:6 }}>
+                                  <span style={{ color:"#059669", flexShrink:0 }}>✓</span>
+                                  <span>{win}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {w.nextUp && w.nextUp.length > 0 && (
+                            <div>
+                              <div style={{ fontSize:11, fontWeight:600, color:"#64748B",
+                                textTransform:"uppercase", letterSpacing:"0.05em", marginBottom:6 }}>
+                                Next Week
+                              </div>
+                              {w.nextUp.map((next, ni) => (
+                                <div key={ni} style={{ fontSize:12, color:"#64748B",
+                                  marginBottom:4, display:"flex", gap:6 }}>
+                                  <span style={{ color:"#94A3B8", flexShrink:0 }}>→</span>
+                                  <span>{next}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-
-                {d.weeklyUpdates.length === 0 ? (
-                  <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:12,
-                    padding:"48px 24px", textAlign:"center" }}>
-                    <div style={{ fontSize:36, marginBottom:12 }}>📊</div>
-                    <div style={{ fontSize:14, fontWeight:600, color:"#64748B", marginBottom:6 }}>
-                      First snapshot posts this Friday
-                    </div>
-                    <div style={{ fontSize:13, color:"#94A3B8" }}>
-                      Weekly progress summaries will appear here automatically.
-                    </div>
-                  </div>
-                ) : (
-                  d.weeklyUpdates.slice().reverse().map((w, i) => (
-                    <WeekCard key={i} w={w}
-                      onViewReport={(url, week) => setReportModal({ url, week })} />
-                  ))
-                )}
               </div>
             )}
 
@@ -1216,25 +1238,16 @@
                 <div style={{ padding:"14px 18px", borderBottom:"1px solid #F1F5F9" }}>
                   <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Open Questions</span>
                   <span style={{ fontSize:12, color:"#94A3B8", marginLeft:8 }}>
-                    {d.openQuestions.length} need answers before engineering begins
+                    {d.openQuestions.length} need answers
                   </span>
                 </div>
                 {d.openQuestions.map((item, i) => (
-                  <QuestionRow key={i} item={item} index={i} comments={comments} onCommentAdded={onCommentAdded} />
+                  <QuestionRow key={item.id || i} item={item} index={i} comments={comments} onCommentAdded={onCommentAdded} />
                 ))}
               </div>
             )}
 
           </div>
-
-          {/* ── Report Modal ── */}
-          {reportModal && (
-            <ReportModal
-              url={reportModal.url}
-              week={reportModal.week}
-              onClose={() => setReportModal(null)}
-            />
-          )}
 
         </div>
       );
@@ -1242,5 +1255,6 @@
 
     ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
+
 </body>
 </html>
