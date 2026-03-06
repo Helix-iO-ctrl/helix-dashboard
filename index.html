@@ -73,8 +73,8 @@
           tasks: [
             { id: 6,  text: "Map full programming intake flow as UX user flow",           status: "todo", priority: "high" },
             { id: 7,  text: "Design self-guided → coaching conversion moment",             status: "todo", priority: "high" },
-            { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "done", priority: "high", assetPath: "https://helix-io-ctrl.github.io/helix-dashboard/assets/ux/helix-wireframes-v1.html" },
-            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "done", priority: "high", assetPath: "https://helix-io-ctrl.github.io/helix-dashboard/assets/ux/helix-wireframes-v1.html" },
+            { id: 8,  text: "Design coach dashboard — compliance, readiness flags, override", status: "done", priority: "high", groupId: "ux-wireframes-v1", groupLabel: "UX Wireframes v1" },
+            { id: 9,  text: "Design pre-session readiness check-in screen flow",           status: "done", priority: "high", groupId: "ux-wireframes-v1", groupLabel: "UX Wireframes v1", groupAsset: "https://helix-io-ctrl.github.io/helix-dashboard/assets/ux/helix-wireframes-v1.html" },
             { id: 26, text: "Design RPE per-set logging screen",                           status: "todo", priority: "medium" },
             { id: 27, text: "Design self-guided onboarding for travel kit users (QR → first workout)", status: "todo", priority: "medium" },
           ],
@@ -430,134 +430,219 @@
             </tr>
           </thead>
           <tbody>
-            {tasks.map(t => {
-              const s = STATUS[t.status]; const p = PRIORITY[t.priority];
-              const taskComments  = comments[`task-${t.id}`] || [];
-              const isPanelOpen   = openPanel === t.id;
-              const hasBelowContent = taskComments.length > 0 || isPanelOpen;
-              return (
-                <React.Fragment key={t.id}>
-                  {/* ── Task row ── */}
-                  <tr
-                    onMouseEnter={() => setHoveredTask(t.id)}
-                    onMouseLeave={() => setHoveredTask(null)}
-                    style={{ background: hoveredTask === t.id ? '#FAFBFF' : 'white' }}
-                  >
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9" }}>
-                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
-                        <div style={{ display:"flex", alignItems:"flex-start", gap:9, flex:1 }}>
-                          <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                            background:s.dot, marginTop:4, flexShrink:0 }} />
-                          <div>
-                            <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
-                              textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
-                              {t.text}
+            {(() => {
+              // Pre-process: collect groups so we can render them as clusters
+              const rendered = new Set();
+              const rows = [];
+
+              tasks.forEach((t, idx) => {
+                if (rendered.has(t.id)) return;
+
+                // ── Grouped tasks: render as a connected cluster ──
+                if (t.groupId) {
+                  const group = tasks.filter(g => g.groupId === t.groupId);
+                  group.forEach(g => rendered.add(g.id));
+                  const groupAsset = group.find(g => g.groupAsset)?.groupAsset;
+                  const groupLabel = group.find(g => g.groupLabel)?.groupLabel || "Shared deliverable";
+
+                  rows.push(
+                    <React.Fragment key={`group-${t.groupId}`}>
+                      <tr>
+                        <td colSpan={3} style={{ padding:0, borderBottom:"1px solid #F1F5F9" }}>
+                          <div style={{ borderLeft:`3px solid ${BRAND}`, margin:"0 12px", padding:"14px 12px" }}>
+                            {/* Group label */}
+                            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
+                              <span style={{ fontSize:10, fontWeight:700, color:BRAND,
+                                textTransform:"uppercase", letterSpacing:"0.08em" }}>
+                                {groupLabel}
+                              </span>
+                              <span style={{ fontSize:10, color:"#94A3B8" }}>
+                                {group.length} tasks delivered together
+                              </span>
                             </div>
-                            {t.assetPath && (
-                              <button onClick={() => openAsset(t.assetPath)} style={{
-                                marginTop:5, background:"none", border:`1px solid ${BRAND}`,
-                                borderRadius:5, padding:"2px 9px", fontSize:11, color:BRAND,
-                                cursor:"pointer", fontFamily:"inherit",
-                                display:"inline-flex", alignItems:"center", gap:5,
-                                textDecoration:"none" }}>
-                                {!viewedAssets.has(t.assetPath) && (
-                                  <span style={{ background:BRAND, color:"white", fontSize:9,
-                                    fontWeight:700, borderRadius:3, padding:"1px 5px",
-                                    letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
-                                )}
-                                View asset →
-                              </button>
+
+                            {/* Stacked task items */}
+                            {group.map((g, gi) => {
+                              const gs = STATUS[g.status]; const gp = PRIORITY[g.priority];
+                              return (
+                                <div key={g.id} style={{
+                                  display:"flex", alignItems:"center", justifyContent:"space-between",
+                                  padding:"6px 0",
+                                  borderTop: gi > 0 ? "1px solid #F1F5F9" : "none" }}>
+                                  <div style={{ display:"flex", alignItems:"center", gap:8, flex:1 }}>
+                                    <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
+                                      background:gs.dot, flexShrink:0 }} />
+                                    <span style={{ fontSize:13,
+                                      color: g.status==="done" ? "#94A3B8" : "#1E293B",
+                                      textDecoration: g.status==="done" ? "line-through" : "none",
+                                      lineHeight:1.5 }}>
+                                      {g.text}
+                                    </span>
+                                  </div>
+                                  <div style={{ display:"flex", gap:6, flexShrink:0, marginLeft:12 }}>
+                                    <Badge color={gp.color} bg={gp.bg}>{gp.label}</Badge>
+                                    <Badge color={gs.badgeText} bg={gs.badge}>{gs.label}</Badge>
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            {/* Shared asset button — one for the whole group */}
+                            {groupAsset && (
+                              <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid #F1F5F9" }}>
+                                <button onClick={() => openAsset(groupAsset)} style={{
+                                  background:"none", border:`1px solid ${BRAND}`,
+                                  borderRadius:5, padding:"4px 12px", fontSize:11, color:BRAND,
+                                  cursor:"pointer", fontFamily:"inherit",
+                                  display:"inline-flex", alignItems:"center", gap:6,
+                                  textDecoration:"none" }}>
+                                  {!viewedAssets.has(groupAsset) && (
+                                    <span style={{ background:BRAND, color:"white", fontSize:9,
+                                      fontWeight:700, borderRadius:3, padding:"1px 5px",
+                                      letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                                  )}
+                                  View asset →
+                                </button>
+                              </div>
                             )}
-                            {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
                           </div>
-                        </div>
-                        {hoveredTask === t.id && !isPanelOpen && (
-                          <button onClick={() => openComment(t.id)} style={{
-                            background:"none", border:"1px solid #E2E8F0", borderRadius:4,
-                            padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
-                            display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
-                            fontFamily:"inherit" }}>
-                            💬 Note
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                      <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
-                    </td>
-                    <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
-                      <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
-                    </td>
-                  </tr>
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  );
+                  return;
+                }
 
-                  {/* ── Inline comment panel ── */}
-                  {isPanelOpen && (
-                    <tr>
-                      <td colSpan={3} style={{
-                        padding:"0 16px 12px 44px",
-                        borderBottom: taskComments.length > 0 ? "none" : "1px solid #F1F5F9",
-                        background:"#F8FAFC" }}>
-                        <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"14px 16px" }}>
-                          <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
-                            Leave a note on: <strong style={{ color:"#374151" }}>"{t.text}"</strong>
+                // ── Regular (ungrouped) task ──
+                rendered.add(t.id);
+                const s = STATUS[t.status]; const p = PRIORITY[t.priority];
+                const taskComments  = comments[`task-${t.id}`] || [];
+                const isPanelOpen   = openPanel === t.id;
+                const hasBelowContent = taskComments.length > 0 || isPanelOpen;
+
+                rows.push(
+                  <React.Fragment key={t.id}>
+                    <tr
+                      onMouseEnter={() => setHoveredTask(t.id)}
+                      onMouseLeave={() => setHoveredTask(null)}
+                      style={{ background: hoveredTask === t.id ? '#FAFBFF' : 'white' }}
+                    >
+                      <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9" }}>
+                        <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
+                          <div style={{ display:"flex", alignItems:"flex-start", gap:9, flex:1 }}>
+                            <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
+                              background:s.dot, marginTop:4, flexShrink:0 }} />
+                            <div>
+                              <div style={{ fontSize:13, color:t.status==="done"?"#94A3B8":"#1E293B",
+                                textDecoration:t.status==="done"?"line-through":"none", lineHeight:1.5 }}>
+                                {t.text}
+                              </div>
+                              {t.assetPath && (
+                                <button onClick={() => openAsset(t.assetPath)} style={{
+                                  marginTop:5, background:"none", border:`1px solid ${BRAND}`,
+                                  borderRadius:5, padding:"2px 9px", fontSize:11, color:BRAND,
+                                  cursor:"pointer", fontFamily:"inherit",
+                                  display:"inline-flex", alignItems:"center", gap:5,
+                                  textDecoration:"none" }}>
+                                  {!viewedAssets.has(t.assetPath) && (
+                                    <span style={{ background:BRAND, color:"white", fontSize:9,
+                                      fontWeight:700, borderRadius:3, padding:"1px 5px",
+                                      letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                                  )}
+                                  View asset →
+                                </button>
+                              )}
+                              {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
+                            </div>
                           </div>
-                          <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
-                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
-                            <input
-                              value={panelName}
-                              onChange={e => setPanelName(e.target.value)}
-                              placeholder="e.g. Hayden"
-                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
-                            />
-                            <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
-                            <textarea
-                              value={panelBody}
-                              onChange={e => setPanelBody(e.target.value)}
-                              placeholder="Type your note here..."
-                              rows={2}
-                              style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }}
-                            />
-                          </div>
-                          {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
-                          <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
-                            <button onClick={closePanel} style={{
-                              fontSize:12, padding:"6px 14px", border:"1px solid #E2E8F0",
-                              borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
-                              Cancel
+                          {hoveredTask === t.id && !isPanelOpen && (
+                            <button onClick={() => openComment(t.id)} style={{
+                              background:"none", border:"1px solid #E2E8F0", borderRadius:4,
+                              padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
+                              display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
+                              fontFamily:"inherit" }}>
+                              💬 Note
                             </button>
-                            <button onClick={() => submitComment(t)} disabled={!canSend} style={{
-                              fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
-                              fontFamily:"inherit", fontWeight:600,
-                              cursor: canSend ? "pointer" : "not-allowed",
-                              background: canSend ? BRAND : "#E2E8F0",
-                              color: canSend ? "white" : "#94A3B8" }}>
-                              {panelLoading ? 'Sending...' : 'Send →'}
-                            </button>
-                          </div>
+                          )}
                         </div>
                       </td>
-                    </tr>
-                  )}
-
-                  {/* ── Existing comments ── */}
-                  {taskComments.map((c, ci) => (
-                    <tr key={`c-${ci}`}>
-                      <td colSpan={3} style={{
-                        padding: ci === taskComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
-                        borderBottom: ci === taskComments.length - 1 ? "1px solid #F1F5F9" : "none",
-                        background:"#F8FAFC" }}>
-                        <span style={{ fontSize:12, color:"#64748B" }}>
-                          💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
-                          , {formatDate(c.created_at)} · "{c.body}"
-                        </span>
+                      <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
+                        <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
+                      </td>
+                      <td style={{ padding:"11px 16px", borderBottom: hasBelowContent ? "none" : "1px solid #F1F5F9", whiteSpace:"nowrap" }}>
+                        <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
                       </td>
                     </tr>
-                  ))}
-                </React.Fragment>
-              );
-            })}
+
+                    {isPanelOpen && (
+                      <tr>
+                        <td colSpan={3} style={{
+                          padding:"0 16px 12px 44px",
+                          borderBottom: taskComments.length > 0 ? "none" : "1px solid #F1F5F9",
+                          background:"#F8FAFC" }}>
+                          <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"14px 16px" }}>
+                            <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
+                              Leave a note on: <strong style={{ color:"#374151" }}>"{t.text}"</strong>
+                            </div>
+                            <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
+                              <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
+                              <input
+                                value={panelName}
+                                onChange={e => setPanelName(e.target.value)}
+                                placeholder="e.g. Hayden"
+                                style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                  borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
+                              />
+                              <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
+                              <textarea
+                                value={panelBody}
+                                onChange={e => setPanelBody(e.target.value)}
+                                placeholder="Type your note here..."
+                                rows={2}
+                                style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                  borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }}
+                              />
+                            </div>
+                            {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
+                            <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
+                              <button onClick={closePanel} style={{
+                                fontSize:12, padding:"6px 14px", border:"1px solid #E2E8F0",
+                                borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
+                                Cancel
+                              </button>
+                              <button onClick={() => submitComment(t)} disabled={!canSend} style={{
+                                fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
+                                fontFamily:"inherit", fontWeight:600,
+                                cursor: canSend ? "pointer" : "not-allowed",
+                                background: canSend ? BRAND : "#E2E8F0",
+                                color: canSend ? "white" : "#94A3B8" }}>
+                                {panelLoading ? 'Sending...' : 'Send →'}
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+
+                    {taskComments.map((c, ci) => (
+                      <tr key={`c-${ci}`}>
+                        <td colSpan={3} style={{
+                          padding: ci === taskComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
+                          borderBottom: ci === taskComments.length - 1 ? "1px solid #F1F5F9" : "none",
+                          background:"#F8FAFC" }}>
+                          <span style={{ fontSize:12, color:"#64748B" }}>
+                            💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
+                            , {formatDate(c.created_at)} · "{c.body}"
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                );
+              });
+
+              return rows;
+            })()}
           </tbody>
         </table>
         </>
@@ -864,7 +949,10 @@
       }
       // Returns true if a discipline has at least one unviewed asset
       function discHasNew(disc) {
-        return disc.tasks.some(t => t.assetPath && !viewedAssets.has(t.assetPath));
+        return disc.tasks.some(t =>
+          (t.assetPath && !viewedAssets.has(t.assetPath)) ||
+          (t.groupAsset && !viewedAssets.has(t.groupAsset))
+        );
       }
 
       useEffect(() => {
