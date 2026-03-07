@@ -446,7 +446,8 @@
                   const groupLabel = group.find(g => g.groupLabel)?.groupLabel || "Shared deliverable";
 
                   // Collect all comments for tasks in this group + group-level comments
-                  const groupComments = comments[`group-${t.groupId}`] || [];
+                  // Group comments stored as item_type='task', item_id='group:<groupId>' to satisfy DB constraint
+                  const groupComments = comments[`task-group:${t.groupId}`] || [];
                   const allTaskComments = {};
                   group.forEach(g => { allTaskComments[g.id] = comments[`task-${g.id}`] || []; });
                   const isGroupPanelOpen = openPanel === `group-${t.groupId}`;
@@ -626,8 +627,8 @@
                                         },
                                         body: JSON.stringify({
                                           project_slug: window.PROJECT_SLUG,
-                                          item_type: 'group',
-                                          item_id: t.groupId,
+                                          item_type: 'task',
+                                          item_id: `group:${t.groupId}`,
                                           item_text: groupLabel,
                                           commenter_name: panelName.trim(),
                                           body: panelBody.trim(),
