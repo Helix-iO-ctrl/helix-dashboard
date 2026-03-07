@@ -672,8 +672,11 @@
                 rendered.add(t.id);
                 const s = STATUS[t.status]; const p = PRIORITY[t.priority];
                 const taskComments  = comments[`task-${t.id}`] || [];
+                const assetKey = t.assetPath ? `task-asset:${t.id}` : null;
+                const assetComments = assetKey ? (comments[assetKey] || []) : [];
                 const isPanelOpen   = openPanel === t.id;
-                const hasBelowContent = taskComments.length > 0 || isPanelOpen;
+                const isAssetPanelOpen = openPanel === `asset-${t.id}`;
+                const hasBelowContent = taskComments.length > 0 || assetComments.length > 0 || isPanelOpen || isAssetPanelOpen;
 
                 rows.push(
                   <React.Fragment key={t.id}>
@@ -693,30 +696,50 @@
                                 {t.text}
                               </div>
                               {t.assetPath && (
-                                <button onClick={() => openAsset(t.assetPath)} style={{
-                                  marginTop:5, background:"none", border:`1px solid ${BRAND}`,
-                                  borderRadius:5, padding:"2px 9px", fontSize:11, color:BRAND,
-                                  cursor:"pointer", fontFamily:"inherit",
-                                  display:"inline-flex", alignItems:"center", gap:5,
-                                  textDecoration:"none" }}>
-                                  {!viewedAssets.has(t.assetPath) && (
-                                    <span style={{ background:BRAND, color:"white", fontSize:9,
-                                      fontWeight:700, borderRadius:3, padding:"1px 5px",
-                                      letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                                <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:5, flexWrap:"wrap" }}>
+                                  <button onClick={() => openAsset(t.assetPath)} style={{
+                                    background:"none", border:`1px solid ${BRAND}`,
+                                    borderRadius:5, padding:"2px 9px", fontSize:11, color:BRAND,
+                                    cursor:"pointer", fontFamily:"inherit",
+                                    display:"inline-flex", alignItems:"center", gap:5,
+                                    textDecoration:"none" }}>
+                                    {!viewedAssets.has(t.assetPath) && (
+                                      <span style={{ background:BRAND, color:"white", fontSize:9,
+                                        fontWeight:700, borderRadius:3, padding:"1px 5px",
+                                        letterSpacing:"0.06em", textTransform:"uppercase" }}>NEW</span>
+                                    )}
+                                    View asset →
+                                  </button>
+                                  {!isAssetPanelOpen && (
+                                    <button onClick={() => openComment(`asset-${t.id}`)} style={{
+                                      background:"none", border:"1px solid #E2E8F0", borderRadius:5,
+                                      padding:"2px 9px", fontSize:11, color:"#64748B", cursor:"pointer",
+                                      display:"inline-flex", alignItems:"center", gap:5,
+                                      fontFamily:"inherit" }}>
+                                      💬 Feedback{assetComments.length > 0 ? ` (${assetComments.length})` : ''}
+                                    </button>
                                   )}
-                                  View asset →
-                                </button>
+                                </div>
                               )}
                               {t.blocker && <div style={{ fontSize:11, color:"#DC2626", marginTop:3 }}>⚠ {t.blocker}</div>}
                             </div>
                           </div>
-                          {hoveredTask === t.id && !isPanelOpen && (
+                          {hoveredTask === t.id && !isPanelOpen && !t.assetPath && (
                             <button onClick={() => openComment(t.id)} style={{
                               background:"none", border:"1px solid #E2E8F0", borderRadius:4,
                               padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
                               display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
                               fontFamily:"inherit" }}>
                               💬 Note
+                            </button>
+                          )}
+                          {hoveredTask === t.id && !isPanelOpen && t.assetPath && (
+                            <button onClick={() => openComment(t.id)} style={{
+                              background:"none", border:"1px solid #E2E8F0", borderRadius:4,
+                              padding:"2px 8px", fontSize:11, color:"#64748B", cursor:"pointer",
+                              display:"flex", alignItems:"center", gap:4, whiteSpace:"nowrap", flexShrink:0,
+                              fontFamily:"inherit" }}>
+                              💬 Note on task
                             </button>
                           )}
                         </div>
@@ -729,11 +752,12 @@
                       </td>
                     </tr>
 
+                    {/* Task-level comment panel */}
                     {isPanelOpen && (
                       <tr>
                         <td colSpan={3} style={{
                           padding:"0 16px 12px 44px",
-                          borderBottom: taskComments.length > 0 ? "none" : "1px solid #F1F5F9",
+                          borderBottom: (taskComments.length > 0 || assetComments.length > 0) ? "none" : "1px solid #F1F5F9",
                           background:"#F8FAFC" }}>
                           <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:8, padding:"14px 16px" }}>
                             <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
@@ -741,30 +765,21 @@
                             </div>
                             <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
                               <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
-                              <input
-                                value={panelName}
-                                onChange={e => setPanelName(e.target.value)}
-                                placeholder="e.g. Hayden"
-                                style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                  borderRadius:6, outline:"none", fontFamily:"inherit", color:"#1E293B" }}
-                              />
+                              <input value={panelName} onChange={e => setPanelName(e.target.value)}
+                                placeholder="e.g. Jason" style={{ fontSize:13, padding:"6px 10px",
+                                border:"1px solid #E2E8F0", borderRadius:6, outline:"none",
+                                fontFamily:"inherit", color:"#1E293B" }} />
                               <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Note</label>
-                              <textarea
-                                value={panelBody}
-                                onChange={e => setPanelBody(e.target.value)}
-                                placeholder="Type your note here..."
-                                rows={2}
+                              <textarea value={panelBody} onChange={e => setPanelBody(e.target.value)}
+                                placeholder="Type your note here..." rows={2}
                                 style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
-                                  borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }}
-                              />
+                                borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }} />
                             </div>
                             {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
                             <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
-                              <button onClick={closePanel} style={{
-                                fontSize:12, padding:"6px 14px", border:"1px solid #E2E8F0",
-                                borderRadius:6, background:"white", color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>
-                                Cancel
-                              </button>
+                              <button onClick={closePanel} style={{ fontSize:12, padding:"6px 14px",
+                                border:"1px solid #E2E8F0", borderRadius:6, background:"white",
+                                color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>Cancel</button>
                               <button onClick={() => submitComment(t)} disabled={!canSend} style={{
                                 fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
                                 fontFamily:"inherit", fontWeight:600,
@@ -779,14 +794,95 @@
                       </tr>
                     )}
 
+                    {/* Asset feedback panel */}
+                    {isAssetPanelOpen && (
+                      <tr>
+                        <td colSpan={3} style={{
+                          padding:"0 16px 12px 44px",
+                          borderBottom: (taskComments.length > 0 || assetComments.length > 0) ? "none" : "1px solid #F1F5F9",
+                          background:"#F8FAFC" }}>
+                          <div style={{ background:"white", border:`1px solid ${BRAND}33`, borderRadius:8, padding:"14px 16px" }}>
+                            <div style={{ fontSize:12, color:"#64748B", marginBottom:12 }}>
+                              Feedback on asset: <strong style={{ color:BRAND }}>"{t.text}"</strong>
+                            </div>
+                            <div style={{ display:"grid", gridTemplateColumns:"80px 1fr", gap:"8px 12px", alignItems:"center" }}>
+                              <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Your name</label>
+                              <input value={panelName} onChange={e => setPanelName(e.target.value)}
+                                placeholder="e.g. Jason" style={{ fontSize:13, padding:"6px 10px",
+                                border:"1px solid #E2E8F0", borderRadius:6, outline:"none",
+                                fontFamily:"inherit", color:"#1E293B" }} />
+                              <label style={{ fontSize:12, color:"#64748B", textAlign:"right" }}>Feedback</label>
+                              <textarea value={panelBody} onChange={e => setPanelBody(e.target.value)}
+                                placeholder="What do you think of this deliverable?" rows={2}
+                                style={{ fontSize:13, padding:"6px 10px", border:"1px solid #E2E8F0",
+                                borderRadius:6, outline:"none", fontFamily:"inherit", resize:"vertical", color:"#1E293B" }} />
+                            </div>
+                            {panelError && <div style={{ fontSize:12, color:"#DC2626", marginTop:8 }}>⚠ {panelError}</div>}
+                            <div style={{ display:"flex", justifyContent:"flex-end", gap:8, marginTop:12 }}>
+                              <button onClick={closePanel} style={{ fontSize:12, padding:"6px 14px",
+                                border:"1px solid #E2E8F0", borderRadius:6, background:"white",
+                                color:"#64748B", cursor:"pointer", fontFamily:"inherit" }}>Cancel</button>
+                              <button onClick={() => {
+                                setPanelLoading(true); setPanelError('');
+                                fetch(`${window.SUPABASE_URL}/rest/v1/comments`, {
+                                  method: 'POST',
+                                  headers: {
+                                    'apikey': window.SUPABASE_ANON_KEY,
+                                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+                                    'Content-Type': 'application/json',
+                                    'Prefer': 'return=representation',
+                                  },
+                                  body: JSON.stringify({
+                                    project_slug: window.PROJECT_SLUG,
+                                    item_type: 'task',
+                                    item_id: `asset:${t.id}`,
+                                    item_text: t.text,
+                                    commenter_name: panelName.trim(),
+                                    body: panelBody.trim(),
+                                  }),
+                                })
+                                .then(res => { if (!res.ok) throw new Error(`Error ${res.status}`); return res.json(); })
+                                .then(([nc]) => { onCommentAdded(nc); closePanel(); })
+                                .catch(() => { setPanelError('Something went wrong — please try again.'); })
+                                .finally(() => setPanelLoading(false));
+                              }} disabled={!canSend} style={{
+                                fontSize:12, padding:"6px 14px", border:"none", borderRadius:6,
+                                fontFamily:"inherit", fontWeight:600,
+                                cursor: canSend ? "pointer" : "not-allowed",
+                                background: canSend ? BRAND : "#E2E8F0",
+                                color: canSend ? "white" : "#94A3B8" }}>
+                                {panelLoading ? 'Sending...' : 'Send Feedback →'}
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* Task comments */}
                     {taskComments.map((c, ci) => (
                       <tr key={`c-${ci}`}>
                         <td colSpan={3} style={{
-                          padding: ci === taskComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
-                          borderBottom: ci === taskComments.length - 1 ? "1px solid #F1F5F9" : "none",
+                          padding: "4px 16px 4px 44px",
+                          borderBottom: (ci === taskComments.length - 1 && assetComments.length === 0) ? "1px solid #F1F5F9" : "none",
                           background:"#F8FAFC" }}>
                           <span style={{ fontSize:12, color:"#64748B" }}>
                             💬 <strong style={{ color:"#374151", fontWeight:600 }}>{c.commenter_name}</strong>
+                            , {formatDate(c.created_at)} · "{c.body}"
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {/* Asset feedback comments */}
+                    {assetComments.map((c, ci) => (
+                      <tr key={`ac-${ci}`}>
+                        <td colSpan={3} style={{
+                          padding: ci === assetComments.length - 1 ? "4px 16px 10px 44px" : "4px 16px 4px 44px",
+                          borderBottom: ci === assetComments.length - 1 ? "1px solid #F1F5F9" : "none",
+                          background:"#F8FAFC" }}>
+                          <span style={{ fontSize:12, color:"#64748B" }}>
+                            🎨 <strong style={{ color:BRAND, fontWeight:600 }}>{c.commenter_name}</strong>
                             , {formatDate(c.created_at)} · "{c.body}"
                           </span>
                         </td>
@@ -1335,6 +1431,80 @@
                   <TaskTable tasks={selected.tasks} comments={comments} onCommentAdded={onCommentAdded} viewedAssets={viewedAssets} onAssetViewed={onAssetViewed} />
                 </div>
               )}
+
+              {/* ── Asset Feedback routing ── */}
+              {(() => {
+                // Collect all asset/group feedback from comments
+                const feedbackItems = [];
+                Object.keys(comments).forEach(key => {
+                  if (key.startsWith('task-asset:') || key.startsWith('task-group:')) {
+                    const isGroup = key.startsWith('task-group:');
+                    const refId = isGroup ? key.replace('task-group:', '') : key.replace('task-asset:', '');
+                    // Find which discipline this belongs to
+                    let disc = null;
+                    let taskText = '';
+                    d.disciplines.forEach(di => {
+                      di.tasks.forEach(t => {
+                        if (isGroup && t.groupId === refId) { disc = di; taskText = t.groupLabel || refId; }
+                        if (!isGroup && String(t.id) === refId) { disc = di; taskText = t.text; }
+                      });
+                    });
+                    comments[key].forEach(c => {
+                      feedbackItems.push({ ...c, disc, taskText, isGroup });
+                    });
+                  }
+                });
+                if (feedbackItems.length === 0) return null;
+
+                // Group by discipline
+                const byDisc = {};
+                feedbackItems.forEach(f => {
+                  const label = f.disc ? f.disc.label : 'General';
+                  if (!byDisc[label]) byDisc[label] = { disc: f.disc, items: [] };
+                  byDisc[label].items.push(f);
+                });
+
+                return (
+                  <div style={{ background:"white", border:`1px solid #E2E8F0`,
+                    borderRadius:10, padding:"16px 20px", marginTop:16 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
+                      <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>
+                        🎨 Asset Feedback
+                      </span>
+                      <span style={{ fontSize:12, color:"#94A3B8" }}>
+                        {feedbackItems.length} note{feedbackItems.length !== 1 ? 's' : ''} from reviewers
+                      </span>
+                    </div>
+                    {Object.entries(byDisc).map(([label, { disc, items }]) => (
+                      <div key={label} style={{ marginBottom:12 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                          {disc && (
+                            <div style={{ width:20, height:20, borderRadius:4,
+                              background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
+                              display:"flex", alignItems:"center", justifyContent:"center",
+                              fontSize:10, fontWeight:700, color:disc.color }}>{disc.label[0]}</div>
+                          )}
+                          <span style={{ fontSize:12, fontWeight:600, color: disc ? disc.color : "#64748B" }}>{label}</span>
+                          <span style={{ fontSize:11, color:"#94A3B8" }}>→ route to {label.toLowerCase()} team</span>
+                        </div>
+                        {items.map((f, fi) => (
+                          <div key={fi} style={{
+                            padding:"8px 12px", marginBottom:4, marginLeft:28,
+                            background:"#F8FAFC", borderRadius:6,
+                            borderLeft:`2px solid ${disc ? disc.color : BRAND}` }}>
+                            <div style={{ fontSize:12, color:"#1E293B", lineHeight:1.5 }}>"{f.body}"</div>
+                            <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>
+                              <strong style={{ color:"#374151" }}>{f.commenter_name}</strong>
+                              , {formatDate(f.created_at)}
+                              {f.taskText && <span> · on <em>{f.taskText}</em></span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
 
               {/* ── Open Questions callout ── */}
               {d.openQuestions.length > 0 && (
