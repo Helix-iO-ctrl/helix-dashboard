@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview Redesign — Prototype</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    /* ── Inline PROJECT_DATA for prototype ── */
+    window.PROJECT_DATA = {
+      name: "Helix — Fitness Coaching App",
+      client: "Jason",
+      lastUpdated: "March 9, 2026",
+      phases: ["Discovery", "Design", "Build V1", "Launch"],
+      currentPhase: 1,
+      summary: { total: 60, done: 24, inProgress: 0, blocked: 0, todo: 36 },
+      disciplines: [
+        {
+          id: "product", label: "Product",
+          color: "#2563EB", lightColor: "#EFF6FF", borderColor: "#BFDBFE",
+          owner: "Cowork",
+          tasks: [
+            { id: 1,  text: "Process discovery call transcript", status: "done", priority: "high" },
+            { id: 2,  text: "Update product brief with client inputs", status: "done", priority: "high" },
+            { id: 3,  text: "Validate assumptions from tracker", status: "done", priority: "high" },
+            { id: 4,  text: "Confirm V1 vs V2 scope with client", status: "done", priority: "high" },
+            { id: 5,  text: "Document full periodization methodology", status: "done", priority: "high" },
+            { id: 23, text: "Write feature spec: programming intake flow", status: "done", priority: "high" },
+            { id: 24, text: "Write feature spec: pre-session readiness check-in", status: "done", priority: "high" },
+            { id: 25, text: "Write feature spec: RPE-per-set logging", status: "done", priority: "high" },
+            { id: 33, text: "Scope Nutrition module — defer to Phase 2", status: "done", priority: "high" },
+            { id: 42, text: "Q4 ANSWERED — Exercise selection filter order", status: "done", priority: "high" },
+            { id: 43, text: "Q5 ANSWERED — Barbell override rules", status: "done", priority: "high" },
+            { id: 44, text: "Write feature spec: performance assessments", status: "todo", priority: "high" },
+            { id: 45, text: "Write feature spec: coach dashboard", status: "todo", priority: "high" },
+            { id: 46, text: "Write feature spec: Google Calendar integration", status: "todo", priority: "high" },
+            { id: 47, text: "Define gamification feature: 1RM tracker", status: "todo", priority: "high" },
+            { id: 22, text: "Review exercise database and finalize filter tags", status: "todo", priority: "high" },
+            { id: 32, text: "Define Phase 1 vs Phase 2 feature designations", status: "todo", priority: "high" },
+            { id: 34, text: "Clarify Hotel Travel programming mode", status: "done", priority: "medium" },
+            { id: 35, text: "Define Ethnicity and Gender downstream logic", status: "done", priority: "medium" },
+            { id: 36, text: "Confirm Assessment → Synopsis by Joint Data", status: "todo", priority: "medium" },
+            { id: 37, text: "Audit blank filter cells in Exercise Database", status: "todo", priority: "medium" },
+          ],
+        },
+        {
+          id: "ux", label: "UX",
+          color: "#7C3AED", lightColor: "#F5F3FF", borderColor: "#DDD6FE",
+          owner: "Cowork",
+          tasks: [
+            { id: 6,  text: "Map full programming intake flow as UX user flow", status: "todo", priority: "high" },
+            { id: 7,  text: "Design self-guided → coaching conversion moment", status: "todo", priority: "high" },
+            { id: 8,  text: "Design coach dashboard wireframe", status: "done", priority: "high" },
+            { id: 9,  text: "Design pre-session readiness check-in screen flow", status: "done", priority: "high" },
+            { id: 52, text: "Wireframes v2: Revise readiness check-in", status: "todo", priority: "high" },
+            { id: 53, text: "Wireframes v2: Revise workout logging", status: "todo", priority: "high" },
+            { id: 54, text: "Wireframes v2: Design session overview screen", status: "todo", priority: "high" },
+            { id: 55, text: "Wireframes v2: Design client profile screen", status: "todo", priority: "high" },
+            { id: 56, text: "Wireframes v2: Revise coach dashboard", status: "todo", priority: "high" },
+            { id: 57, text: "Wireframes v2: Design client home screen", status: "todo", priority: "high" },
+            { id: 26, text: "Design RPE per-set logging screen", status: "todo", priority: "medium" },
+            { id: 27, text: "Design self-guided onboarding for travel kit", status: "todo", priority: "medium" },
+          ],
+        },
+        {
+          id: "engineering", label: "Engineering",
+          color: "#059669", lightColor: "#ECFDF5", borderColor: "#A7F3D0",
+          owner: "Cowork",
+          tasks: [
+            { id: 10, text: "Decide tech stack", status: "done", priority: "high" },
+            { id: 11, text: "Design data model: exercise database", status: "done", priority: "high" },
+            { id: 12, text: "Design data model: adaptive programming engine", status: "done", priority: "high" },
+            { id: 48, text: "Implement exercise selection filter logic", status: "todo", priority: "high" },
+            { id: 49, text: "Implement FSS formula and progressive overload engine", status: "todo", priority: "high" },
+            { id: 50, text: "Implement cumulative fatigue model and deload trigger", status: "todo", priority: "high" },
+            { id: 51, text: "Implement performance assessment schema", status: "todo", priority: "high" },
+            { id: 13, text: "Set up repo and staging/production environment", status: "done", priority: "medium" },
+            { id: 38, text: "Verify AVERAGE formulas in Joint ROM sheet", status: "todo", priority: "high" },
+            { id: 39, text: "Client to QA 648 exercise name changes", status: "todo", priority: "high" },
+            { id: 40, text: "Validate Stork Balance equation", status: "todo", priority: "medium" },
+            { id: 41, text: "Confirm 18-sheet Automation Matrix is complete", status: "todo", priority: "medium" },
+          ],
+        },
+        {
+          id: "marketing", label: "Marketing",
+          color: "#DC2626", lightColor: "#FEF2F2", borderColor: "#FECACA",
+          owner: "Cowork",
+          tasks: [
+            { id: 14, text: "Finalize coach-facing positioning", status: "todo", priority: "medium" },
+            { id: 15, text: "Research helix.io domain + backup options", status: "done", priority: "high" },
+            { id: 16, text: "Draft travel kit landing page strategy", status: "todo", priority: "high" },
+            { id: 28, text: "Define 4-layer business ecosystem funnel", status: "todo", priority: "medium" },
+            { id: 29, text: "Develop pre-sale campaign concept", status: "todo", priority: "medium" },
+          ],
+        },
+        {
+          id: "creative", label: "Creative",
+          color: "#D97706", lightColor: "#FFFBEB", borderColor: "#FDE68A",
+          owner: "Cowork",
+          tasks: [
+            { id: 17, text: "Visual identity exploration — mood board, palette, type", status: "done", priority: "medium" },
+            { id: 18, text: "Design travel kit branding concept", status: "todo", priority: "medium" },
+            { id: 30, text: "Formalize app name as Helix — reserve brand assets", status: "done", priority: "high" },
+            { id: 58, text: "Finalize Carbon Precision palette hex values", status: "todo", priority: "high" },
+            { id: 59, text: "Update readiness check-in color scheme", status: "todo", priority: "high" },
+          ],
+        },
+        {
+          id: "data", label: "Data",
+          color: "#0891B2", lightColor: "#ECFEFF", borderColor: "#A5F3FC",
+          owner: "Cowork",
+          tasks: [
+            { id: 19, text: "Set up PostHog and instrument V1 events", status: "todo", priority: "medium" },
+            { id: 20, text: "Define core event tracking plan", status: "done", priority: "high" },
+            { id: 21, text: "Define north star metrics", status: "done", priority: "high" },
+            { id: 31, text: "Define travel kit validation metrics", status: "todo", priority: "high" },
+            { id: 60, text: "Research PostHog pricing tiers and free alternatives", status: "todo", priority: "medium" },
+          ],
+        },
+      ],
+      openQuestions: [
+        { id: "oq1", q: "When will Jason + Keagan finalize nutrition MVP terms? (Does not block training build.)", urgency: "medium" },
+        { id: "oq2", q: "Which performance tests should be available at intake for V1? (Jason to provide final list.)", urgency: "high" },
+      ],
+      assets: [
+        {
+          id: "visual-identity-v1",
+          title: "Visual Identity Exploration",
+          discipline: "creative",
+          description: "Mood boards, color palettes, and typography direction.",
+          status: "approved",
+          versions: [{ version: 1, date: "Mar 6, 2026", url: "#", note: "Carbon Precision selected.", status: "approved" }],
+        },
+        {
+          id: "ux-wireframes",
+          title: "UX Wireframes",
+          discipline: "ux",
+          description: "Screen layouts for readiness, workout logging, and coach dashboard.",
+          status: "revision-needed",
+          versions: [{ version: 1, date: "Mar 6, 2026", url: "#", note: "v1 delivered. 6 revision tasks created for v2.", status: "revision-needed" }],
+        },
+      ],
+    };
+  </script>
+
+  <script type="text/babel">
+    const { useState } = React;
+    const d = window.PROJECT_DATA;
+    const BRAND = "#2563EB";
+
+    const STATUS = {
+      done:          { label: "Done",        dot: "#059669", badge: "#DCFCE7", badgeText: "#166534" },
+      "in-progress": { label: "In Progress", dot: "#2563EB", badge: "#DBEAFE", badgeText: "#1E40AF" },
+      blocked:       { label: "Blocked",     dot: "#DC2626", badge: "#FEE2E2", badgeText: "#991B1B" },
+      todo:          { label: "To Do",       dot: "#9CA3AF", badge: "#F3F4F6", badgeText: "#6B7280" },
+    };
+    const PRIORITY = {
+      high:   { label: "High", color: "#DC2626", bg: "#FEE2E2" },
+      medium: { label: "Med",  color: "#D97706", bg: "#FEF3C7" },
+      low:    { label: "Low",  color: "#6B7280", bg: "#F3F4F6" },
+    };
+    const URGENCY = {
+      critical: { color: "#DC2626", bg: "#FEF2F2", label: "Critical" },
+      high:     { color: "#D97706", bg: "#FFFBEB", label: "High" },
+      medium:   { color: "#2563EB", bg: "#EFF6FF", label: "Medium" },
+    };
+    const ASSET_STATUS = {
+      draft:             { label: "Draft",            color: "#64748B", bg: "#F1F5F9", dot: "#94A3B8" },
+      "in-review":       { label: "In Review",        color: "#2563EB", bg: "#DBEAFE", dot: "#2563EB" },
+      "revision-needed": { label: "Revision Needed",  color: "#D97706", bg: "#FEF3C7", dot: "#D97706" },
+      approved:          { label: "Approved",          color: "#059669", bg: "#DCFCE7", dot: "#059669" },
+    };
+
+    function Badge({ color, bg, children }) {
+      return (
+        <span style={{ display:"inline-flex", alignItems:"center", background:bg, color,
+          fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:4, whiteSpace:"nowrap" }}>
+          {children}
+        </span>
+      );
+    }
+
+    function App() {
+      const [sel, setSel] = useState("product");
+      const [showDone, setShowDone] = useState(false);
+
+      const total   = d.disciplines.reduce((a, disc) => a + disc.tasks.length, 0);
+      const done    = d.disciplines.reduce((a, disc) => a + disc.tasks.filter(t => t.status === "done").length, 0);
+      const inProg  = d.disciplines.reduce((a, disc) => a + disc.tasks.filter(t => t.status === "in-progress").length, 0);
+      const blocked = d.disciplines.reduce((a, disc) => a + disc.tasks.filter(t => t.status === "blocked").length, 0);
+      const pct     = total > 0 ? Math.round((done / total) * 100) : 0;
+      const selected = d.disciplines.find(x => x.id === sel);
+
+      const activeTasks = selected ? selected.tasks.filter(t => t.status !== "done") : [];
+      const doneTasks   = selected ? selected.tasks.filter(t => t.status === "done") : [];
+
+      return (
+        <div style={{ minHeight:"100vh", background:"#F8FAFC", fontFamily:"'Inter',system-ui,sans-serif" }}>
+
+          {/* ── TOP BAR ── */}
+          <div style={{ background:"white", borderBottom:"1px solid #E2E8F0", padding:"0 28px",
+            display:"flex", alignItems:"center", justifyContent:"space-between",
+            height:56, position:"sticky", top:0, zIndex:10 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:9 }}>
+                <div style={{ width:28, height:28, borderRadius:6, background:BRAND,
+                  display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+                    <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+                    <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity=".6"/>
+                    <rect x="8" y="8" width="5" height="5" rx="1" fill="white" opacity=".9"/>
+                  </svg>
+                </div>
+                <span style={{ fontSize:14, fontWeight:700, color:"#0F172A" }}>{d.name}</span>
+              </div>
+              <span style={{ color:"#E2E8F0" }}>|</span>
+              <span style={{ fontSize:13, fontWeight:600, color:BRAND }}>Overview</span>
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+              <span style={{ fontSize:12, color:"#94A3B8" }}>Updated {d.lastUpdated}</span>
+              <div style={{ display:"flex", alignItems:"center", gap:6, background:"#F0FDF4",
+                border:"1px solid #BBF7D0", padding:"4px 10px", borderRadius:6 }}>
+                <div style={{ width:6, height:6, borderRadius:"50%", background:"#059669" }} />
+                <span style={{ fontSize:12, fontWeight:600, color:"#166534" }}>
+                  Phase {d.currentPhase + 1}: {d.phases[d.currentPhase]}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ maxWidth:1100, margin:"0 auto", padding:"24px 28px" }}>
+
+            {/* ── Row 1: Phase + Stats (compact) ── */}
+            <div style={{ display:"flex", gap:16, marginBottom:16, alignItems:"stretch" }}>
+              {/* Phase bar — compact */}
+              <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
+                padding:"12px 16px", flex:"0 0 280px" }}>
+                <div style={{ fontSize:10, fontWeight:600, color:"#94A3B8", textTransform:"uppercase",
+                  letterSpacing:"0.06em", marginBottom:8 }}>Project Phase</div>
+                <div style={{ display:"flex", gap:6 }}>
+                  {d.phases.map((p, i) => (
+                    <div key={p} style={{ flex:1 }}>
+                      <div style={{ height:4, borderRadius:2,
+                        background: i <= d.currentPhase ? BRAND : "#E2E8F0",
+                        opacity: i < d.currentPhase ? 0.4 : 1 }} />
+                      <div style={{ fontSize:10, marginTop:4,
+                        color: i === d.currentPhase ? BRAND : "#94A3B8",
+                        fontWeight: i === d.currentPhase ? 600 : 400 }}>{p}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stat cards — horizontal compact */}
+              <div style={{ display:"flex", gap:10, flex:1 }}>
+                {[
+                  { label: "Total",      value: total,      color: "#1E293B", bg: "white",   border: "#E2E8F0" },
+                  { label: "Done",       value: done,       color: "#059669", bg: "#F0FDF4", border: "#BBF7D0" },
+                  { label: "Active",     value: inProg,     color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE" },
+                  { label: "Blocked",    value: blocked,    color: "#DC2626", bg: "#FEF2F2", border: "#FECACA" },
+                  { label: "Progress",   value: `${pct}%`,  color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE" },
+                ].map(s => (
+                  <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.border}`,
+                    borderRadius:10, padding:"10px 14px", flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:22, fontWeight:700, color: s.color, lineHeight:1 }}>{s.value}</div>
+                    <div style={{ fontSize:10, color:"#94A3B8", marginTop:3, fontWeight:500 }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Row 2: Discipline Chips + Tasks ── */}
+            <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
+              overflow:"hidden", marginBottom:16 }}>
+
+              {/* Discipline chips */}
+              <div style={{ padding:"12px 16px", display:"flex", gap:8, borderBottom:"1px solid #F1F5F9",
+                overflowX:"auto" }}>
+                {d.disciplines.map(disc => {
+                  const dDone  = disc.tasks.filter(t => t.status === "done").length;
+                  const dTotal = disc.tasks.length;
+                  const dActive = disc.tasks.filter(t => t.status === "in-progress" || t.status === "todo").length;
+                  const isSel  = sel === disc.id;
+                  return (
+                    <button key={disc.id} onClick={() => { setSel(disc.id); setShowDone(false); }}
+                      style={{
+                        display:"flex", alignItems:"center", gap:8,
+                        padding:"8px 14px", borderRadius:8,
+                        border: isSel ? `2px solid ${disc.color}` : "1px solid #E2E8F0",
+                        background: isSel ? disc.lightColor : "white",
+                        cursor:"pointer", fontFamily:"inherit",
+                        transition:"all .15s", flexShrink:0 }}>
+                      {/* Icon */}
+                      <div style={{ width:24, height:24, borderRadius:5,
+                        background: isSel ? disc.color : disc.lightColor,
+                        border: isSel ? "none" : `1px solid ${disc.borderColor}`,
+                        display:"flex", alignItems:"center", justifyContent:"center",
+                        fontSize:11, fontWeight:700,
+                        color: isSel ? "white" : disc.color }}>
+                        {disc.label[0]}
+                      </div>
+                      {/* Label + count */}
+                      <div style={{ textAlign:"left" }}>
+                        <div style={{ fontSize:12, fontWeight:600,
+                          color: isSel ? disc.color : "#374151" }}>{disc.label}</div>
+                        <div style={{ fontSize:10, color:"#94A3B8", marginTop:1 }}>
+                          {dActive} active · {dDone}/{dTotal}
+                        </div>
+                      </div>
+                      {/* Mini progress */}
+                      <div style={{ width:32, height:32, position:"relative", flexShrink:0 }}>
+                        <svg width="32" height="32" viewBox="0 0 32 32">
+                          <circle cx="16" cy="16" r="13" fill="none" stroke="#E2E8F0" strokeWidth="3" />
+                          <circle cx="16" cy="16" r="13" fill="none" stroke={disc.color} strokeWidth="3"
+                            strokeDasharray={`${(dDone/dTotal)*81.68} 81.68`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 16 16)"
+                            style={{ transition:"stroke-dasharray .5s ease" }} />
+                        </svg>
+                        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center",
+                          justifyContent:"center", fontSize:8, fontWeight:700, color: disc.color }}>
+                          {Math.round((dDone/dTotal)*100)}%
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active tasks for selected discipline */}
+              {selected && (
+                <div style={{ padding:"0" }}>
+                  {/* Active tasks */}
+                  {activeTasks.map(task => {
+                    const s = STATUS[task.status];
+                    const p = PRIORITY[task.priority];
+                    return (
+                      <div key={task.id} style={{
+                        display:"flex", alignItems:"center", gap:10,
+                        padding:"10px 18px",
+                        borderBottom:"1px solid #F8FAFC" }}>
+                        <div style={{ width:7, height:7, borderRadius:"50%", background: s.dot, flexShrink:0 }} />
+                        <span style={{ fontSize:12, color:"#1E293B", flex:1 }}>{task.text}</span>
+                        <Badge color={p.color} bg={p.bg}>{p.label}</Badge>
+                        <Badge color={s.badgeText} bg={s.badge}>{s.label}</Badge>
+                      </div>
+                    );
+                  })}
+
+                  {/* Done tasks — collapsed */}
+                  {doneTasks.length > 0 && (
+                    <>
+                      <button onClick={() => setShowDone(!showDone)}
+                        style={{
+                          width:"100%", padding:"10px 18px", background:"#F8FAFC",
+                          border:"none", borderTop:"1px solid #E2E8F0",
+                          cursor:"pointer", fontFamily:"inherit", textAlign:"left",
+                          display:"flex", alignItems:"center", gap:8 }}>
+                        <span style={{ fontSize:11, color:"#94A3B8" }}>{showDone ? "▾" : "▸"}</span>
+                        <div style={{ width:7, height:7, borderRadius:"50%", background:"#059669", flexShrink:0 }} />
+                        <span style={{ fontSize:12, fontWeight:500, color:"#64748B" }}>
+                          {doneTasks.length} completed task{doneTasks.length !== 1 ? "s" : ""}
+                        </span>
+                      </button>
+                      {showDone && doneTasks.map(task => (
+                        <div key={task.id} style={{
+                          display:"flex", alignItems:"center", gap:10,
+                          padding:"8px 18px 8px 36px",
+                          borderBottom:"1px solid #F8FAFC",
+                          background:"#FAFAFA" }}>
+                          <div style={{ width:7, height:7, borderRadius:"50%", background:"#059669", flexShrink:0 }} />
+                          <span style={{ fontSize:12, color:"#94A3B8", flex:1,
+                            textDecoration:"line-through", textDecorationColor:"#D1D5DB" }}>{task.text}</span>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ── Row 3: Two-column — Open Questions + Asset Library ── */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+
+              {/* Open Questions */}
+              {d.openQuestions.length > 0 && (
+                <div style={{ background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:10,
+                  padding:"14px 18px", alignSelf:"start" }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+                    <span style={{ fontSize:13, fontWeight:700, color:"#92400E" }}>
+                      ❓ {d.openQuestions.length} Open Question{d.openQuestions.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {d.openQuestions.map((q, i) => {
+                    const u = URGENCY[q.urgency];
+                    return (
+                      <div key={q.id} style={{
+                        display:"flex", alignItems:"flex-start", gap:8,
+                        padding:"8px 0",
+                        borderTop: i > 0 ? "1px solid #FDE68A" : "none" }}>
+                        <Badge color={u.color} bg={u.bg}>{u.label}</Badge>
+                        <span style={{ fontSize:12, color:"#78350F", lineHeight:1.5 }}>{q.q}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Asset Library */}
+              {(d.assets || []).length > 0 && (
+                <div style={{ background:"white", border:"1px solid #E2E8F0", borderRadius:10,
+                  overflow:"hidden", alignSelf:"start" }}>
+                  <div style={{ padding:"12px 18px", borderBottom:"1px solid #F1F5F9",
+                    display:"flex", alignItems:"center", gap:8 }}>
+                    <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Asset Library</span>
+                    <span style={{ fontSize:11, color:"#94A3B8" }}>{d.assets.length} deliverable{d.assets.length !== 1 ? "s" : ""}</span>
+                  </div>
+                  {d.assets.map(asset => {
+                    const disc = d.disciplines.find(di => di.id === asset.discipline);
+                    const as = ASSET_STATUS[asset.status] || ASSET_STATUS.draft;
+                    const latest = asset.versions[asset.versions.length - 1];
+                    return (
+                      <div key={asset.id} style={{ padding:"12px 18px", borderBottom:"1px solid #F1F5F9",
+                        display:"flex", alignItems:"center", gap:12 }}>
+                        {disc && (
+                          <div style={{ width:30, height:30, borderRadius:6,
+                            background: disc.lightColor, border:`1px solid ${disc.borderColor}`,
+                            display:"flex", alignItems:"center", justifyContent:"center",
+                            fontSize:12, fontWeight:700, color: disc.color, flexShrink:0 }}>
+                            {disc.label[0]}
+                          </div>
+                        )}
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
+                            <span style={{ fontSize:12, fontWeight:600, color:"#0F172A" }}>{asset.title}</span>
+                            <Badge color={as.color} bg={as.bg}>{as.label}</Badge>
+                          </div>
+                          <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>
+                            v{latest.version} · {latest.date}
+                          </div>
+                        </div>
+                        <button style={{
+                          background:"none", border:`1px solid ${BRAND}`, borderRadius:5,
+                          padding:"4px 10px", fontSize:11, color: BRAND,
+                          cursor:"pointer", fontFamily:"inherit", flexShrink:0 }}>
+                          View →
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* ── Footer: visual height reference ── */}
+          <div style={{ maxWidth:1100, margin:"12px auto 0", padding:"0 28px" }}>
+            <div style={{ textAlign:"center", padding:"8px", fontSize:11, color:"#CBD5E1",
+              borderTop:"1px dashed #E2E8F0" }}>
+              ↑ End of overview — no scroll needed on desktop (1080p+)
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
