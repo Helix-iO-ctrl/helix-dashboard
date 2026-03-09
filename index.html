@@ -1350,6 +1350,7 @@
       const [comments, setComments] = useState({});
       const [previewUrl, setPreviewUrl]     = useState(null);
       const [previewTitle, setPreviewTitle] = useState("");
+      const [assetFeedbackOpen, setAssetFeedbackOpen] = useState(false);
 
       // Lifted from TaskTable so section headers can also read it
       const [viewedAssets, setViewedAssets] = useState(() => {
@@ -1597,95 +1598,7 @@
                 </div>
               )}
 
-              {/* ── Asset Feedback routing ── */}
-              {(() => {
-                // Collect all asset/group feedback from comments
-                const feedbackItems = [];
-                Object.keys(comments).forEach(key => {
-                  if (key.startsWith('task-asset:') || key.startsWith('task-group:')) {
-                    const isGroup = key.startsWith('task-group:');
-                    const refId = isGroup ? key.replace('task-group:', '') : key.replace('task-asset:', '');
-                    // Find which discipline this belongs to
-                    let disc = null;
-                    let taskText = '';
-                    d.disciplines.forEach(di => {
-                      di.tasks.forEach(t => {
-                        if (isGroup && t.groupId === refId) { disc = di; taskText = t.groupLabel || refId; }
-                        if (!isGroup && String(t.id) === refId) { disc = di; taskText = t.text; }
-                      });
-                    });
-                    comments[key].forEach(c => {
-                      feedbackItems.push({ ...c, disc, taskText, isGroup });
-                    });
-                  }
-                });
-                if (feedbackItems.length === 0) return null;
-
-                // Group by discipline
-                const byDisc = {};
-                feedbackItems.forEach(f => {
-                  const label = f.disc ? f.disc.label : 'General';
-                  if (!byDisc[label]) byDisc[label] = { disc: f.disc, items: [] };
-                  byDisc[label].items.push(f);
-                });
-
-                return (
-                  <div style={{ background:"white", border:`1px solid #E2E8F0`,
-                    borderRadius:10, padding:"16px 20px", marginTop:16 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                      <span style={{ fontSize:13, fontWeight:700, color:"#0F172A" }}>
-                        🎨 Asset Feedback
-                      </span>
-                      <span style={{ fontSize:12, color:"#94A3B8" }}>
-                        {feedbackItems.length} note{feedbackItems.length !== 1 ? 's' : ''} from reviewers
-                      </span>
-                    </div>
-                    {Object.entries(byDisc).map(([label, { disc, items }]) => (
-                      <div key={label} style={{ marginBottom:12 }}>
-                        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                          {disc && (
-                            <div style={{ width:20, height:20, borderRadius:4,
-                              background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
-                              display:"flex", alignItems:"center", justifyContent:"center",
-                              fontSize:10, fontWeight:700, color:disc.color }}>{disc.label[0]}</div>
-                          )}
-                          <span style={{ fontSize:12, fontWeight:600, color: disc ? disc.color : "#64748B" }}>{label}</span>
-                          <span style={{ fontSize:11, color:"#94A3B8" }}>→ route to {label.toLowerCase()} team</span>
-                        </div>
-                        {items.map((f, fi) => {
-                          // Find the feedback response for this item's key
-                          const itemKey = `${f.isGroup ? 'task-group' : 'task-asset'}:${f.isGroup ? f.taskText : f.item_id?.replace?.('asset:','') || ''}`;
-                          const resp = (d.feedbackResponses || {})[itemKey];
-                          const fs = resp ? FEEDBACK_STATUS[resp.status] : null;
-                          return (
-                            <div key={fi} style={{
-                              padding:"8px 12px", marginBottom:4, marginLeft:28,
-                              background:"#F8FAFC", borderRadius:6,
-                              borderLeft:`2px solid ${disc ? disc.color : BRAND}` }}>
-                              <div style={{ fontSize:12, color:"#1E293B", lineHeight:1.5 }}>"{f.body}"</div>
-                              <div style={{ fontSize:11, color:"#94A3B8", marginTop:4, display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
-                                <span>
-                                  <strong style={{ color:"#374151" }}>{f.commenter_name}</strong>
-                                  , {formatDate(f.created_at)}
-                                  {f.taskText && <span> · on <em>{f.taskText}</em></span>}
-                                </span>
-                                {fs && (
-                                  <span style={{ fontSize:10, fontWeight:600, color: fs.color,
-                                    background: fs.bg, padding:"1px 6px", borderRadius:3 }}>
-                                    {fs.icon} {fs.label}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                );
-              })()}
-
-              {/* ── Open Questions callout ── */}
+              {/* ── Open Questions callout (client action items — always first) ── */}
               {d.openQuestions.length > 0 && (
                 <div style={{ background:"#FFFBEB", border:`1px solid #FDE68A`,
                   borderRadius:10, padding:"16px 20px", marginTop:16 }}>
@@ -1716,6 +1629,122 @@
                   })}
                 </div>
               )}
+
+              {/* ── Asset Feedback (collapsible, filtered — only pending/deferred/no-status) ── */}
+              {(() => {
+                const fr = d.feedbackResponses || {};
+                // Collect all asset/group feedback from comments, excluding "done" items
+                const feedbackItems = [];
+                Object.keys(comments).forEach(key => {
+                  if (key.startsWith('task-asset:') || key.startsWith('task-group:')) {
+                    const resp = fr[key];
+                    // Skip items that are fully applied
+                    if (resp && resp.status === 'done') return;
+
+                    const isGroup = key.startsWith('task-group:');
+                    const refId = isGroup ? key.replace('task-group:', '') : key.replace('task-asset:', '');
+                    let disc = null;
+                    let taskText = '';
+                    d.disciplines.forEach(di => {
+                      di.tasks.forEach(t => {
+                        if (isGroup && t.groupId === refId) { disc = di; taskText = t.groupLabel || refId; }
+                        if (!isGroup && String(t.id) === refId) { disc = di; taskText = t.text; }
+                      });
+                    });
+                    comments[key].forEach(c => {
+                      feedbackItems.push({ ...c, disc, taskText, isGroup, commentKey: key });
+                    });
+                  }
+                });
+                if (feedbackItems.length === 0) return null;
+
+                // Group by discipline
+                const byDisc = {};
+                feedbackItems.forEach(f => {
+                  const label = f.disc ? f.disc.label : 'General';
+                  if (!byDisc[label]) byDisc[label] = { disc: f.disc, items: [] };
+                  byDisc[label].items.push(f);
+                });
+
+                return (
+                  <div style={{ background:"white", border:`1px solid #E2E8F0`,
+                    borderRadius:10, marginTop:16, overflow:"hidden" }}>
+                    {/* Collapsible header */}
+                    <button onClick={() => setAssetFeedbackOpen(!assetFeedbackOpen)} style={{
+                      width:"100%", padding:"14px 20px", background:"white", border:"none",
+                      cursor:"pointer", fontFamily:"inherit", textAlign:"left",
+                      display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                        <span style={{ fontSize:12, color:"#64748B" }}>{assetFeedbackOpen ? "▾" : "▸"}</span>
+                        <span style={{ fontSize:13, fontWeight:600, color:"#64748B" }}>
+                          🎨 Pending Feedback
+                        </span>
+                        <span style={{ fontSize:11, color:"#94A3B8" }}>
+                          {feedbackItems.length} item{feedbackItems.length !== 1 ? 's' : ''} awaiting update
+                        </span>
+                      </div>
+                      <div style={{ display:"flex", gap:6 }}>
+                        {Object.entries(byDisc).map(([label, { disc }]) => (
+                          disc && <div key={label} style={{ width:18, height:18, borderRadius:4,
+                            background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
+                            display:"flex", alignItems:"center", justifyContent:"center",
+                            fontSize:9, fontWeight:700, color:disc.color }}>{disc.label[0]}</div>
+                        ))}
+                      </div>
+                    </button>
+
+                    {/* Expanded content */}
+                    {assetFeedbackOpen && (
+                      <div style={{ padding:"0 20px 16px", borderTop:"1px solid #F1F5F9" }}>
+                        {Object.entries(byDisc).map(([label, { disc, items }]) => (
+                          <div key={label} style={{ marginTop:12 }}>
+                            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                              {disc && (
+                                <div style={{ width:20, height:20, borderRadius:4,
+                                  background:disc.lightColor, border:`1px solid ${disc.borderColor}`,
+                                  display:"flex", alignItems:"center", justifyContent:"center",
+                                  fontSize:10, fontWeight:700, color:disc.color }}>{disc.label[0]}</div>
+                              )}
+                              <span style={{ fontSize:12, fontWeight:600, color: disc ? disc.color : "#64748B" }}>{label}</span>
+                            </div>
+                            {items.map((f, fi) => {
+                              const resp = fr[f.commentKey];
+                              const fs = resp ? FEEDBACK_STATUS[resp.status] : null;
+                              return (
+                                <div key={fi} style={{
+                                  padding:"8px 12px", marginBottom:4, marginLeft:28,
+                                  background:"#F8FAFC", borderRadius:6,
+                                  borderLeft:`2px solid ${disc ? disc.color : BRAND}` }}>
+                                  <div style={{ fontSize:12, color:"#1E293B", lineHeight:1.5 }}>"{f.body}"</div>
+                                  <div style={{ fontSize:11, color:"#94A3B8", marginTop:4, display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
+                                    <span>
+                                      <strong style={{ color:"#374151" }}>{f.commenter_name}</strong>
+                                      , {formatDate(f.created_at)}
+                                      {f.taskText && <span> · on <em>{f.taskText}</em></span>}
+                                    </span>
+                                    {fs && (
+                                      <span style={{ fontSize:10, fontWeight:600, color: fs.color,
+                                        background: fs.bg, padding:"1px 6px", borderRadius:3 }}>
+                                        {fs.icon} {fs.label}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {resp && resp.note && (
+                                    <div style={{ fontSize:11, color:"#64748B", marginTop:6, padding:"6px 8px",
+                                      background:"white", borderRadius:4, border:"1px solid #E2E8F0", lineHeight:1.5 }}>
+                                      <strong style={{ color:"#374151" }}>Response:</strong> {resp.note}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </>}
 
             {/* ── TASKS ── */}
