@@ -1627,26 +1627,76 @@
           {/* Expanded content */}
           {isOpen && (
             <div style={{ borderTop:"1px solid #F1F5F9" }}>
+              {/* Triage summary bar */}
+              {contextMessages.length > 0 && (() => {
+                const triageCounts = { t1:0, t2:0, t3:0, t4:0, unprocessed:0 };
+                contextMessages.forEach(m => {
+                  if (m.reaction === 't1-mvp-critical') triageCounts.t1++;
+                  else if (m.reaction === 't2-enhancement') triageCounts.t2++;
+                  else if (m.reaction === 't3-new-feature') triageCounts.t3++;
+                  else if (m.reaction === 't4-context') triageCounts.t4++;
+                  else triageCounts.unprocessed++;
+                });
+                const items = [
+                  triageCounts.t1 > 0 && { dot:'🔴', label:'Critical', n:triageCounts.t1 },
+                  triageCounts.t2 > 0 && { dot:'🟡', label:'Enhancement', n:triageCounts.t2 },
+                  triageCounts.t3 > 0 && { dot:'🔵', label:'New Feature', n:triageCounts.t3 },
+                  triageCounts.t4 > 0 && { dot:'⚪', label:'Context', n:triageCounts.t4 },
+                  triageCounts.unprocessed > 0 && { dot:'⏳', label:'Pending Review', n:triageCounts.unprocessed },
+                ].filter(Boolean);
+                if (items.length === 0) return null;
+                return (
+                  <div style={{ display:"flex", gap:12, padding:"8px 18px",
+                    background:"#FAFBFC", borderBottom:"1px solid #F1F5F9", flexWrap:"wrap" }}>
+                    {items.map((item, idx) => (
+                      <span key={idx} style={{ fontSize:11, color:"#64748B" }}>
+                        {item.dot} {item.n} {item.label}
+                      </span>
+                    ))}
+                  </div>
+                );
+              })()}
+
               {/* Message thread */}
               {contextMessages.length > 0 && (
                 <div style={{ maxHeight:280, overflowY:"auto", padding:"12px 18px" }}>
                   {contextMessages.map((msg, i) => {
                     const { textBody, attachedFiles } = parseBody(msg.body);
                     const isAck = msg.reaction === 'acknowledged';
+
+                    // Triage classification from system processing
+                    const triageMap = {
+                      't1-mvp-critical': { label:'MVP-Critical', color:'#DC2626', bg:'#FEF2F2', dot:'🔴', border:'#FCA5A5' },
+                      't2-enhancement':  { label:'Enhancement',  color:'#D97706', bg:'#FFFBEB', dot:'🟡', border:'#FCD34D' },
+                      't3-new-feature':  { label:'New Feature — Queued', color:'#2563EB', bg:'#EFF6FF', dot:'🔵', border:'#93C5FD' },
+                      't4-context':      { label:'Context Noted', color:'#6B7280', bg:'#F9FAFB', dot:'⚪', border:'#D1D5DB' },
+                    };
+                    const triage = msg.reaction && triageMap[msg.reaction] ? triageMap[msg.reaction] : null;
+                    const borderColor = triage ? triage.border : (isAck ? "#059669" : BRAND);
+
                     return (
                       <div key={i} style={{
                         padding:"10px 14px", marginBottom:8,
-                        background:"#F8FAFC", borderRadius:8,
-                        borderLeft: `3px solid ${isAck ? "#059669" : BRAND}` }}>
+                        background: triage ? triage.bg : "#F8FAFC", borderRadius:8,
+                        borderLeft: `3px solid ${borderColor}` }}>
                         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
-                          marginBottom: textBody ? 4 : 0 }}>
+                          marginBottom: textBody ? 4 : 0, flexWrap:"wrap", gap:4 }}>
                           <span style={{ fontSize:12, color:"#94A3B8" }}>
                             <strong style={{ color:"#374151", fontWeight:600 }}>{msg.commenter_name}</strong>
                             {' '} · {formatDate(msg.created_at)}
                           </span>
-                          {isAck && (
-                            <Badge color="#059669" bg="#DCFCE7">✓ Acknowledged</Badge>
-                          )}
+                          <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                            {triage && (
+                              <span style={{ fontSize:10, fontWeight:700, color:triage.color,
+                                background:"white", border:`1px solid ${triage.border}`,
+                                borderRadius:10, padding:"2px 8px", whiteSpace:"nowrap" }}>
+                                {triage.dot} {triage.label}
+                              </span>
+                            )}
+                            {isAck && !triage && (
+                              <Badge color="#059669" bg="#DCFCE7">✓ Acknowledged</Badge>
+                            )}
+                          </div>
                         </div>
                         {textBody && (
                           <div style={{ fontSize:13, color:"#1E293B", lineHeight:1.6, marginTop:4 }}>
@@ -1669,8 +1719,12 @@
               {/* Compose area */}
               <div style={{ padding:"14px 18px", background: contextMessages.length > 0 ? "white" : "transparent",
                 borderTop: contextMessages.length > 0 ? "1px solid #F1F5F9" : "none" }}>
-                <div style={{ fontSize:12, color:"#64748B", marginBottom:8 }}>
-                  Share context, ideas, or files with the team. These are reviewed each session.
+                <div style={{ fontSize:12, color:"#64748B", marginBottom:8,
+                  background:"#F0F9FF", border:"1px solid #BAE6FD", borderRadius:8,
+                  padding:"10px 14px", lineHeight:1.6 }}>
+                  <strong style={{ color:"#0369A1" }}>How this works:</strong> Messages are triaged each session.
+                  MVP-critical items are acted on immediately. New feature ideas are documented and assessed
+                  for scope impact — never started without a deliberate prioritization decision.
                 </div>
                 <div style={{ display:"flex", gap:8, marginBottom:8 }}>
                   <input value={name} onChange={e => setName(e.target.value)}
@@ -2000,6 +2054,39 @@
               if (!grouped[key]) grouped[key] = [];
               grouped[key].push(c);
             });
+            // Inject demo triage messages if no real context messages exist
+            if (!grouped['context-general'] || grouped['context-general'].length === 0) {
+              grouped['context-general'] = [
+                {
+                  commenter_name: 'Jason',
+                  body: 'The readiness check-in screen needs to show the deload button — users are confused about when deload triggers. This is blocking the wireframe v2 approval.',
+                  created_at: '2026-03-08T14:22:00Z',
+                  reaction: 't1-mvp-critical',
+                  item_type: 'context', item_id: 'general',
+                },
+                {
+                  commenter_name: 'Keagan',
+                  body: 'Could we add a dark mode toggle to the coach dashboard? Some coaches work late nights and would appreciate it.',
+                  created_at: '2026-03-08T16:45:00Z',
+                  reaction: 't2-enhancement',
+                  item_type: 'context', item_id: 'general',
+                },
+                {
+                  commenter_name: 'Jason',
+                  body: 'I had an idea — what if we added a social feed where athletes can see each other\'s workouts? Like a team leaderboard with streaks and badges.',
+                  created_at: '2026-03-09T09:10:00Z',
+                  reaction: 't3-new-feature',
+                  item_type: 'context', item_id: 'general',
+                },
+                {
+                  commenter_name: 'Hayden',
+                  body: 'FYI — confirmed the domain helix.mobile is secured. App store name "Helix" is available too.',
+                  created_at: '2026-03-09T11:30:00Z',
+                  reaction: 't4-context',
+                  item_type: 'context', item_id: 'general',
+                },
+              ];
+            }
             setComments(grouped);
           } catch (e) {
             console.error('Comments fetch failed:', e);
